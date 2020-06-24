@@ -12,7 +12,7 @@
             "name": "Derik Ramirez",
             "name": "Joseph Glass"
         }
-    ]",
+    ],
     "require": {
         "php": "^7.2",
         "fideloper/proxy": "^4.0",
