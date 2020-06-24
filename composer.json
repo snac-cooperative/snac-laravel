@@ -1,12 +1,18 @@
 {
-    "name": "laravel/laravel",
+    "name": "snac-cooperative/snac-laravel",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "Laravel framework for SNAC project",
     "keywords": [
-        "framework",
+        "SNAC",
         "laravel"
     ],
-    "license": "MIT",
+    "license": "CC0",
+    "authors": [
+        {
+            "name": "Derik Ramirez",
+            "name": "Joseph Glass"
+        }
+    ]",
     "require": {
         "php": "^7.2",
         "fideloper/proxy": "^4.0",
