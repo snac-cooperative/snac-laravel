@@ -11,13 +11,17 @@ Route::get('/concept', 'ConceptController@index');
 /**
  * Add New Concept
  */
-Route::post('/concept', function (Request $request) {
+Route::post('concept', function (Request $request) {
     //
 });
 
 /**
  * Delete Concept
  */
-Route::delete('/concept/{concept}', function (Concept $concept) {
+Route::delete('concept/{concept}', function (Concept $concept) {
     //
+});
+
+Route::get('/foo', function () {
+    return 'Hello World';
 });
