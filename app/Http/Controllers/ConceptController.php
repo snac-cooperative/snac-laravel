@@ -15,7 +15,7 @@ class ConceptController extends Controller
     public function index()
     {
         $concepts = Concept::all();
-        return view('concepts')->with('concepts', $concepts);
+        return view('Concepts/concepts')->with('concepts', $concepts);
     }
 
     /**
