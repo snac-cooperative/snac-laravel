@@ -6,13 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Term extends Model
 {
+    protected $fillable = [
+        "text",
+        "preferred"
+    ];
+
   public function concept() {
-    return $this->belongsTo("App\Concept");
+    return $this->belongsTo("App\Models\Concept");
   }
 
-  protected $fillable = [
-    "term_text",
-    "preferred" => "boolean"
-  ];
-    //
+
 }
+
+
+// php artisan make:seeder ConceptSeeder

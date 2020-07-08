@@ -15,13 +15,13 @@ class CreateTermsTable extends Migration
     {
         Schema::create('terms', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('term_text');
+            $table->text('text');
             $table->boolean('preferred');
             $table->integer('language_id')->nullable()->unsigned();
             $table->foreign('language_id')
                 ->references('id')
                 ->on('vocabulary');
-            $table->bigInteger('concept_id')->nullable()->unsigned();
+            $table->bigInteger('concept_id')->unsigned();
             $table->foreign('concept_id')
                 ->references('id')
                 ->on('concepts');
