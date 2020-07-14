@@ -37,6 +37,7 @@
 <script src="{{control.snacURL}}/javascript/relation_search.js{{control.noCache}}"></script>
 <script src="{{control.snacURL}}/javascript/html2canvas.js{{control.noCache}}"></script>
 <script src="{{control.snacURL}}/javascript/feedback.js{{control.noCache}}"></script>
+{% block custom_js%}{% endblock %}
 
 
 <!-- Datatables -->
@@ -55,50 +56,16 @@
 
 </head>
 <body role="document">
-{% from 'layouts.navigation_macros' import topNavigation,footer %}
-{{ topNavigation(X, user, permissions, control) }}
+{#{% from 'layouts.navigation_macros' import topNavigation,footer %}#}
+{% import 'layouts.navigation_macros' as navigation_macros %}
+{{ navigation_macros.topNavigation(X, user, permissions, control) }}
 
 
 <div class="container snac" role="main">
-    <h1>Vocabulary: {{ data.title }}</h1>
-
-    <ol class="breadcrumb">
-        <li><a href="{{control.snacURL}}/vocab_administrator/dashboard">Vocabulary</a></li>
-        <li>{{data.title}}</li>
-        <!-- <li>{{data.response.concepts[0].term}}</li> -->
-    </ol>
-
-        {% if permissions.EditResources %}
-        <div class="text-center">
-            <a href="{{control.snacURL}}/vocab_administrator/add_concept" class="btn btn-success">
-                <i class="fa fa-fw fa-plus"></i> Add New Concept
-            </a>
-        </div>
-        {% endif %}
-
-    <table id="concept-table" class="table">
-        <thead>
-            <tr>
-                <th>Concept</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for concept in concepts %}
-        <div class="col-sm-4">
-            <div class="mb-3">
-                <div class="concept-body">
-                    <h5 class="concept-id">{{ concept.id }}</h5>
-                    <small class="concept-deprecated-to">{{ concept.deprecated_to }}</small>
-                    <p class="concept-deprecated">{{ concept.deprecated }}</p>
-                </div>
-            </div>  
-        </div>
-        {% endfor %}
-        </tbody>
-    </table>
-
+   {% block content %}{% endblock %}
 </div>
-{{ footer(X, user, permissions, control) }}
+{{ navigation_macros.footer(X, user, permissions, control) }}
+{{ dump() }}
 </body>
 </html>
 </html>

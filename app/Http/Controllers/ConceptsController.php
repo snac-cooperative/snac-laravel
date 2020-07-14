@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Concept;
+use App\Models\Term;
+use Illuminate\Http\Request;
 
-class ConceptController extends Controller
+class ConceptsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +16,10 @@ class ConceptController extends Controller
     public function index()
     {
         $concepts = Concept::all();
-        return view('Concepts/concepts')->with('concepts', $concepts);
+        $control = [
+            'snacURL' => 'http://localhost/'
+        ];
+        return view('concepts.index', ['concepts' => $concepts, 'control' => $control]);
     }
 
     /**
@@ -25,7 +29,10 @@ class ConceptController extends Controller
      */
     public function create()
     {
-        //
+        $control = [
+            'snacURL' => 'http://localhost/'
+        ];
+        return view('concepts.create', ['control' => $control]);
     }
 
     /**
@@ -36,16 +43,27 @@ class ConceptController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $requestParams = $request->only('term-value');
+        $concept = new Concept;
+        $concept->deprecated = false;
+        $concept->save();
+        $term = new Term;
+        $term->text = $requestParams['term-value'];
+        $term->preferred = true;
+        //$term->concept_id = $concept->id;
+        //$term->save();
+        $concept->terms()->save($term);
+        //Savemany... Ref.
+        return redirect('concepts')->with('status', 'Concept Created');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Concept $concept)
     {
         //
     }
@@ -53,10 +71,10 @@ class ConceptController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Concept $concept)
     {
         //
     }
@@ -65,10 +83,10 @@ class ConceptController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Concept $concept)
     {
         //
     }
@@ -76,10 +94,10 @@ class ConceptController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Concept $concept)
     {
         //
     }

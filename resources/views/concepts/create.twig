@@ -1,0 +1,35 @@
+{% extends "layouts.snac_layout" %}
+
+{% block custom_js %}
+{# this block is included in the page header. For example: 
+<script src="{{control.snacURL}}/javascript/html2canvas.js{{control.noCache}}"></script>#}
+{% endblock %}
+{% block content %}
+    <h1>New concept:</h1>
+
+    <ol class="breadcrumb">
+        <li><a href="{{control.snacURL}}/vocab_administrator/dashboard">Vocabulary</a></li>
+        <li>New</li>
+    </ol>
+    <div class="row">
+      <div class="col-md-8">
+        <p>Create a preferred term for this new concept.</p>
+        <!-- <h4>Add Term</h4> -->
+        <form id="term-form" method="post" action="/concepts">
+          {{ csrf_field() }}
+          <div class="term form-group required">
+            <div class="form-group">
+              <label class="control-label col-xs-2" for="">Term</label>
+              <div class="col-xs-6">
+                <input type="text" id="term-input" class="form-control" name="term-value" data-term-id="" required="">
+              </div>
+            </div>
+            <br>
+          </div>
+          <button type="submit" class="btn btn-primary" >Save Term</button>
+        </form>
+      </div>
+
+      <br>
+    </div>
+{% endblock %}

@@ -18,26 +18,8 @@ Route::get('/', function () {
 use App\Concept;
 use Illuminate\Http\Request;
 
-/**
- * Show Concept Dashboard
- */
-Route::get('/concept', 'ConceptController@index');
-
-/**
- * Add New Concept
- */
-Route::post('/concept', function (Request $request) {
-    //
-});
-
-/**
- * Delete Concept
- */
-Route::delete('/concept/{concept}', function (Concept $concept) {
-    //
-});
-
-Route::get('/foo', function () {
-    return 'Hello World';
-});
-
+Route::get('concepts',              'ConceptsController@index');
+Route::get('concepts/create',       'ConceptsController@create');
+Route::post('concepts',             'ConceptsController@store');
+Route::get('concepts/{concept}',    'ConceptsController@show');
+Route::delete('concepts/{concept}', 'ConceptsController@destroy');
