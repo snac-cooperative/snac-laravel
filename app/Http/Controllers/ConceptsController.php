@@ -15,7 +15,11 @@ class ConceptsController extends Controller
      */
     public function index()
     {
-        $concepts = Concept::all();
+        $concepts = Concept::with(['terms' => function($query) {
+            $query->orderBy('preferred', 'desc');
+        }])->where(
+            'deprecated', false
+        )->get();
         $control = [
             'snacURL' => 'http://localhost/'
         ];
@@ -63,9 +67,13 @@ class ConceptsController extends Controller
      * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
-    public function show(Concept $concept)
+    public function show($concept_id)
     {
-        //
+        $concept = Concept::with('terms')->findOrFail($concept_id);
+        $control = [
+            'snacURL' => 'http://localhost/'
+        ];
+        return view('concepts.show', ['concept' => $concept, 'control' => $control]);
     }
 
     /**
