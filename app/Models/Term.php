@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Term extends Model
 {
+
     protected $fillable = [
         "text",
         "preferred"
@@ -20,3 +21,6 @@ class Term extends Model
 
 
 // php artisan make:seeder ConceptSeeder
+
+
+#php artisan make:model -m Concept
