@@ -13,9 +13,6 @@ class ConceptSeeder extends Seeder
      */
     public function run()
     {
-
-        $teacher_concept = Concept::create(["deprecated" => false]);
-
         $json_data = File::get("/home/vagrant/code/snac-laravel/database/data/loc_dgt.json");
         $loc_concepts_json = json_decode($json_data, true);
 
@@ -43,3 +40,4 @@ class ConceptSeeder extends Seeder
 
     }
 }
+
