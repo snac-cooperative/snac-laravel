@@ -17,6 +17,7 @@ class ConceptsController extends Controller
     {
         $concepts = Concept::with(['terms' => function($query) {
             $query->orderBy('preferred', 'desc');
+            //$query->where('preferred', true);
         }])->where(
             'deprecated', false
         )->get();
@@ -48,6 +49,9 @@ class ConceptsController extends Controller
     public function store(Request $request)
     {
         $requestParams = $request->only('term-value');
+        //$request->validate Check
+        //Ref: https://laravel.com/docs/7.x/validation
+        //$requestParams = $request->only(Concept::fillable);
         $concept = new Concept;
         $concept->deprecated = false;
         $concept->save();
