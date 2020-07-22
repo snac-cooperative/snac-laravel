@@ -16,17 +16,29 @@ class ConceptSeeder extends Seeder
 
         $teacher_concept = Concept::create(["deprecated" => false]);
 
-        $teacher_terms = [
-            ["text" => "Teachers", "preferred" => true],
-            ["text" => "Educators", "preferred" => false],
-            ["text" => "Faculty (Teachers", "preferred" => false],
-            ["text" => "Instructors", "preferred" => false],
-            ["text" => "Schoolteachers", "preferred" => false],
-            ["text" => "School teachers", "preferred" => false]
-        ];
+        $json_data = File::get("/home/vagrant/code/snac-laravel/database/data/loc_dgt.json");
+        $loc_concepts_json = json_decode($json_data, true);
 
-        foreach ($teacher_terms as $term) {
-            $teacher_concept->terms()->create($term);
+        foreach ($loc_concepts_json["record"] as $concept) {
+
+            $newConcept = Concept::create(["deprecated" => false]);
+
+            // create preferred term
+            $preferredTerm = ["text" => $concept["preferredTerm"], "preferred" => true];
+            $newConcept->terms()->create($preferredTerm);
+
+            // create alternative terms
+            if (isset($concept["alternativeTerm"])) {
+                $alternativeTerms = $concept["alternativeTerm"];
+                if(!is_array($concept["alternativeTerm"])) {
+                    $alternativeTerms = [$concept["alternativeTerm"]];
+                }
+                foreach ($alternativeTerms as $alternativeTerm) {
+                    $newAlternativeTerm = ["text" => $alternativeTerm, "preferred" => false];
+                    $newConcept->terms()->create($newAlternativeTerm);
+                }
+            }
+
         }
 
     }
