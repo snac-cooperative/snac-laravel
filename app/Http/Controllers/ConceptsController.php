@@ -22,7 +22,7 @@ class ConceptsController extends Controller
             'deprecated', false
         )->get();
         $control = [
-            'snacURL' => 'http://localhost/~josephglass/snac/www/'
+            'snacURL' => 'http://localhost/'
         ];
         return view('concepts.index', ['concepts' => $concepts, 'control' => $control]);
     }
@@ -35,7 +35,7 @@ class ConceptsController extends Controller
     public function create()
     {
         $control = [
-            'snacURL' => 'http://localhost/~josephglass/snac/www/'
+            'snacURL' => 'http://localhost/'
         ];
         return view('concepts.create', ['control' => $control]);
     }
@@ -75,7 +75,7 @@ class ConceptsController extends Controller
     {
         $concept = Concept::with('terms')->findOrFail($concept_id);
         $control = [
-            'snacURL' => 'http://localhost/~josephglass/snac/www/'
+            'snacURL' => 'http://localhost/'
         ];
         return view('concepts.show', ['concept' => $concept, 'control' => $control]);
     }
