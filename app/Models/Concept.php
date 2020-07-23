@@ -32,20 +32,22 @@ class Concept extends Model
                         ->wherePivot("relationship_type", "broader");
     }
 
-    public function narrower() {
-        return $this->belongsToMany("App\Models\Concept", "concept_relationships", "concept_id", "related_concept_id")
-                        ->withPivot("relationship_type")
-                        ->wherePivot("relationship_type", "narrower");
-    }
+    // This version requires insert of the two relationships (both ways, narrower and broader)
+    //public function narrower() {
+        //return $this->belongsToMany("App\Models\Concept", "concept_relationships", "concept_id", "related_concept_id")
+                        //->withPivot("relationship_type")
+                        //->wherePivot("relationship_type", "narrower");
+    //}
 
-    //
-    //     // coming from other direction
-    // public function narrower() {
-    //     return $this->belongsToMany("App\Models\Concept", "concept_relationships", "related_concept_id", "concept_id")
-    //                     ->withPivot("relationship_type")
-    //                     ->wherePivot("relationship_type", "broader");
-    // }
-    //
+    
+    // This version requires insert only one relationships, the other relationship is inferred from concept_id or related_concept_id
+    // coming from other direction
+     public function narrower() {
+         return $this->belongsToMany("App\Models\Concept", "concept_relationships", "related_concept_id", "concept_id")
+                         ->withPivot("relationship_type")
+                         ->wherePivot("relationship_type", "broader");
+     }
+    
 
     public function related() {
         return $this->belongsToMany("App\Models\Concept", "concept_relationships", "related_concept_id", "concept_id")
