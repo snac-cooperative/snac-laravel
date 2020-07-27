@@ -25,6 +25,7 @@ class CreateConceptRelationshipsTable extends Migration
                 ->references('id')
                 ->on('concepts');
             $table->timestamps();
+            $table->unique(['concept_id', 'related_concept_id', 'relationship_type']);
         });
     }
 
