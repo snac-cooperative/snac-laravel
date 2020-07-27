@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\Concept;
+use App\Models\ConceptSource;
 use App\Models\Term;
 
 class ConceptSeeder extends Seeder
@@ -18,7 +19,9 @@ class ConceptSeeder extends Seeder
         foreach ($loc_concepts_json["record"] as $concept) {
 
             $newConcept = Concept::create(["deprecated" => false]);
-
+            $source = new ConceptSource(["url" => $concept["sourceURL"]]);
+            $newConcept->sources()->save($source);
+            
             // create preferred term
             $preferredTerm = ["text" => $concept["preferredTerm"], "preferred" => true];
             $newConcept->terms()->create($preferredTerm);

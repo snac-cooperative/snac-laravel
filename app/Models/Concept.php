@@ -75,4 +75,8 @@ class Concept extends Model
         // TODO : check it works for new narrower enum
         return $this->narrower()->attach([$conceptId => ["relationship_type" => "broader"]]);
     }
+
+    public function sources() {
+        return $this->hasMany("App\Models\ConceptSource");
+    }
 }
