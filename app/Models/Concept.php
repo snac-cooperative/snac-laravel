@@ -18,8 +18,18 @@ class Concept extends Model
      */
     protected $with = ["terms"];
 
+    public function replacementOf() {
+        return $this->hasOne("\App\Models\Concept", "deprecated_to");
+    }
+
     public function deprecatedTo() {
-        return $this->hasOne("\App\Models\Concept", "foreign_key","deprecated_to");
+        return $this->belongsTo("\App\Models\Concept", "deprecated_to");
+    }
+
+    public function setDeprecatedTo($concept) {
+        $this->deprecated = true;
+        return $this->deprecatedTo()->associate($concept)
+            ->save();
     }
 
     public function terms() {
