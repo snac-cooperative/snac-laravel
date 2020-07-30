@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\Models\Concept;
 use App\Models\ConceptSource;
+use App\Models\ConceptProperty;
 use App\Models\Term;
 
 class ConceptSeeder extends Seeder
@@ -21,7 +22,12 @@ class ConceptSeeder extends Seeder
             $newConcept = Concept::create(["deprecated" => false]);
             $source = new ConceptSource(["url" => $concept["sourceURL"]]);
             $newConcept->sources()->save($source);
-            
+
+            if (isset($concept["scopeNote"])) {
+                $property = new App\Models\ConceptProperty([ "type" => "scopeNote", "value" => $concept["scopeNote"]]);
+                $newConcept->conceptProperties()->save($property);
+            }
+
             // create preferred term
             $preferredTerm = ["text" => $concept["preferredTerm"], "preferred" => true];
             $newConcept->terms()->create($preferredTerm);

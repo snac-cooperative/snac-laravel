@@ -2279,10 +2279,7 @@
           "relatedConceptTerm": "Artists",
           "relatedConceptId": "dg2015060132"
         },
-        "scopeNote": [
-          "Artists who specialize in printmaking and illustration that depend upon line and not color to render the design. For persons who design and create artwork and copy layouts, including both words and images, for presentation by visual media such as books, magazines, newspapers, posters, television, and packaging see Graphic designers.",
-          "Note under Graphic designers"
-        ]
+        "scopeNote": "Artists who specialize in printmaking and illustration that depend upon line and not color to render the design. For persons who design and create artwork and copy layouts, including both words and images, for presentation by visual media such as books, magazines, newspapers, posters, television, and packaging see Graphic designers. Note under Graphic designers"
       },
       {
         "id": "dg2015060772",
@@ -2294,10 +2291,7 @@
           "relatedConceptTerm": "Designers",
           "relatedConceptId": "dg2015060769"
         },
-        "scopeNote": [
-          "Persons who design and create artwork and copy layouts, including both words and images, for presentation by visual media such as books, magazines, newspapers, posters, television, and packaging. For artists who specialize in printmaking and illustration that depend upon line and not color to render the design see Graphic artists.",
-          "Note under Graphic artists"
-        ]
+        "scopeNote": "Persons who design and create artwork and copy layouts, including both words and images, for presentation by visual media such as books, magazines, newspapers, posters, television, and packaging. For artists who specialize in printmaking and illustration that depend upon line and not color to render the design see Graphic artists. Note under Graphic artists"
       },
       {
         "id": "dg2015060540",
