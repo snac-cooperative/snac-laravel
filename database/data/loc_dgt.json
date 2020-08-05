@@ -95,7 +95,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Baptists",
           "relatedConceptId": "dg2015060266"
-        }
+        },
+        "scopeNote": "Members of the American Baptist Association."
       },
       {
         "id": "dg2015060273",
@@ -223,7 +224,8 @@
         "id": "dg2015060076",
         "sourceURL": "http://id.loc.gov/authorities/demographicTerms/dg2015060076",
         "conceptType": "occupation",
-        "preferredTerm": "Boaters"
+        "preferredTerm": "Boaters",
+        "scopeNote": "People who operate boats for a living or for recreational purposes."
       },
       {
         "id": "dg2015060054",
@@ -259,7 +261,8 @@
           "Family caregivers",
           "Home health caregivers",
           "Informal caregivers"
-        ]
+        ],
+        "scopeNote": "Family or friends who provide personal home care for the elderly, ill, or people with disabilities on an informal voluntary basis."
       },
       {
         "id": "dg2015060385",
@@ -329,7 +332,8 @@
           "Chaoxian zu",
           "Chaoxianzu",
           "Joseonjok"
-        ]
+        ],
+        "scopeNote": "Ethnic Koreans with Chinese nationality who reside chiefly in the Yanbian Korean Autonomous Prefecture."
       },
       {
         "id": "dg2015060258",
@@ -618,7 +622,8 @@
         "sourceURL": "http://id.loc.gov/authorities/demographicTerms/dg2015060376",
         "conceptType": "ethnicity",
         "preferredTerm": "Hawaiians (Polynesian people)",
-        "alternativeTerm": "nne Hawaiians (Polynesians)"
+        "alternativeTerm": "nne Hawaiians (Polynesians)",
+        "scopeNote": "Ethnic Hawaiians. For residents of the state of Hawaii in general see Hawaii residents."
       },
       {
         "id": "dg2015060250",
@@ -637,7 +642,8 @@
           "Hispanics (Hispanic Americans)",
           "Latino Americans",
           "Latinos (Hispanic Americans)"
-        ]
+        ],
+        "scopeNote": "United States citizens of Latin American descent."
       },
       {
         "id": "dg2015060264",
@@ -672,7 +678,8 @@
           "Information specialists",
           "Knowledge managers",
           "Scientists, Information"
-        ]
+        ],
+        "scopeNote": "People who organize information and provide services for its use."
       },
       {
         "id": "dg2015060311",
@@ -875,7 +882,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Sailors",
           "relatedConceptId": "dg2015060075"
-        }
+        },
+        "scopeNote": "Sailors employed on commercial vessels."
       },
       {
         "id": "dg2015060384",
@@ -1328,7 +1336,8 @@
         "id": "dg2015060465",
         "sourceURL": "http://id.loc.gov/authorities/demographicTerms/dg2015060465",
         "conceptType": "occupation",
-        "preferredTerm": "Administrative assistants"
+        "preferredTerm": "Administrative assistants",
+        "scopeNote": "People employed to perform administrative duties. For people who manage correspondence and routine work for a superior see Secretaries."
       },
       {
         "id": "dg2015060488",
@@ -1429,7 +1438,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Athletes",
           "relatedConceptId": "dg2015060173"
-        }
+        },
+        "scopeNote": "Athletes who play Australian football."
       },
       {
         "id": "dg2015060748",
@@ -1705,7 +1715,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Presbyterians",
           "relatedConceptId": "dg2015060263"
-        }
+        },
+        "scopeNote": "Members of the national church in Scotland."
       },
       {
         "id": "dg2015060401",
@@ -1828,7 +1839,8 @@
           "Cowpunchers",
           "Waddies (Cowboys)",
           "Wranglers (Cowboys)"
-        ]
+        ],
+        "scopeNote": "People who tend to cattle or horses, usually on a ranch."
       },
       {
         "id": "dg2015060475",
@@ -2028,7 +2040,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Rulers",
           "relatedConceptId": "dg2015060413"
-        }
+        },
+        "scopeNote": "Women rulers of empires and wives or consorts of emperors."
       },
       {
         "id": "dg2015060481",
@@ -2142,7 +2155,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Athletes",
           "relatedConceptId": "dg2015060173"
-        }
+        },
+        "scopeNote": "Athletes who play American football."
       },
       {
         "id": "dg2015060496",
@@ -2153,7 +2167,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Athletes",
           "relatedConceptId": "dg2015060173"
-        }
+        },
+        "scopeNote": "Athletes who play Gaelic football."
       },
       {
         "id": "dg2015060588",
@@ -2263,7 +2278,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Artists",
           "relatedConceptId": "dg2015060132"
-        }
+        },
+        "scopeNote": "Artists who specialize in printmaking and illustration that depend upon line and not color to render the design. For persons who design and create artwork and copy layouts, including both words and images, for presentation by visual media such as books, magazines, newspapers, posters, television, and packaging see Graphic designers. Note under Graphic designers"
       },
       {
         "id": "dg2015060772",
@@ -2274,7 +2290,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Designers",
           "relatedConceptId": "dg2015060769"
-        }
+        },
+        "scopeNote": "Persons who design and create artwork and copy layouts, including both words and images, for presentation by visual media such as books, magazines, newspapers, posters, television, and packaging. For artists who specialize in printmaking and illustration that depend upon line and not color to render the design see Graphic artists. Note under Graphic artists"
       },
       {
         "id": "dg2015060540",
@@ -2357,7 +2374,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Household employees",
           "relatedConceptId": "dg2015060460"
-        }
+        },
+        "scopeNote": "People employed to manage the domestic duties involved in maintaining a household."
       },
       {
         "id": "dg2015060451",
@@ -2436,7 +2454,8 @@
             "relatedConceptTerm": "Jews",
             "relatedConceptId": "dg2015060254"
           }
-        ]
+        ],
+        "scopeNote": "Christians of Jewish descent who identify with their Jewish origins."
       },
       {
         "id": "dg2015060521",
@@ -2592,7 +2611,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Artists",
           "relatedConceptId": "dg2015060132"
-        }
+        },
+        "scopeNote": "Artists who produce landscape images in any medium."
       },
       {
         "id": "dg2015060701",
@@ -3186,7 +3206,8 @@
         "sourceURL": "http://id.loc.gov/authorities/demographicTerms/dg2015060474",
         "conceptType": "occupation",
         "preferredTerm": "Press agents",
-        "alternativeTerm": "Publicists (Press agents)"
+        "alternativeTerm": "Publicists (Press agents)",
+        "scopeNote": "People who organize publicity on behalf of an organization or person."
       },
       {
         "id": "dg2015060402",
@@ -3362,7 +3383,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Rulers",
           "relatedConceptId": "dg2015060413"
-        }
+        },
+        "scopeNote": "Women monarchs and wives or women consorts of kings."
       },
       {
         "id": "dg2015060470",
@@ -3479,7 +3501,8 @@
         "id": "dg2015060404",
         "sourceURL": "http://id.loc.gov/authorities/demographicTerms/dg2015060404",
         "conceptType": "occupation",
-        "preferredTerm": "Scholars"
+        "preferredTerm": "Scholars",
+        "scopeNote": "People who have done advanced study in a particular field."
       },
       {
         "id": "dg2015060615",
@@ -3529,7 +3552,8 @@
         "id": "dg2015060464",
         "sourceURL": "http://id.loc.gov/authorities/demographicTerms/dg2015060464",
         "conceptType": "occupation",
-        "preferredTerm": "Secretaries"
+        "preferredTerm": "Secretaries",
+        "scopeNote": "People who manage correspondence and routine work for a superior. For people employed to perform administrative duties see Administrative assistants."
       },
       {
         "id": "dg2015060581",
@@ -3656,7 +3680,8 @@
         "sourceURL": "http://id.loc.gov/authorities/demographicTerms/dg2015060524",
         "conceptType": "occupation",
         "preferredTerm": "Story editors",
-        "alternativeTerm": "Editors, Story"
+        "alternativeTerm": "Editors, Story",
+        "scopeNote": "People who edit film, television, radio, etc., scripts."
       },
       {
         "id": "dg2015060530",
@@ -3880,7 +3905,8 @@
           "Innuit (North American people)",
           "Innuits (North American people)",
           "Inuits (North American people)"
-        ]
+        ],
+        "scopeNote": "Indigenous Arctic peoples of Canada, Greenland, and northern Alaska."
       },
       {
         "id": "dg2016060011",
@@ -3945,7 +3971,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Librarians",
           "relatedConceptId": "dg2015060192"
-        }
+        },
+        "scopeNote": "Librarians who specialize in providing services to young adults."
       },
       {
         "id": "dg2016060063",
@@ -4024,7 +4051,8 @@
           "relatedConceptType": "broader",
           "relatedConceptTerm": "Scholars",
           "relatedConceptId": "dg2015060404"
-        }
+        },
+        "scopeNote": "Scholars who specialize in the study of ancient Greek and Roman languages, literature, culture, etc."
       },
       {
         "id": "dg2016060087",
@@ -4234,7 +4262,8 @@
           "Laos (Asian people)",
           "Laotian Tai (Asian people)",
           "Phou Lao (Asian people)"
-        ]
+        ],
+        "scopeNote": "Ethnic Lao. For residents of Laos in general see Laotians."
       },
       {
         "id": "dg2016060104",
@@ -4363,7 +4392,8 @@
           "Uladh-Albanaigh",
           "Ulster Irish",
           "Ulster-Scotch"
-        ]
+        ],
+        "scopeNote": "People of Scottish descent from the historical province of Ulster."
       },
       {
         "id": "dg2016060024",
@@ -4422,7 +4452,8 @@
         "sourceURL": "http://id.loc.gov/authorities/demographicTerms/dg2016060149",
         "conceptType": "ethnicity",
         "preferredTerm": "Dominican Americans",
-        "alternativeTerm": "Americans, Dominican"
+        "alternativeTerm": "Americans, Dominican",
+        "scopeNote": "Americans who can trace their ancestry to the Dominican Republic."
       },
       {
         "id": "dg2016060163",

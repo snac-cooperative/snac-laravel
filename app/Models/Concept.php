@@ -89,4 +89,8 @@ class Concept extends Model
     public function sources() {
         return $this->hasMany("App\Models\ConceptSource");
     }
+
+    public function conceptProperties() {
+        return $this->hasMany("App\Models\ConceptProperty");
+    }
 }
