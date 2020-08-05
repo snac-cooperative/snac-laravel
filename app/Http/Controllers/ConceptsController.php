@@ -21,10 +21,7 @@ class ConceptsController extends Controller
         }])->where(
             'deprecated', false
         )->get();
-        $control = [
-            'snacURL' => 'http://localhost/'
-        ];
-        return view('concepts.index', ['concepts' => $concepts, 'control' => $control]);
+        return view('concepts.index', ['concepts' => $concepts]);
     }
 
     /**
@@ -34,10 +31,7 @@ class ConceptsController extends Controller
      */
     public function create()
     {
-        $control = [
-            'snacURL' => 'http://localhost/'
-        ];
-        return view('concepts.create', ['control' => $control]);
+        return view('concepts.create');
     }
 
     /**
@@ -62,7 +56,33 @@ class ConceptsController extends Controller
         //$term->save();
         $concept->terms()->save($term);
         //Savemany... Ref.
+        if($request->ajax()) {
+            return [
+                "id" => $concept->id,
+                "termId" => $term->id
+            ];
+        }
         return redirect('concepts')->with('status', 'Concept Created');
+    }
+
+    public function addTerm(Request $request)
+    {
+        $requestParams = $request->only('term-value');
+        //$request->validate Check
+        //Ref: https://laravel.com/docs/7.x/validation
+        //$requestParams = $request->only(Concept::fillable);
+        $concept = Concept::find($request->route('concept'));
+        $term = new Term;
+        $term->text = $requestParams['term-value'];
+        $term->preferred = true;
+        $concept->terms()->save($term);
+        //Savemany... Ref.
+        if($request->ajax()) {
+            return [
+                "termId" => $term->id
+            ];
+        }
+        return redirect('concepts', $concept->id)->with('status', 'Concept Created');
     }
 
     /**

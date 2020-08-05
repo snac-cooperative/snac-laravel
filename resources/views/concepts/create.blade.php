@@ -14,5 +14,4 @@ Concepts
       <div class="col-md-8" id="conceptForm"></div>
       <br>
     </div>
-    <div id="hello"></div>
 @endsection
