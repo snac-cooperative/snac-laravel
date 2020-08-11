@@ -17,6 +17,24 @@ class ConceptSeeder extends Seeder
         $json_data = File::get("database/data/loc_dgt.json");
         $loc_concepts_json = json_decode($json_data, true);
 
+        // Load ConceptCategories
+        $religion = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Religion')->first();
+        $ethnicity = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Ethnicity')->first();
+        $relation = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Relation')->first();
+        $occupation = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Occupation')->first();
+        $function = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Function')->first();
+        $subject = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Subject')->first();
+
+        $categories = [
+            'religion' => $religion,
+            'ethnicity' => $ethnicity,
+            'relation' => $relation,
+            'occupation' => $occupation,
+            'function' => $function,
+            'subject' => $subject
+        ];
+
+
         foreach ($loc_concepts_json["record"] as $concept) {
 
             $newConcept = Concept::create(["deprecated" => false]);
@@ -26,6 +44,15 @@ class ConceptSeeder extends Seeder
             if (isset($concept["scopeNote"])) {
                 $property = new App\Models\ConceptProperty([ "type" => "scopeNote", "value" => $concept["scopeNote"]]);
                 $newConcept->conceptProperties()->save($property);
+            }
+
+            // add category
+            $conceptTypes = $concept["conceptType"];
+            if(!is_array($concept["conceptType"])) {
+                $conceptTypes = [$concept["conceptType"]];
+            }
+            foreach ($conceptTypes as $conceptType) {
+                $newConcept->conceptCategories()->save($categories[$conceptType]);
             }
 
             // create preferred term

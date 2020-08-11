@@ -93,4 +93,9 @@ class Concept extends Model
     public function conceptProperties() {
         return $this->hasMany("App\Models\ConceptProperty");
     }
+
+    public function conceptCategories() {
+        return $this->belongsToMany("App\Models\Vocabulary", "concept_categories", "concept_id", "category_id");
+    }
+
 }
