@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { Table, Form, FormCheck, Col, Row, Button } from 'react-bootstrap';
 
 class TermInput extends Component {
   constructor(props) {
     super(props);
+    this.togglePreferred = this.togglePreferred.bind(this);
     this.state = {
       id: props.id,
       text: props.text,
@@ -11,12 +13,18 @@ class TermInput extends Component {
     }
   }
 
+  togglePreferred(e) {
+    this.setState({
+      preferred: !this.state.preferred
+    })
+  }
+
   render() {
     return (
-      <div>
-        {this.state.text}
-        <button onClick={this.props.editHandler} />
-      </div>
+      <tr>
+        <td>{this.state.text}</td>
+        <td><input onChange={this.togglePreferred} type="checkbox" checked={this.state.preferred} data-on="Preferred" data-off="Not preferred" data-toggle="toggle" data-target="#{`term_preferred_${this.state.id}`}" /></td>
+      </tr>
     );
   }
 }
@@ -26,17 +34,30 @@ class ConceptForm extends Component {
     super(props);
     this.handleAddTerm = this.handleAddTerm.bind(this);
     this.inputText = this.inputText.bind(this);
+    this.togglePreferred = this.togglePreferred.bind(this);
+    this.getTerms = this.getTerms.bind(this);
+    this.loadingSpinner = this.loadingSpinner.bind(this);
     this.state = {
       id: null,
       terms: [],
-      text: ''
+      text: '',
+      preferred: true,
+      loading: false
     }
   }
 
   handleAddTerm(e) {
     e.preventDefault();
 
-    const termValue = e.target.elements.newTerm.value.trim();
+    if (this.state.loading) { return; }
+
+    const termValue = e.target.elements.termText.value.trim();
+    const termIsPreferred = e.target.elements.preferredCheck.checked;
+
+    this.setState({ 
+      text: "",
+      loading: true,
+    });
 
     if (termValue) {
       //Verify we have an ID
@@ -46,13 +67,18 @@ class ConceptForm extends Component {
             const data = response.data;
             if (data["termId"]) {
               const term = {id: data["termId"], text: termValue, preferred: true};
-              console.log("Setting new state",term);
+
+              var initialPreferred = false || term.preferred ;
+
               this.setState((prevState) => {
                 return {
                   id: data["id"],
+                  text: "",
+                  preferred: false,
+                  loading: false,
                   terms: prevState.terms.concat([term])
                 }
-              })
+              });
             } else {
               console.log("There was an error creating the Concept");
             }
@@ -64,22 +90,27 @@ class ConceptForm extends Component {
           .then(response => {
             const data = response.data;
             if (data["termId"]) {
-              const term = {id: data["termId"], text: termValue, preferred: false};
-              console.log("Setting new state",term);
+              const term = {id: data["termId"], text: termValue, preferred: termIsPreferred};
+              var initialPreferred = false || term.preferred ;
+              if (!initialPreferred && this.state.terms.length > 0) {
+                initialPreferred = this.state.terms.reduce((acc, curr) => curr.preferred || acc);
+              }
+
               this.setState((prevState) => {
                 return {
+                  text: "",
+                  preferred: !initialPreferred,
+                  loading: false,
                   terms: prevState.terms.concat([term])
                 }
-              })
+              });
             } else {
               console.log("There was an error creating the Concept");
             }
           }).catch( error => {
-            console.log(error)
+            console.log(error);
           });
       }
-      //build the Concept
-      // Add the term to the concept
     }
   }
 
@@ -87,26 +118,89 @@ class ConceptForm extends Component {
     this.setState({text: e.target.value });
   }
 
+  togglePreferred(e) {
+    this.setState({ preferred: !e.target.checked })
+  }
+
+   getTerms() {
+    if (this.state.terms.length > 0) {
+      return <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Term</th>
+            <th>Preferred</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            this.state.terms.map(
+              (term) => <TermInput
+                editHandler={this.editTerm}
+                key={term.id}
+                text={term.text}
+                id={term.id}
+                preferred={term.preferred}
+              />
+            )
+          }
+        </tbody>
+        </Table>;
+    }
+    return "";
+  }
+
+  loadingSpinner() {
+    if (this.state.loading) {
+      return <i className="fa fa-spinner fa-spin" style={{padding: "0px 5px 0px 5px"}} />;
+    }
+  }
+
   render() {
     return (
       <div>
         <p>Create a preferred term for this new concept.</p>
-        <form onSubmit={this.handleAddTerm}>
+        <div>
+          {this.getTerms()}
+        </div>
+        <Form onSubmit={this.handleAddTerm}>
           @csrf
-          <div className="term form-group required">
-            <div className="form-group">
-              <label className="control-label col-xs-2" htmlFor="">Term</label>
-              <div className="col-xs-6">
-                {
-                  this.state.terms.map((term) => <TermInput editHandler={this.editTerm} key={term.id} text={term.text} id={term.id} preferred={term.preferred} />)
-                }
-                  <input onChange={this.inputText} className="form-control" name="newTerm" value={this.state.text}/>
-                </div>
-              </div>
-              <br />
-            </div>
-            <button type="submit" className="btn btn-primary" >Add Term</button>
-          </form>
+          <Form.Group as={Row} >
+              <Col sm={1}>
+              <Form.Label>
+                Term
+              </Form.Label>
+              </Col>
+              <Col sm={5}>
+                <Form.Control
+                  onChange={this.inputText}
+                  required
+                  type="text"
+                  placeholder="Term"
+                  id="termText"
+                  value={this.state.text}
+                />
+              </Col>
+              <Col sm={2}>
+                <FormCheck
+                  custom
+                  type="switch"
+                  onChange={this.togglePreferred}
+                  checked={this.state.preferred}
+                  label="Preferred"
+                  id="preferredCheck"
+                />
+              </Col>
+              <Col sm={3}>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={!this.state.text || this.state.loading}
+                >
+                  {this.loadingSpinner()}Add Term
+                </Button>
+              </Col>
+          </Form.Group>
+          </Form>
         </div>
     );
   }
