@@ -79,10 +79,17 @@
                 </div>
             @endif
 
-            <div class="content">
+            <div id="app" class="content">
                 <div class="title m-b-md">
                     Laravel
                 </div>
+                <h1>------------------------------</h1>
+
+
+                <mytest></mytest>
+
+
+                <h1>------------------------------</h1>
 
                 <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
@@ -96,5 +103,7 @@
                 </div>
             </div>
         </div>
+        <script src="/js/app.js"></script>
+
     </body>
 </html>

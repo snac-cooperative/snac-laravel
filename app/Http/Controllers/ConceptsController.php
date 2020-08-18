@@ -93,9 +93,13 @@ class ConceptsController extends Controller
      */
     public function show($concept_id)
     {
-        $concept = Concept::with('terms')->findOrFail($concept_id);
+        $concept = Concept::with('terms')
+                        ->with('broader')
+                        ->with('narrower')
+                        ->with('related')
+                        ->findOrFail($concept_id);
         $control = [
-            'snacURL' => 'http://localhost/'
+            'snacURL' => 'http://localhost/~josephglass/snac/www/'
         ];
         return view('concepts.show', ['concept' => $concept, 'control' => $control]);
     }
