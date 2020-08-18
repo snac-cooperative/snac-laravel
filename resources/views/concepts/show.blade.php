@@ -25,19 +25,10 @@
         <div id="conceptShow" data-concept="$concept"></div>
 
         <div id="app">
-
-            <!-- <h2>Basic Concept Component</h2> -->
-            <!-- <concept></concept> -->
-
+            <form v-on:submit.prevent action="index.html" method="post">
             <h4>Component with Props</h4>
-            <concept-item id="conceptShow" :terms="{{ json_encode($concept->terms) }}"></concept-item>
-
-            <!-- !! json_encode($concept->terms) !! -->
-
-
-
-
-
+            <concept-item id="conceptShow" :term-props="{{ json_encode($concept->terms) }}"></concept-item>
+            </form>
         </div>
     </table>
 @endsection
