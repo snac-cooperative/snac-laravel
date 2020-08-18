@@ -31,6 +31,5 @@ Vue.component('term', require('./components/Term.vue').default);
  */
 
 const app = new Vue({
-    el: '#app',
-    data: { message: 'shies'}
+    el: '#app'
 });
