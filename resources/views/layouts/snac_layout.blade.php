@@ -25,10 +25,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2-rc.1/js/select2.min.js"></script>
 <link rel="stylesheet" href="{{env('SNAC_URL')}}/css/select2-bootstrap.min.css">-->
 
-<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">-->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <!-- SNAC Styles -->
-<link rel="stylesheet" href="{{env('SNAC_URL')}}/css/snac.css">
+<!--<link rel="stylesheet" href="{{env('SNAC_URL')}}/css/snac.css">-->
+<link rel="stylesheet" href="{{ mix('/css/app.css')}}">
 
  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
