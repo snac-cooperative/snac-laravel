@@ -50,4 +50,4 @@
 {{ print ("debug")}}
 @endif
 
-@include ('layouts.accept_cookies')
+@ include ('layouts.accept_cookies')

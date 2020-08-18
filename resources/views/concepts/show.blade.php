@@ -21,6 +21,7 @@
             </a>
         </div>
         @endif
-        <div id="conceptShow" data-concept="{{ $concept }}"></div>
+       <!--<concept v-bind:concept="{!! json_encode($concept) !!}"></concept>-->
+       <concept v-bind:concept="{{ $concept }}"></concept>
     </table>
 @endsection
