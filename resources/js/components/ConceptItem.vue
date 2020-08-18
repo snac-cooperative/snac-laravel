@@ -2,12 +2,14 @@
     <div id="concept-table" classname="">
         <div class="form-group">
             <div class="col-xs-8">
-
                 <h2>{{ preferredTerm.text}}</h2>
-                <p type="text" class="term form-control" readonly> {{preferredTerm.text}}</p>
-                <table>
+                <h4>Preferred Term</h4>
+                <p v-show="!editMode"> {{preferredTerm.text}}</p>
+                <p v-show="editMode" type="text" class="term form-control" readonly> {{preferredTerm.text}}</p>
+                    <h4>Alternate Terms</h4>
                     <div v-bind:key="term.id" v-for="term in alternateTerms">
-                        <div class="input-group">
+                        <p v-show="!editMode"> {{term.text}}</p>
+                        <div v-show="editMode" class="input-group">
                             <p type="text" class="form-control"> {{term.text}}</p>
                             <span class="input-group-btn">
                                 <button @click="editTerm(term).prevent" class="btn btn-primary" title="Make Preferred"><i class="fa fa-edit"></i></button>
@@ -17,8 +19,8 @@
                             {{count}}
                         </div>
                 </div>
-                </table>
-                <button @click.prevent="fetchConcept()" class="btn btn-primary">Fetch</button>
+                <button @click="fetchConcept()" class="btn btn-primary">Fetch</button>
+                <button @click="toggleEditMode()" class="btn btn-primary"><i class="fa fa-edit"></i> Edit</button>
             </div>
         </div>
     </div>
@@ -32,7 +34,7 @@
             }
         },
         data() {
-            return {terms: this.termProps.slice(), count: 0};
+            return {terms: this.termProps.slice(), count: 0, editMode: false};
         },
         computed: {
             alternateTerms() {
@@ -68,6 +70,10 @@
             editTerm: function(term){
                 console.log(`Editing ${term.text} with id ${term.id}`)
                 term.inEdit = true
+            },
+            toggleEditMode: function(){
+                console.log(`Editing Mode toggled!`)
+                this.editMode = !this.editMode
             }
         }
     }
