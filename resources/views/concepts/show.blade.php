@@ -26,8 +26,7 @@
 
         <div id="app">
             <form v-on:submit.prevent action="index.html" method="post">
-            <h4>Component with Props</h4>
-            <concept-item id="conceptShow" :term-props="{{ json_encode($concept->terms) }}"></concept-item>
+            <concept-form id="conceptShow" :term-props="{{ $concept->terms}}"></concept-form>
             </form>
         </div>
     </table>
