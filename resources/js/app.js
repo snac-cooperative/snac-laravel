@@ -22,6 +22,7 @@ window.Vue = require('vue');
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('mytest', require('./components/MyTest.vue').default);
 Vue.component('concept-form', require('./components/ConceptForm.vue').default);
+Vue.component('term-item', require('./components/TermItem.vue').default);
 Vue.component('term', require('./components/Term.vue').default);
 
 /**

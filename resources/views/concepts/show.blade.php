@@ -26,8 +26,23 @@
 
         <div id="app">
             <form v-on:submit.prevent action="index.html" method="post">
-            <concept-form id="conceptShow" :term-props="{{ $concept->terms}}"></concept-form>
+            <concept-form id="conceptShow" :concept-props="{{ $concept }}" :term-props="{{ $concept->terms}}"></concept-form>
+
+            <div class="col-xs-8">
+                <h2>Relations</h2>
+                <h3>Broader</h3>
+                <h3>Narrower</h3>
+                <h3>Related</h3>
+            </div>
+            <h2>SHOW Broader</h2>
+            <term-item id="s" :term="{{ $concept->broader[0]->terms[0]}}"></term-item>
+
+            <h2>Narrower</h2>
+
+
+
             </form>
         </div>
+
     </table>
 @endsection
