@@ -22,11 +22,20 @@ use App\Models\Term;
 // });
 
 Route::get('concepts', function () {
-    return Concept::all();
+    return Concept::with('conceptCategories')->get();
 });
 
 Route::get('concepts/{id}', function ($id) {
     return Concept::findOrFail($id);
+});
+
+
+Route::get('concepts_summary', function () {
+    // Return only the preferred term
+    // return Concept::with('conceptCategories')->with(['terms' => function ($query) {
+    //     $query->where('preferred', true);
+    // }])->get();
+    return Term::where('preferred', 'true');
 });
 
 // Route::get('concepts/find/{search_params}', function ($seachParams) {

@@ -25,6 +25,31 @@ class ConceptsController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indextable()
+    {
+        // $concepts = Concept::with(['terms' => function($query) {
+        //     $query->orderBy('preferred', 'desc');
+        //     //$query->where('preferred', true);
+        // }])->where(
+        //     'deprecated', false
+        // )->get();
+
+        // // Concepts with category and preferred term
+        $concepts = Concept::with('conceptCategories')->with(['terms' => function ($query) {
+            $query->where('preferred', true);
+        }])->get();
+
+        // To get only preferred terms
+        // $terms = Term::with('conceptCategories')->where('preferred', true);
+
+        return view('concepts.indextable', ['concepts' => $concepts]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

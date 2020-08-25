@@ -10,7 +10,6 @@
                     <b-form-input type="text"
                         :class="{'alert-info' : preferredTerm.inEdit, 'alert-danger' : preferredTerm.isDeleted}"
                         :required="true"
-                        :readonly="false"
                         @change=editTerm(preferredTerm)
                         v-model="preferredTerm.text"
                     >
@@ -23,7 +22,6 @@
                 </b-input-group>
                 <!-- DEBUG: {{preferredTerm.inEdit}} -->
 
-
                 <h4 v-if="alternateTerms.length" class="mt-3">Alternate Terms</h4>
                 <div v-bind:key="term.id" v-for="term in alternateTerms">
                     <!-- Extract into Term Component? -->
@@ -31,7 +29,6 @@
                     <b-input-group v-show="editMode" class="mt-2">
                         <b-form-input type="text"
                             :class="{'alert-info' : term.inEdit, 'alert-danger' : term.isDeleted}"
-                            :readonly="false"
                             :required="true"
                             @change=editTerm(term)
                             v-model="term.text"
@@ -40,7 +37,8 @@
 
                         <b-input-group-append>
                             <!-- <button @click="editTerm(term).prevent" class="btn btn-primary" title="Make Preferred"><i :class="[term.inEdit ? 'fa fa-undo' : 'fa fa-edit']"></i></button> -->
-                            <b-button @click="makeTermPreferred(term).prevent" class="btn btn-info" title="Make Preferred"><i class="fa fa-check-square-o"></i></b-button>
+                            <b-button @click="" class="btn btn-info" title="Make Preferred"><i class="fa fa-floppy-o"></i></b-button>
+                            <b-button @click="makeTermPreferred(term).prevent" class="btn btn-primary" title="Make Preferred"><i class="fa fa-check-square-o"></i></b-button>
                             <b-button @click="deleteTerm(term).prevent" class="btn btn-danger" title="Delete"><i :class="[term.isDeleted ? 'fa fa-undo' : 'fa fa-trash']"></i></b-button>
                         </b-input-group-append>
                         {{count}}
