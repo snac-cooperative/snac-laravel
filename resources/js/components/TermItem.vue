@@ -1,8 +1,9 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row">
             <div class="col-md-8">
-            <p>{{term.text}}</p>
+            <!-- TOOD: Set base url? -->
+            <a :href="term.concept_id">{{term.text}}</a>
             </div>
         </div>
     </div>

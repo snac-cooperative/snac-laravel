@@ -5,57 +5,61 @@
                 <h2>{{ preferredTerm.text}}</h2>
                 <h4>Preferred Term</h4>
                 <p v-show="!editMode"> {{preferredTerm.text}}</p>
-                <div v-show="editMode" class="input-group">
+                <b-input-group v-show="editMode" class="mt-3">
                     <!-- TODO: Do we want inputs to start as readonly? -->
-                    <input type="text"
-                        class="form-control"
-                        :class="{'edited-field' : preferredTerm.inEdit, 'alert-danger' : preferredTerm.isDeleted}"
+                    <b-form-input type="text"
+                        :class="{'alert-info' : preferredTerm.inEdit, 'alert-danger' : preferredTerm.isDeleted}"
+                        :required="true"
                         :readonly="false"
                         @change=editTerm(preferredTerm)
                         v-model="preferredTerm.text"
                     >
-                    <span class="input-group-btn">
+                    </b-form-input>
+                    <b-input-group-append>
                         <!-- <button @click="editTerm(preferredTerm).prevent" class="btn btn-primary" title="Make Preferred"><i class="fa fa-edit"></i></button> -->
                         <button @click="deleteTerm(preferredTerm).prevent" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i></button>
-                    </span>
+                    </b-input-group-append>
                     {{count}}
-                </div>
-                <!-- {{preferredTerm.inEdit}} -->
+                </b-input-group>
+                <!-- DEBUG: {{preferredTerm.inEdit}} -->
 
-                <h4>Alternate Terms</h4>
+
+                <h4 v-if="alternateTerms.length" class="mt-3">Alternate Terms</h4>
                 <div v-bind:key="term.id" v-for="term in alternateTerms">
                     <!-- Extract into Term Component? -->
                     <p v-show="!editMode"> {{term.text}}</p>
-                    <div v-show="editMode" class="input-group">
-                        <input type="text"
-                            class="form-control"
-                            :class="{'edited-field' : term.inEdit, 'alert-danger' : term.isDeleted}"
+                    <b-input-group v-show="editMode" class="mt-2">
+                        <b-form-input type="text"
+                            :class="{'alert-info' : term.inEdit, 'alert-danger' : term.isDeleted}"
                             :readonly="false"
+                            :required="true"
                             @change=editTerm(term)
                             v-model="term.text"
                         >
-                        <span class="input-group-btn">
+                        </b-form-input>
+
+                        <b-input-group-append>
                             <!-- <button @click="editTerm(term).prevent" class="btn btn-primary" title="Make Preferred"><i :class="[term.inEdit ? 'fa fa-undo' : 'fa fa-edit']"></i></button> -->
-                            <button @click="makeTermPreferred(term).prevent" class="btn btn-info" title="Make Preferred"><i class="fa fa-check-square-o"></i></button>
-                            <button @click="deleteTerm(term).prevent" class="btn btn-danger" title="Delete"><i :class="[term.isDeleted ? 'fa fa-undo' : 'fa fa-trash']"></i></button>
-                        </span>
+                            <b-button @click="makeTermPreferred(term).prevent" class="btn btn-info" title="Make Preferred"><i class="fa fa-check-square-o"></i></b-button>
+                            <b-button @click="deleteTerm(term).prevent" class="btn btn-danger" title="Delete"><i :class="[term.isDeleted ? 'fa fa-undo' : 'fa fa-trash']"></i></b-button>
+                        </b-input-group-append>
                         {{count}}
-                    </div>
-                    <!-- {{term.inEdit}} -->
+                    </b-input-group>
+                    <!--DEBUG: {{term.inEdit}} -->
                     <!-- Extract into Term Component? -->
 
                 </div>
-                <button @click="addTerm()" v-show="editMode" class="btn btn-success"><i class="fa fa-plus"></i> Add Term</button>
-                <button @click="fetchConcept();toggleEditMode()" v-show="editMode" class="btn btn-default">Cancel</button>
-                <button @click="saveConcept();fetchConcept()" v-show="editMode" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
-                <button @click="toggleEditMode()" v-show="!editMode"class="btn btn-primary"><i class="fa fa-edit"></i> Edit</button>
+                <div class="mt-3">
+                    <b-button variant="success" @click="addTerm()" v-show="editMode"><i class="fa fa-plus"></i> Add Term</b-button>
+                    <b-button variant="secondary" @click="fetchConcept();toggleEditMode()" v-show="editMode">Cancel</b-button>
+                    <b-button variant="primary" @click="saveConcept();fetchConcept()" v-show="editMode"><i class="glyphicon glyphicon-floppy-disk"></i> Save</b-button>
+                    <b-button variant="primary" @click="toggleEditMode()" v-show="!editMode"><i class="fa fa-edit"></i> Edit</b-button>
+                </div>
             </div>
         </div>
         <div class="form-group">
             <h2>Relations</h2>
 
-            <h3>Component Broader</h3>
-            <!-- <term-item></term-item> -->
 
         </div>
     </div>
@@ -66,7 +70,7 @@ import TermItem from './TermItem.vue';
     export default {
         props: {
             conceptProps: {
-                type: Array
+                type: Object
             },
             termProps: {
                 type: Array
@@ -103,7 +107,7 @@ import TermItem from './TermItem.vue';
         methods: {
             fetchConcept: function() {
                 // TODO: get concept_ID
-                fetch('/api/concepts/2').then(data => data.json()).then(data => {
+                fetch('/api/concepts/' + this.terms[0].concept_id).then(data => data.json()).then(data => {
                     console.log("here you are: ", data)
                     this.terms = data.terms.map(
                         // populating terms with our custom temporary variables
@@ -153,8 +157,9 @@ import TermItem from './TermItem.vue';
 </script>
 
 <style scoped="scoped">
-    .form-control {
+    b-input-group {
         min-width: 500px;
+        margin-bottom: 50px;
     }
 
     /* Find why input needs this, fix */

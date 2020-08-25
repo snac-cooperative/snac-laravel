@@ -8,6 +8,11 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+// BootstrapVue
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+Vue.use(BootstrapVue)
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -24,6 +29,7 @@ Vue.component('mytest', require('./components/MyTest.vue').default);
 Vue.component('concept-form', require('./components/ConceptForm.vue').default);
 Vue.component('term-item', require('./components/TermItem.vue').default);
 Vue.component('term', require('./components/Term.vue').default);
+Vue.component('concept-table', require('./components/ConceptTable.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
