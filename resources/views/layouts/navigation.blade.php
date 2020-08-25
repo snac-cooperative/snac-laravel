@@ -67,7 +67,7 @@
                 <!-- {% endif %} -->
             </ul>
             <div class="navbar-nav">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav mr-auto">
                     <li class="nav-item"><a  class="nav-link" href="https://portal.snaccooperative.org/about"><i class="fa fa-info-circle" aria-hidden="true"></i> About</a></li>
                     <li class="nav-item dropdown">
                     <a class="nav-link" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
