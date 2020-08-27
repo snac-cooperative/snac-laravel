@@ -8,7 +8,7 @@
                 <b-input-group v-show="editMode" class="mt-3">
                     <!-- TODO: Do we want inputs to start as readonly? -->
                     <b-form-input type="text"
-                        :class="{'alert-info' : preferredTerm.inEdit, 'alert-danger' : preferredTerm.isDeleted}"
+                        :class="{'alert-info' : preferredTerm.inEdit}"
                         :required="true"
                         @change=editTerm(preferredTerm)
                         v-model="preferredTerm.text"
@@ -16,9 +16,8 @@
                     </b-form-input>
                     <b-input-group-append>
                         <!-- <button @click="editTerm(preferredTerm).prevent" class="btn btn-primary" title="Make Preferred"><i class="fa fa-edit"></i></button> -->
-                        <button @click="deleteTerm(preferredTerm).prevent" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i></button>
+                        <!-- <button @click="deleteTerm(preferredTerm).prevent" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i></button> -->
                     </b-input-group-append>
-                    {{count}}
                 </b-input-group>
                 <!-- DEBUG: {{preferredTerm.inEdit}} -->
 
@@ -28,7 +27,7 @@
                     <p v-show="!editMode"> {{term.text}}</p>
                     <b-input-group v-show="editMode" class="mt-2">
                         <b-form-input type="text"
-                            :class="{'alert-info' : term.inEdit, 'alert-danger' : term.isDeleted}"
+                            :class="{'alert-info' : term.inEdit}"
                             :required="true"
                             @change=editTerm(term)
                             v-model="term.text"
@@ -37,11 +36,10 @@
 
                         <b-input-group-append>
                             <!-- <button @click="editTerm(term).prevent" class="btn btn-primary" title="Make Preferred"><i :class="[term.inEdit ? 'fa fa-undo' : 'fa fa-edit']"></i></button> -->
-                            <b-button @click="" class="btn btn-info" title="Make Preferred"><i class="fa fa-floppy-o"></i></b-button>
+                            <b-button @click="saveTerm(term).prevent" class="btn btn-info" title="Make Preferred"><i class="fa fa-floppy-o"></i></b-button>
                             <b-button @click="makeTermPreferred(term).prevent" class="btn btn-primary" title="Make Preferred"><i class="fa fa-check-square-o"></i></b-button>
-                            <b-button @click="deleteTerm(term).prevent" class="btn btn-danger" title="Delete"><i :class="[term.isDeleted ? 'fa fa-undo' : 'fa fa-trash']"></i></b-button>
+                            <b-button @click="deleteTerm(term).prevent" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i></b-button>
                         </b-input-group-append>
-                        {{count}}
                     </b-input-group>
                     <!--DEBUG: {{term.inEdit}} -->
                     <!-- Extract into Term Component? -->
@@ -50,7 +48,7 @@
                 <div class="mt-3">
                     <b-button variant="success" @click="addTerm()" v-show="editMode"><i class="fa fa-plus"></i> Add Term</b-button>
                     <b-button variant="secondary" @click="fetchConcept();toggleEditMode()" v-show="editMode">Cancel</b-button>
-                    <b-button variant="primary" @click="saveConcept();fetchConcept()" v-show="editMode"><i class="glyphicon glyphicon-floppy-disk"></i> Save</b-button>
+                    <!-- <b-button variant="primary" @click="saveConcept();fetchConcept()" v-show="editMode"><i class="glyphicon glyphicon-floppy-disk"></i> Save</b-button> -->
                     <b-button variant="primary" @click="toggleEditMode()" v-show="!editMode"><i class="fa fa-edit"></i> Edit</b-button>
                 </div>
             </div>
@@ -78,9 +76,8 @@ import TermItem from './TermItem.vue';
             return {
                 terms: this.termProps.map(
                     // populating terms with our custom temporary variables
-                    (term) => {term.inEdit = false; term.isDeleted = true; return term}
+                    (term) => {term.inEdit = false; return term}
                 ),
-                count: 0,
                 editMode: false,
                 concept: this.termProps.slice()
 
@@ -90,7 +87,6 @@ import TermItem from './TermItem.vue';
             alternateTerms() {
                 return this.terms.map((term) => {
                     term.inEdit = false;
-                    term.isDeleted = false;
                     return term
                 }).filter(term => !term.preferred).sort()
             },
@@ -109,13 +105,13 @@ import TermItem from './TermItem.vue';
                     console.log("here you are: ", data)
                     this.terms = data.terms.map(
                         // populating terms with our custom temporary variables
-                        (term) => {term.inEdit = false; term.isDeleted = true; return term}
+                        (term) => {term.inEdit = false; return term}
                     )
                 })
             },
-            saveConcept: function() {
-                console.log("Saved!")
-            },
+            // saveConcept: function() {
+            //     console.log("Saved!")
+            // },
             makeTermPreferred: function(term) {
                 console.log(`${term.text} is preferred!`, term);
                 if (!confirm(`Are you sure you want to make '${term.text}' the preferred term for this concept?`)) {
@@ -123,30 +119,71 @@ import TermItem from './TermItem.vue';
                 }
                 this.preferredTerm.preferred = false;
                 term.preferred = true;
-                this.count += 1
             },
             deleteTerm: function(term) {
                 console.log(`Deleting ${term.text} with id ${term.id}`)
-                term.isDeleted = !term.isDeleted
+
+                var vm = this
+                axios.delete(`/api/terms/${term.id}`)
+                    .then(function(response) {
+                        vm.terms.splice(vm.terms.indexOf(term), 1)
+                        console.log("Deleted! ", response)
+                    }).catch(function(error) {
+                        console.log(error);
+                    })
+
             },
             editTerm: function(term) {
                 console.log(`Editing ${term.text} with id ${term.id}`)
+
                 term.inEdit = true
+            },
+            postTerm: function(term) {
+                console.log(`Creating ${term.text} with id ${term.id}`)
+                axios.post(`/api/terms`, term)
+                    .then(function(response) {
+                        console.log("Created! ", response)
+                        term.inEdit=false
+                        // this.fetchConcept();
+                    }).catch(function(error) {
+                        console.log(error);
+                    })
+
+            },
+            saveTerm: function(term) {
+                console.log(`Saving ${term.text} with id ${term.id}`)
+
+                var vm = this
+
+                if (!term.id) {
+                    this.postTerm(term);
+                } else {
+                    axios.patch(`/api/terms/${term.id}`, term)
+                    .then(function(response) {
+                        term.inEdit=false
+                        console.log(response)
+                        // vm.fetchConcept();    // Do we want to reload full concept after each save? Maybe not, if that wouold reset other unsaved fields...
+                    }).catch(function(error) {
+                        console.log(error);
+                    })
+                }
             },
             toggleEditMode: function() {
                 console.log(`Editing Mode toggled!`)
                 this.editMode = !this.editMode
+                // this.terms = []
             },
             addTerm: function() {
+                var conceptID = this.terms[0].concept_id
+                console.log(conceptID)
                 var newTerm = {
-                    concept_id : 2,
+                    concept_id : conceptID,
                     id: null,
                     language_id: null,
                     preferred: false,
                     text: null,
-                    // These new properties below aren't being set. TODO: Find out how to initialize new terms with our extra properties.
-                    inEdit: true,
-                    inDeleted: false
+                    // Is the property below being set? TODO: Find out how to initialize new terms with our extra properties.
+                    inEdit: true
                 }
                 this.terms.push(newTerm)
             }
