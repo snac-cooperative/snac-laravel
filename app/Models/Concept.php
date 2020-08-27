@@ -11,6 +11,8 @@ class Concept extends Model
         "concept"
     ];
 
+    protected $hidden = ["created_at", "updated_at"];
+
     /**
      * The relationships that should always be loaded.
      *

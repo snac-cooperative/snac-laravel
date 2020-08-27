@@ -10,6 +10,8 @@ class Term extends Model {
         "text",
         "preferred"
     ];
+    protected $hidden = ["created_at", "updated_at"];
+
 
   public function concept() {
     return $this->belongsTo("App\Models\Concept");
