@@ -25,3 +25,5 @@ Route::post('concepts',             'ConceptsController@store');
 Route::post('concepts/{concept}/add_term', 'ConceptsController@addTerm');
 Route::get('concepts/{concept}',    'ConceptsController@show');
 Route::delete('concepts/{concept}', 'ConceptsController@destroy');
+
+Route::resource('terms', 'TermsController');

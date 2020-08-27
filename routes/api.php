@@ -35,8 +35,16 @@ Route::get('concepts_summary', function () {
     // return Concept::with('conceptCategories')->with(['terms' => function ($query) {
     //     $query->where('preferred', true);
     // }])->get();
-    return Term::where('preferred', 'true');
+    return Term::where('preferred', 'true')->get();
 });
+
+//
+// Route::get('terms', function () {
+//     return Term::all();
+// });
+
+Route::apiResource('terms', 'API\TermController');
+
 
 // Route::get('concepts/find/{search_params}', function ($seachParams) {
     // return Concept::where($seachParams);
