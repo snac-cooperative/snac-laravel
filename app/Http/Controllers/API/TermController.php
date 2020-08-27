@@ -25,9 +25,7 @@ class TermController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        $concept = Concept::findOrFail($request["concept_id"]);
-        unset($request["id"]);   //TODO: Look into how to prevent id from being set in POST?
-        return $concept->terms()->create($request->all());
+        return Term::create($request->all); 
     }
 
     /**

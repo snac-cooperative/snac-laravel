@@ -162,4 +162,15 @@ class ConceptsController extends Controller
     {
         //
     }
+
+    /**
+     * Remove the specified relationship
+     *
+     * @param  \App\Concept  $concept
+     * @return \Illuminate\Http\Response
+     */
+    public function detatch(Concept $concept, $detatch_id)
+    {
+        //$concept = Concept::find(170)->broader->detach($detatch_id)
+    }
 }

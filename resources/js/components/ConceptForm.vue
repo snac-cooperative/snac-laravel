@@ -15,6 +15,7 @@
                     >
                     </b-form-input>
                     <b-input-group-append>
+                        <b-button @click="saveTerm(preferredTerm).prevent" class="btn btn-info" title="Make Preferred"><i class="fa fa-floppy-o"></i></b-button>
                         <!-- <button @click="editTerm(preferredTerm).prevent" class="btn btn-primary" title="Make Preferred"><i class="fa fa-edit"></i></button> -->
                         <!-- <button @click="deleteTerm(preferredTerm).prevent" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i></button> -->
                     </b-input-group-append>

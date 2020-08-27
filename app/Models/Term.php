@@ -8,7 +8,8 @@ class Term extends Model {
 
     protected $fillable = [
         "text",
-        "preferred"
+        "preferred",
+        "concept_id",
     ];
     protected $hidden = ["created_at", "updated_at"];
 
