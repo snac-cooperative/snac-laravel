@@ -6,7 +6,7 @@ use App\Models\Concept;
 use App\Models\Term;
 use Illuminate\Http\Request;
 
-class ConceptsController extends Controller
+class ConceptController extends Controller
 {
     /**
      * Display a listing of the resource.
