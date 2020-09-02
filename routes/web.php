@@ -18,9 +18,9 @@ Route::get('/', function () {
 use App\Concept;
 use Illuminate\Http\Request;
 
-Route::get('concepts',              'ConceptsController@index');
-Route::get('concepts/create',       'ConceptsController@create');
-Route::post('concepts',             'ConceptsController@store');
-Route::post('concepts/{concept}/add_term', 'ConceptsController@addTerm');
-Route::get('concepts/{concept}',    'ConceptsController@show');
-Route::delete('concepts/{concept}', 'ConceptsController@destroy');
+Route::get('concepts',              'ConceptController@index');
+Route::get('concepts/create',       'ConceptController@create');
+Route::post('concepts',             'ConceptController@store');
+Route::post('concepts/{concept}/add_term', 'ConceptController@addTerm');
+Route::get('concepts/{concept}',    'ConceptController@show');
+Route::delete('concepts/{concept}', 'ConceptController@destroy');
