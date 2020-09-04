@@ -5,6 +5,7 @@
  */
 
 require('./bootstrap');
+import { BTable, BPagination, BCol, BFormGroup, BFormSelect } from 'bootstrap-vue';
 
 window.Vue = require('vue');
 
@@ -19,6 +20,14 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 Vue.component('concept', require('./components/Concept.vue').default);
+Vue.component('concept-list', require('./components/ConceptList.vue').default);
+//Vue.component('b-table', {BTable} from require('bootstrap-vue'));
+Vue.component('b-table', BTable);
+Vue.component('b-pagination', BPagination);
+Vue.component('b-col', BCol);
+Vue.component('b-form-group', BFormGroup);
+Vue.component('b-form-select', BFormSelect);
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
