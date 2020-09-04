@@ -7,7 +7,6 @@
     </div>
   @endif
     <h1>Vocabulary: {\{ data.title }}</h1>
-    <example-component></example-component>
 
     <ol class="breadcrumb">
         <li><a href="{{env('SNAC_URL')}}/vocab_administrator/dashboard">Vocabulary</a></li>
@@ -22,16 +21,5 @@
             </a>
         </div>
         @endif
-    <table id="concept-table" class="table">
-        <thead>
-            <tr>
-                <th>Concept</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach ($concepts as $concept)
-          <!--<tr><td><a href="{{ url('concepts',$concept->id) }}">{{ $concept->terms->first->text }}</a></td></tr>-->
-        @endforeach
-        </tbody>
-    </table>
+    <concept-list></concept-list>
 @endsection

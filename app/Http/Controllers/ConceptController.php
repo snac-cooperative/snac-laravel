@@ -13,15 +13,21 @@ class ConceptController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $concepts = Concept::with(['terms' => function($query) {
-            $query->orderBy('preferred', 'desc');
-            //$query->where('preferred', true);
-        }])->where(
-            'deprecated', false
-        )->get();
-        return view('concepts.index', ['concepts' => $concepts]);
+        if($request->ajax()) {
+            $perPage = intval($request['per_page']);
+            if ($perPage <= 0) {
+                $perPage = 10;
+            }
+            $concepts = Concept::with('conceptCategories')->with(['terms' => function($query) {
+                $query->where('preferred', true);
+            }])->where(
+                'deprecated', false
+            )->paginate($perPage);
+            return $concepts->toJson();
+        }
+        return view('concepts.index');
     }
 
     /**
