@@ -25,7 +25,7 @@ class TermController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        return Term::create($request->all); 
+        return Term::create($request->all());
     }
 
     /**

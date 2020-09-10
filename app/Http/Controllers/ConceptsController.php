@@ -16,37 +16,16 @@ class ConceptsController extends Controller
     public function index()
     {
         $concepts = Concept::with(['terms' => function($query) {
-            $query->orderBy('preferred', 'desc');
-            //$query->where('preferred', true);
-        }])->where(
-            'deprecated', false
-        )->get();
-        return view('concepts.index', ['concepts' => $concepts]);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function indextable()
-    {
-        // $concepts = Concept::with(['terms' => function($query) {
-        //     $query->orderBy('preferred', 'desc');
-        //     //$query->where('preferred', true);
-        // }])->where(
-        //     'deprecated', false
-        // )->get();
-
-        // // Concepts with category and preferred term
-        $concepts = Concept::with('conceptCategories')->with(['terms' => function ($query) {
             $query->where('preferred', true);
-        }])->get();
+        }])
+        ->where('deprecated', false)
+        ->get();
 
-        // To get only preferred terms
-        // $terms = Term::with('conceptCategories')->where('preferred', true);
-
-        return view('concepts.indextable', ['concepts' => $concepts]);
+        // $concepts = Concept::with('conceptCategories')->with(['terms' => function ($query) {
+            // $query->where('preferred', true)
+                // ->where('deprecated', false);
+        // }])->get();
+        return view('concepts.index', ['concepts' => $concepts]);
     }
 
     /**
@@ -74,9 +53,8 @@ class ConceptsController extends Controller
         $concept = new Concept;
         $concept->deprecated = false;
         $concept->save();
-        $term = new Term;
+        $term = Term::make($request->all());
         $term->text = $requestParams['term-value'];
-        $term->preferred = true;
         //$term->concept_id = $concept->id;
         //$term->save();
         $concept->terms()->save($term);
@@ -92,14 +70,8 @@ class ConceptsController extends Controller
 
     public function addTerm(Request $request)
     {
-        $requestParams = $request->only('term-value');
-        //$request->validate Check
-        //Ref: https://laravel.com/docs/7.x/validation
-        //$requestParams = $request->only(Concept::fillable);
         $concept = Concept::find($request->route('concept'));
-        $term = new Term;
-        $term->text = $requestParams['term-value'];
-        $term->preferred = true;
+        $term = Term::create($request->all());
         $concept->terms()->save($term);
         //Savemany... Ref.
         if($request->ajax()) {
@@ -107,7 +79,26 @@ class ConceptsController extends Controller
                 "termId" => $term->id
             ];
         }
-        return redirect('concepts', $concept->id)->with('status', 'Concept Created');
+        return redirect('concepts', $concept->id)->with('status', 'Term Created');
+    }
+
+    public function markPreferred(Request $request)
+    {
+        $concept = Concept::find($request->route('concept'));
+
+        foreach ($concept->terms as $term) {
+            $term->preferred = false;
+        }
+        $term = Term::find($request->term_id);
+        $term->preferred = true;
+        $term->save();
+
+        if($request->ajax()) {
+            return [
+                "termId" => $term->id
+            ];
+        }
+        return redirect('concepts', $concept->id)->with('status', 'Term Marked Preferred');
     }
 
     /**

@@ -19,7 +19,6 @@ use App\Concept;
 use Illuminate\Http\Request;
 
 Route::get('concepts',              'ConceptsController@index');
-Route::get('conceptstable',              'ConceptsController@indextable');
 Route::get('concepts/create',       'ConceptsController@create');
 Route::post('concepts',             'ConceptsController@store');
 Route::post('concepts/{concept}/add_term', 'ConceptsController@addTerm');
