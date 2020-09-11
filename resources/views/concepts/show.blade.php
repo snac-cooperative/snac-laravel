@@ -6,11 +6,13 @@
         {{ session('status') }}
     </div>
   @endif
-    <h1>Vocabulary: {\{ data.title }}</h1>
+    {{-- <h1>Term: {{ $concept->terms[0]->text}}</h1> --}}
 
+    <!-- {{ dump($concept['terms']) }} -->
     <ol class="breadcrumb">
-        <li><a href="{{ env('SNAC_URL') }}/vocab_administrator/dashboard">Vocabulary</a></li>
-        <li>{\{data.title}}</li>
+        {{-- TEST --}}
+        {{-- TODO:  Rename Occupation Terms with dynamic concept category or categories   --}}
+        <li><a href="{{ env('SNAC_URL') }}/vocab_administrator/dashboard">Occupation Terms</a></li>
         <!-- <li>{\{data.response.concepts[0].term}}</li> -->
     </ol>
 
@@ -21,7 +23,47 @@
             </a>
         </div>
         @endif
-       <!--<concept v-bind:concept="{!! json_encode($concept) !!}"></concept>-->
-       <concept v-bind:concept="{{ $concept }}"></concept>
+        <div id="conceptShow" data-concept="$concept"></div>
+
+        <div id="app">
+            <form v-on:submit.prevent action="index.html" method="post">
+                <concept-form
+                    id="conceptShow"
+                    :concept-props="{{ $concept }}"
+                    :term-props="{{ $concept->terms}}"
+                >
+                </concept-form>
+
+                <div class="row">
+                    @if (count($concept->broader))
+                        <div class="col-xs-8" style="width:50%">
+                            <h3>Broader</h3>
+                            @foreach($concept->broader as $broader)
+                                <term-item :term="{{ $broader->terms[0]}}"></term-item>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if (count($concept->narrower))
+                        <div class="col-xs-8" style="width:50%">
+                            <h3>Narrower</h3>
+                            @foreach($concept->narrower as $narrower)
+                                <term-item :term="{{ $narrower->terms[0]}}"></term-item>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if (count($concept->related))
+                        <div class="col-xs-8" style="width:50%">
+                            <h3>Related</h3>
+                            @foreach($concept->related as $related)
+                                <term-item :term="{{ $related->terms[0]}}"></term-item>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </form>
+        </div>
+
     </table>
 @endsection

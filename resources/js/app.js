@@ -9,6 +9,14 @@ import { BTable, BPagination, BCol, BFormGroup, BFormSelect } from 'bootstrap-vu
 
 window.Vue = require('vue');
 
+// BootstrapVue
+// TODO: Determine how much of bootstrap-vue we need to include
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+Vue.use(BootstrapVue)
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+// BootstrapVue
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -21,6 +29,8 @@ window.Vue = require('vue');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 Vue.component('concept', require('./components/Concept.vue').default);
 Vue.component('concept-list', require('./components/ConceptList.vue').default);
+Vue.component('concept-form', require('./components/ConceptForm.vue').default);
+Vue.component('term-item', require('./components/TermItem.vue').default);
 Vue.component('b-table', BTable);
 Vue.component('b-pagination', BPagination);
 Vue.component('b-col', BCol);

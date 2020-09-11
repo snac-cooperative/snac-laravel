@@ -11,6 +11,8 @@ class Concept extends Model
         "concept"
     ];
 
+    protected $hidden = ["created_at", "updated_at"];
+
     /**
      * The relationships that should always be loaded.
      *
@@ -69,7 +71,6 @@ class Concept extends Model
         return $this->broader()->attach([$conceptId => ["relationship_type" => "broader"]]);
     }
 
-
     public function addRelated($conceptId) {
         return $this->related()->attach([$conceptId => ["relationship_type" => "related"]]);
     }
@@ -97,5 +98,7 @@ class Concept extends Model
     public function conceptCategories() {
         return $this->belongsToMany("App\Models\Vocabulary", "concept_categories", "concept_id", "category_id");
     }
+
+    // TODO: Make a preferrerdTerm function that returns correct term?
 
 }

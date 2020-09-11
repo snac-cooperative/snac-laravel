@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\Concept;
+use App\Models\Term;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +19,23 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('concepts', function () {
+    return Concept::with('conceptCategories')->get();
+});
+
+Route::get('concepts/{id}', function ($id) {
+    return Concept::findOrFail($id);
+});
+
+
+Route::get('concepts_summary', function () {
+    // Return only the preferred term
+    // return Concept::with('conceptCategories')->with(['terms' => function ($query) {
+    //     $query->where('preferred', true);
+    // }])->get();
+    return Term::where('preferred', 'true')->get();
+});
+
+Route::apiResource('terms', 'API\TermController');
