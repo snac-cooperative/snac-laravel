@@ -64,7 +64,6 @@
 
 
 <div id="app" class="container snac" role="main">
-@yield('hello')
 @yield('content')
 </div>
 @include('layouts.generic_footer')

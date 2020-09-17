@@ -33,7 +33,7 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item"><a class="nav-link" href="{{env('SNAC_URL')}}/search"><i class="fa fa-search" aria-hidden="true"></i> Search</a></li>
-                <!-- {% if user.userName %} -->
+            @auth
                 <li class="nav-item"><a class="nav-link" href="{{env('SNAC_URL')}}/browse"><i class="fa fa-book" aria-hidden="true"></i> Browse</a></li>
                 <li class="dropdown nav-item">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -65,6 +65,7 @@
                         @endif
                     </a></li>
                 <!-- {% endif %} -->
+                @endauth
             </ul>
             <div class="navbar-nav">
                 <ul class="navbar-nav mr-auto">
@@ -75,30 +76,38 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/api_help"><i class="fa fa-fw fa-list" aria-hidden="true"></i> Rest API Commands</a></li>
-                    <!-- {% if user.userName %} -->
+                    @auth
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/api_test"><i class="fa fa-fw fa-terminal" aria-hidden="true"></i> Rest API Test Area</a></li>
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/stats"><i class="fa fa-fw fa-bar-chart" aria-hidden="true"></i> SNAC Statistics</a></li>
-                    <!-- {% endif %} -->
+                    @endauth
                         <li role="separator" class="divider"></li>
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/contact"><i class="fa fa-fw fa-envelope" aria-hidden="true"></i> Contact Us</a></li>
                     </ul>
                     </li>
-
-            <!-- {% if user.userName %} -->
+            @auth
                     <li class="dropdown nav-item">
                     <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <img src="{{ "#user.avatar" }}" style="width:20px; height:20px; margin-right: 10px;"> {{ "#user.fullName" }} <span class="caret"></span>
+                        <img src="{{ "#user.avatar" }}" style="width:20px; height:20px; margin-right: 10px;"> {{ Auth::user()->name }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/profile"><i class="fa fa-fw fa-id-card-o" aria-hidden="true"></i> User Profile</a></li>
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/messages"><i class="fa fa-fw fa-comments-o" aria-hidden="true"></i> Messaging Center</a></li>
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/api_key"><i class="fa fa-fw fa-key" aria-hidden="true"></i> Rest API Key</a></li>
-                        <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/logout"><i class="fa fa-fw fa-sign-out" aria-hidden="true"></i> Logout</a></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('logout') }}"
+                               onclick="event.preventDefault();
+                                             document.getElementById('logout-form').submit();">
+                                <i class="fa fa-fw fa-sign-out" aria-hidden="true"></i> Logout
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        </li>
                     </ul>
                     </li>
-            <!-- {% else %} -->
-                <li class="nav-item"><a class="nav-link" href="{{env('SNAC_URL')}}/login?r={{Request::url()}}"><i class="fa fa-sign-in"></i> Login</a></li>
-            <!-- {% endif %}  -->
+                @else
+                <li class="nav-item"><a class="nav-link" href="login/github"><i class="fa fa-sign-in"></i> Login</a></li>
+                @endauth
                 </ul>
             </div>
         </div><!--/.nav-collapse -->
