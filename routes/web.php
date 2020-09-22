@@ -19,8 +19,15 @@ use App\Concept;
 use Illuminate\Http\Request;
 
 Route::get('concepts',              'ConceptController@index');
-Route::get('concepts/create',       'ConceptController@create');
-Route::post('concepts',             'ConceptController@store');
-Route::post('concepts/{concept}/add_term', 'ConceptController@addTerm');
+Route::get('concepts/create',       'ConceptController@create')->middleware('auth');
+Route::post('concepts',             'ConceptController@store')->middleware('auth');
+Route::post('concepts/{concept}/add_term', 'ConceptController@addTerm')->middleware('auth');
 Route::get('concepts/{concept}',    'ConceptController@show');
-Route::delete('concepts/{concept}', 'ConceptController@destroy');
+Route::delete('concepts/{concept}', 'ConceptController@destroy')->middleware('auth');
+
+Route::get('login/github', 'Auth\LoginController@redirectToProvider');
+Route::get('github/login', 'Auth\LoginController@handleProviderCallback');
+
+Auth::routes();
+
+Route::get('/', 'ConceptController@index');

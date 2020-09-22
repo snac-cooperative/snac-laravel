@@ -35,5 +35,5 @@ Vue.component('b-form-select', BFormSelect);
  */
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
 });

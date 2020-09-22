@@ -3,7 +3,7 @@
     @elseif (env('SNAC_INTERFACE_VERSION') == "demo")
     <div class="footer footer-demo-version">
     @else
-    <div class="footer footer-inverse">
+    <footer>
     @endif
         <div class="container">
             <div class="row">
@@ -45,9 +45,8 @@
                 </div>
             </div>
         </div>
-    </div>
+    </footer>
 @if (false && env('APP_DEBUG'))
 {{ print ("debug")}}
 @endif
-
-@ include ('layouts.accept_cookies')
+@include ('layouts.accept_cookies')

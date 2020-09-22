@@ -333,7 +333,9 @@ h1 {
 }
 
 div.snac {
-    min-height: 815px;
+  /* header height is 77px  */
+  /* footer height is 190px */
+    min-height: calc(100vh - 77px - 190px);
 }
 
 .snac .navbar .container {

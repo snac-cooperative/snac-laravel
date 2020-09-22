@@ -22,7 +22,7 @@
             document.cookie = name+"=; Max-Age=-99999999;";
         }
 
-        $(document).ready(function() {
+        document.addEventListener("DOMContentLoaded", function() {
             if (!getCookie("acceptprivacy"))
                 $("#privacyDisplay").show();
         });
