@@ -23,7 +23,8 @@
         "laravel/framework": "^7.24",
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
-        "laravel/ui": "^2.1"
+        "laravel/ui": "^2.1",
+        "monolog/monolog": "^2.0.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
