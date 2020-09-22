@@ -1,5 +1,5 @@
 {
-    "name": "snac-cooperative/snac-laravel",
+    "name": "snac/snac-laravel",
     "type": "project",
     "description": "Laravel framework for SNAC project",
     "keywords": [
