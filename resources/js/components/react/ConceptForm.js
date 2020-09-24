@@ -54,7 +54,7 @@ class ConceptForm extends Component {
     const termValue = e.target.elements.termText.value.trim();
     const termIsPreferred = e.target.elements.preferredCheck.checked;
 
-    this.setState({ 
+    this.setState({
       text: "",
       loading: true,
     });
@@ -62,7 +62,7 @@ class ConceptForm extends Component {
     if (termValue) {
       //Verify we have an ID
       if(!this.state.id) {
-        axios.post('/concepts', {"term-value": termValue})
+        axios.post('concepts', {"term-value": termValue})
           .then(response => {
             const data = response.data;
             if (data["termId"]) {
@@ -86,7 +86,7 @@ class ConceptForm extends Component {
             console.log(error)
           });
       } else {
-        axios.post(`/concepts/${this.state.id}/add_term`, {"term-value": termValue})
+        axios.post(`concepts/${this.state.id}/add_term`, {"term-value": termValue})
           .then(response => {
             const data = response.data;
             if (data["termId"]) {

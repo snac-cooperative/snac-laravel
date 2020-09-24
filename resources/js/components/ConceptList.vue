@@ -92,8 +92,8 @@
     },
     methods: {
       getConcepts: function() {
-        const promise = axios.get(`/concepts/?page=${this.currentPage}&per_page=${this.perPage}`);
-        
+        const promise = axios.get(`concepts/?page=${this.currentPage}&per_page=${this.perPage}`);
+
         return promise.then( response => {
           let concepts = response.data.data;
           let concept_result = concepts.map( concept => {
