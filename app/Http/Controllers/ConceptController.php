@@ -48,7 +48,7 @@ class ConceptController extends Controller
      */
     public function store(Request $request)
     {
-        $requestParams = $request->only('term-value');
+        // $requestParams = $request->only('term-value');
         //$request->validate Check
         //Ref: https://laravel.com/docs/7.x/validation
         //$requestParams = $request->only(Concept::fillable);
@@ -56,7 +56,7 @@ class ConceptController extends Controller
         $concept->deprecated = false;
         $concept->save();
         $term = new Term;
-        $term->text = $requestParams['term-value'];
+        // $term->text = $requestParams['term-value'];
         $term->preferred = true;
         //$term->concept_id = $concept->id;
         //$term->save();
@@ -73,14 +73,8 @@ class ConceptController extends Controller
 
     public function addTerm(Request $request)
     {
-        $requestParams = $request->only('term-value');
-        //$request->validate Check
-        //Ref: https://laravel.com/docs/7.x/validation
-        //$requestParams = $request->only(Concept::fillable);
         $concept = Concept::find($request->route('concept'));
-        $term = new Term;
-        $term->text = $requestParams['term-value'];
-        $term->preferred = true;
+        $term = Term::create($request->all());
         $concept->terms()->save($term);
         //Savemany... Ref.
         if($request->ajax()) {
@@ -88,7 +82,26 @@ class ConceptController extends Controller
                 "termId" => $term->id
             ];
         }
-        return redirect('concepts', $concept->id)->with('status', 'Concept Created');
+        return redirect('concepts', $concept->id)->with('status', 'Term Created');
+    }
+
+    public function markPreferred(Request $request)
+    {
+        $concept = Concept::find($request->route('concept'));
+
+        foreach ($concept->terms as $term) {
+            $term->preferred = false;
+        }
+        $term = Term::find($request->term_id);
+        $term->preferred = true;
+        $term->save();
+
+        if($request->ajax()) {
+            return [
+                "termId" => $term->id
+            ];
+        }
+        return redirect('concepts', $concept->id)->with('status', 'Term Marked Preferred');
     }
 
     /**
@@ -99,11 +112,13 @@ class ConceptController extends Controller
      */
     public function show($concept_id)
     {
-        $concept = Concept::with('terms')->findOrFail($concept_id);
-        $control = [
-            'snacURL' => 'http://localhost/'
-        ];
-        return view('concepts.show', ['concept' => $concept, 'control' => $control]);
+        $concept = Concept::with('terms')
+                        ->with('broader')
+                        ->with('narrower')
+                        ->with('related')
+                        ->findOrFail($concept_id);
+
+        return view('concepts.show', ['concept' => $concept]);
     }
 
     /**
