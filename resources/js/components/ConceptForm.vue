@@ -43,10 +43,76 @@
                     <!-- Extract into Term Component? -->
 
                 </div>
+
+                <div v-show="editMode" class="mt-3">
+                    <!-- // TODO: Category editing and backend calls  -->
+                    <h4>Concept Categories</h4>
+
+                    <b-col cols="4">
+                        <div class="mt-1" v-bind:key="category.id" v-for="category in cats">
+                            <b-form-select v-model="category.id" :options="categories"></b-form-select>
+                        </div>
+                    </b-col>
+                </div>
+
+                <div v-show="propertyEditMode" class="mt-3">
+                    <h4>Concept Sources</h4>
+                    <b-row class='my-1'>
+
+                    <b-input-group class="mt-2">
+                        <b-col sm="2">
+                        <label for="input-medium">Citation:</label>
+                        </b-col>
+                        <b-col sm="10">
+                        <b-form-input type="text" id="c-prop1"></b-form-input>
+                    </b-col>
+                    </b-input-group>
+                    </b-row>
+
+                    <b-row class='my-1'>
+
+                    <b-input-group class="mt-2">
+                        <b-col sm="2">
+                        <label for="input-medium">URL:</label>
+                        </b-col>
+                        <b-col sm="10">
+                        <b-form-input type="text" id="c-prop1"></b-form-input>
+                    </b-col>
+                    </b-input-group>
+                    </b-row>
+
+                    <b-row class='my-1'>
+
+                    <b-input-group class="mt-2">
+                        <b-col sm="2">
+                        <label for="input-medium">Found Data:</label>
+                        </b-col>
+                        <b-col sm="10">
+                        <b-form-input type="text" id="c-prop1"></b-form-input>
+                    </b-col>
+                    </b-input-group>
+                    </b-row>
+
+                    <b-row class='my-1'>
+
+                    <b-input-group class="mt-2">
+                        <b-col sm="2">
+                        <label for="input-medium">Note:</label>
+                        </b-col>
+                        <b-col sm="10">
+                        <b-form-input type="text" id="c-prop1"></b-form-input>
+                    </b-col>
+                    </b-input-group>
+                    </b-row>
+
+                </div>
+
                 <div class="mt-3">
+                    <!-- TODO: Backend calls -->
                     <b-button variant="success" @click="addTerm()" v-show="editMode"><i class="fa fa-plus"></i> Add Term</b-button>
                     <b-button variant="secondary" @click="fetchConcept();toggleEditMode()" v-show="editMode">Cancel</b-button>
                     <b-button variant="primary" @click="toggleEditMode()" v-show="!editMode"><i class="fa fa-edit"></i> Edit</b-button>
+                    <b-button variant="primary" @click="togglePropertyEditMode()" v-show="!propertyEditMode"><i class="fa fa-edit"></i> Edit Source</b-button>
                 </div>
             </div>
         </div>
@@ -79,6 +145,7 @@
                         <input type="checkbox" class="form-check-input" id="is-preferred" v-model="allTermsSearch" title="Search only Preferred Terms">
                         <label class="form-check-label" for="is-preferred" >Search non-preferred terms</label>
                     </div>
+
 
                     <h4 class="mt-4">Relation Type</h4>
                     <div class="form-check">
@@ -126,6 +193,9 @@
             </b-modal>
 
         </div>
+        <!-- <div class="form-group">
+            <h2>Relations</h2>
+        </div> -->
     </div>
 </template>
 
@@ -133,9 +203,9 @@
 // import TermItem from './TermItem.vue';
     export default {
         props: {
-            // conceptProps: {
-            //     type: Object
-            // },
+            conceptProps: {
+                type: Object
+            },
             termProps: {
                 type: Array
             }
@@ -153,6 +223,20 @@
                 allTermsSearch: false,
                 selected_concept: '',
                 relationType: '',
+                propertyEditMode: false,
+                // populating terms with our custom temporary variables
+                // concept: this.termProps.slice()
+
+                categories: [
+                    { value:  400833, text: 'Ethnicity'},
+                    { value:  400831, text: 'Occupation'},
+                    { value:  400830, text: 'Function'},
+                    { value:  400829, text: 'Subject'},
+                    { value:  400834, text: 'Religion'},
+                    { value:  400832, text: 'Relation'},
+                ],
+                cats: this.conceptProps.concept_categories,
+                selectedCategory: this.conceptProps.concept_categories[0].id
             }
         },
         computed: {
@@ -168,6 +252,9 @@
         },
         created() {
             console.log("Concept component loaded");
+            console.log(this.terms);
+            console.log("hello: ");
+            console.log(this.conceptProps.concept_categories[0].value);
 
         },
         methods: {
@@ -252,6 +339,9 @@
             toggleEditMode: function() {
                 this.editMode = !this.editMode
             },
+            togglePropertyEditMode: function() {
+                this.propertyEditMode = !this.propertyEditMode
+            },
             addTerm: function() {
                 if (!this.terms[this.terms.length - 1].text) {
                     return;
@@ -264,7 +354,7 @@
                     language_id: null,
                     preferred: false,
                     text: null,
-                    // Is the property below being set? TODO: Find out how to add new terms without resetting the terms state.
+                    // TODO: Find out how to add new terms without resetting the terms state.
                     inEdit: true
                 };
                 this.terms.push(newTerm);
