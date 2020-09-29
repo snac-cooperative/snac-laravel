@@ -12,7 +12,9 @@
     <ol class="breadcrumb">
         {{-- TEST --}}
         {{-- TODO:  Rename Occupation Terms with dynamic concept category or categories   --}}
-        <li><a href="{{ env('SNAC_URL') }}/vocab_administrator/dashboard">Occupation Terms</a></li>
+        <li class="breadcrumb-item"><a href="{{ env('SNAC_URL') }}/vocab_administrator/dashboard">Concepts</a></li>
+
+        <li class="breadcrumb-item active"><a href="{{ env('SNAC_URL') }}/vocab_administrator/dashboard"> {{ $concept->conceptCategories[0]['value']}} Terms</a></li>
         <!-- <li>{\{data.response.concepts[0].term}}</li> -->
     </ol>
 
@@ -33,6 +35,18 @@
                     :term-props="{{ $concept->terms}}"
                 >
                 </concept-form>
+
+                <br>
+                <h5>Category: {{ $concept->conceptCategories[0]['value']}}</h5>
+
+                <div class="form-group">
+                    <h2>Relations</h2>
+                    <div class="mt-3">
+                        <b-button variant="info"><i class="fa fa-plus"></i> Add Relationship</b-button>
+                    </div>
+
+
+                </div>
 
                 <div class="row">
                     @if (count($concept->broader))

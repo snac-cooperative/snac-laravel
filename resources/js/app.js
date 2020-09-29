@@ -30,6 +30,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.component('concept', require('./components/Concept.vue').default);
 Vue.component('concept-list', require('./components/ConceptList.vue').default);
 Vue.component('concept-form', require('./components/ConceptForm.vue').default);
+Vue.component('concept-category', require('./components/ConceptCategory.vue').default);
 Vue.component('term-item', require('./components/TermItem.vue').default);
 Vue.component('b-table', BTable);
 Vue.component('b-pagination', BPagination);
