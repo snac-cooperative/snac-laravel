@@ -55,11 +55,64 @@
                     </b-col>
                 </div>
 
+                <div v-show="propertyEditMode" class="mt-3">
+                    <h4>Concept Sources</h4>
+                    <b-row class='my-1'>
+
+                    <b-input-group class="mt-2">
+                        <b-col sm="2">
+                        <label for="input-medium">Citation:</label>
+                        </b-col>
+                        <b-col sm="10">
+                        <b-form-input type="text" id="c-prop1"></b-form-input>
+                    </b-col>
+                    </b-input-group>
+                    </b-row>
+
+                    <b-row class='my-1'>
+
+                    <b-input-group class="mt-2">
+                        <b-col sm="2">
+                        <label for="input-medium">URL:</label>
+                        </b-col>
+                        <b-col sm="10">
+                        <b-form-input type="text" id="c-prop1"></b-form-input>
+                    </b-col>
+                    </b-input-group>
+                    </b-row>
+
+                    <b-row class='my-1'>
+
+                    <b-input-group class="mt-2">
+                        <b-col sm="2">
+                        <label for="input-medium">Found Data:</label>
+                        </b-col>
+                        <b-col sm="10">
+                        <b-form-input type="text" id="c-prop1"></b-form-input>
+                    </b-col>
+                    </b-input-group>
+                    </b-row>
+
+                    <b-row class='my-1'>
+
+                    <b-input-group class="mt-2">
+                        <b-col sm="2">
+                        <label for="input-medium">Note:</label>
+                        </b-col>
+                        <b-col sm="10">
+                        <b-form-input type="text" id="c-prop1"></b-form-input>
+                    </b-col>
+                    </b-input-group>
+                    </b-row>
+
+                </div>
+
                 <div class="mt-3">
                     <!-- TODO: Backend calls -->
                     <b-button variant="success" @click="addTerm()" v-show="editMode"><i class="fa fa-plus"></i> Add Term</b-button>
                     <b-button variant="secondary" @click="fetchConcept();toggleEditMode()" v-show="editMode">Cancel</b-button>
                     <b-button variant="primary" @click="toggleEditMode()" v-show="!editMode"><i class="fa fa-edit"></i> Edit</b-button>
+                    <b-button variant="primary" @click="togglePropertyEditMode()" v-show="!propertyEditMode"><i class="fa fa-edit"></i> Edit Source</b-button>
                 </div>
             </div>
         </div>
@@ -300,6 +353,9 @@
             },
             toggleEditMode: function() {
                 this.editMode = !this.editMode
+            },
+            togglePropertyEditMode: function() {
+                this.propertyEditMode = !this.propertyEditMode
             },
             addTerm: function() {
                 if (!this.terms[this.terms.length - 1].text) {

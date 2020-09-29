@@ -43,7 +43,6 @@
                 @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
                     <h5>Category: {{ $concept->conceptCategories[0]['value']}}</h5>
                 @endif
-
                 <div class="form-group">
                     <h2>Relations</h2>
                     <div class="mt-3">
