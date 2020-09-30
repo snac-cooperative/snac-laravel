@@ -99,6 +99,9 @@ class Concept extends Model
         return $this->belongsToMany("App\Models\Vocabulary", "concept_categories", "concept_id", "category_id");
     }
 
-    // TODO: Make a preferrerdTerm function that returns correct term?
+    // TODO: Make a preferredTerm function that returns correct term?
+    public function preferredTerm() {
+        return $this->hasOne("App\Models\Term")->where("preferred", true)->first();
+    }
 
 }
