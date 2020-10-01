@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Concept;
 use App\Models\Term;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ConceptController extends Controller
 {
@@ -20,11 +21,17 @@ class ConceptController extends Controller
             if ($perPage <= 0) {
                 $perPage = 10;
             }
-            $concepts = Concept::with('conceptCategories')->with(['terms' => function($query) {
-                $query->where('preferred', true);
-            }])->where(
-                'deprecated', false
-            )->paginate($perPage);
+            $sortBy = $request['sort_by'];
+            $sortDesc = $request['sort_desc'] == 'true' ? 'desc' : 'asc';
+            $concepts = Concept::leftJoin('concept_categories', function($join) {
+                $join->on('concepts.id', '=', 'concept_categories.concept_id');
+            })->leftJoin('vocabulary', function($join) {
+                $join->on('category_id', '=', 'vocabulary.id');
+            })->leftJoin('terms', function($join) {
+                $join->on('concepts.id', '=', 'terms.concept_id');
+                $join->on('preferred', '=', DB::raw("True"));
+            })->select('concepts.id as id', 'vocabulary.value as category', 'terms.text as preferred_term')
+                ->orderBy($sortBy, $sortDesc)->paginate($perPage);
             return $concepts->toJson();
         }
         return view('concepts.index');

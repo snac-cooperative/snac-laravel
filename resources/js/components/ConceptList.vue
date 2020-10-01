@@ -41,9 +41,11 @@
       :tbody-transition-props="transProps"
       :current-page="currentPage"
       :per-page="perPage"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
     >
-      <template v-slot:cell(name)="row">
-        {{ row.value.first }} {{ row.value.last }}
+      <template v-slot:cell(preferredTerm)="row">
+        <b-link :href="row.item.link">{{row.item.preferredTerm}}</b-link>
       </template>
 
       <template v-slot:cell(actions)="row">
@@ -53,6 +55,9 @@
         <b-button size="sm" @click="row.toggleDetails">
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
         </b-button>
+      </template>
+
+      <template v-slot:bottom-row="row">
       </template>
 
       <template v-slot:row-details="row">
@@ -68,6 +73,7 @@
 </template>
 
 <script>
+
   export default{
     data: function() {
       return {
@@ -75,9 +81,10 @@
           //transition name
           name: 'flip-list'
         },
+        sortBy: 'preferredTerm',
+        sortDesc: false,
         fields: [
-          { key: 'id', sortable: true},
-          { key: 'term', sortable: true},
+          { key: 'preferredTerm', sortable: true},
           { key: 'category', sortable: true},
         ],
         concepts: [{key: "hi", value: 10}],
@@ -92,15 +99,19 @@
     },
     methods: {
       getConcepts: function() {
-        const promise = axios.get(`concepts/?page=${this.currentPage}&per_page=${this.perPage}`);
+        const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+
+        const promise = axios.get(`concepts/?page=${this.currentPage}&per_page=${this.perPage}&sort_by=${toSnakeCase(this.sortBy)}&sort_desc=${this.sortDesc}`);
 
         return promise.then( response => {
+          console.log(response);
           let concepts = response.data.data;
           let concept_result = concepts.map( concept => {
             return {
               id: concept.id,
-              term: concept.terms[0].text,
-              category: concept.concept_categories[0].value
+              link: "concepts/"+concept.id,
+              preferredTerm: concept.preferred_term,
+              category: concept.category
             };
           });
           this.totalRows = response.data.total;
