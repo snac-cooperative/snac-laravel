@@ -161,4 +161,34 @@ class ConceptController extends Controller
     {
         //
     }
+
+    /**
+     * Find a concept by preferred term.
+     *
+     * @param  \App\Concept  $concept
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Concept $concept) {
+        $term = $_GET["term"];
+        $category = $_GET["category"] ?? "";
+        $all_terms = isset($_GET["all_terms"]);
+        // TODO: filter on deprecated;
+
+        $terms = DB::table("concepts")->select("concepts.id", "terms.id as term_id", "text", "value as category", "preferred",  )
+            ->leftJoin("terms", "concepts.id", "=", "terms.concept_id")
+            ->leftJoin("concept_categories", "concepts.id", "=", "concept_categories.concept_id")
+            ->leftJoin("vocabulary", "concept_categories.category_id", "vocabulary.id")
+            ->where([["text", "ILIKE", "%" . $term . "%"]]);
+
+        if (!$all_terms) {
+            $terms = $terms->where("preferred", "true");
+        }
+
+        if ($category) {
+            $terms = $terms->where("vocabulary.value", "ilike", $category);
+        }
+
+        return $terms->get();
+    }
+
 }
