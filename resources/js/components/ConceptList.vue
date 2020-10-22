@@ -101,7 +101,7 @@
       getConcepts: function() {
         const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 
-        const promise = axios.get(`concepts/?page=${this.currentPage}&per_page=${this.perPage}&sort_by=${toSnakeCase(this.sortBy)}&sort_desc=${this.sortDesc}`);
+        const promise = axios.get(`?page=${this.currentPage}&per_page=${this.perPage}&sort_by=${toSnakeCase(this.sortBy)}&sort_desc=${this.sortDesc}`);
 
         return promise.then( response => {
           console.log(response);

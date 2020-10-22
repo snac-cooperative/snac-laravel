@@ -33,6 +33,7 @@
                     id="conceptShow"
                     :concept-props="{{ $concept }}"
                     :term-props="{{ $concept->terms}}"
+                    :sources-props="{{ $concept->sources}}"
                 >
                 </concept-form>
 
