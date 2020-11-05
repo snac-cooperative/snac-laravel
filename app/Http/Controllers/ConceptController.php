@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ConceptController extends Controller
-{
+    {
     /**
      * Display a listing of the resource.
      *
@@ -161,4 +161,65 @@ class ConceptController extends Controller
     {
         //
     }
+
+    /**
+     * Find a concept by preferred term.
+     *
+     * @param  \App\Concept  $concept
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Concept $concept)
+    {
+        $term = $_GET["term"];
+        $category = $_GET["category"] ?? "";
+        $all_terms = isset($_GET["all_terms"]);
+        // TODO: filter on deprecated;
+
+        $terms = DB::table("concepts")->select("concepts.id as concept_id", "terms.id as term_id", "text", "value as category", "preferred")
+            ->leftJoin("terms", "concepts.id", "=", "terms.concept_id")
+            ->leftJoin("concept_categories", "concepts.id", "=", "concept_categories.concept_id")
+            ->leftJoin("vocabulary", "concept_categories.category_id", "vocabulary.id")
+            ->where([["text", "ILIKE", "%" . $term . "%"]]);
+
+        if (!$all_terms) {
+            $terms = $terms->where("preferred", "true");
+        }
+
+        if ($category) {
+            $terms = $terms->where("vocabulary.value", "ilike", $category);
+        }
+
+        return $terms->get();
+    }
+
+
+    /**
+     * Relate Concepts 
+     *
+     * @param  \App\Concept  $concept
+     * @return \Illuminate\Http\Response
+     */
+    public function relateConcepts($concept_id)
+    {
+        $relation_type = $_GET["relation_type"];
+        $related_id = $_GET["related_id"];
+
+        $concept = Concept::findOrFail($concept_id);
+
+        switch ($relation_type) {
+            case "broader":
+                $concept->addBroader($related_id);
+                break;
+            case "narrower":
+                $concept->addNarrower($related_id);
+                break;
+            case "related":
+                $concept->addRelated($related_id);
+                break;
+        }
+
+        return $concept;
+    }
+
+
 }

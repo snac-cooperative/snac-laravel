@@ -29,6 +29,7 @@ Route::get('concepts/{id}', function ($id) {
     return Concept::findOrFail($id);
 });
 
+Route::put('concepts/{id}/relate_concept', 'ConceptController@relateConcepts');
 
 Route::get('concepts_summary', function () {
     // Return only the preferred term
