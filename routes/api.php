@@ -25,10 +25,7 @@ Route::get('concepts', function () {
     return Concept::with('conceptCategories')->get();
 });
 
-Route::get('concepts/{id}', function ($id) {
-    return Concept::findOrFail($id);
-});
-
+Route::apiResource('concepts', 'API\ConceptController');
 
 Route::get('concepts_summary', function () {
     // Return only the preferred term
