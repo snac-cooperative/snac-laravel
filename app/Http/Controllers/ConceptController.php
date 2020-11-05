@@ -123,6 +123,7 @@ class ConceptController extends Controller
                         ->with('broader')
                         ->with('narrower')
                         ->with('related')
+                        ->with('sources')
                         ->findOrFail($concept_id);
 
         return view('concepts.show', ['concept' => $concept]);

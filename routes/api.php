@@ -25,11 +25,8 @@ Route::get('concepts', function () {
     return Concept::with('conceptCategories')->get();
 });
 
-Route::get('concepts/{id}', function ($id) {
-    return Concept::findOrFail($id);
-});
-
 Route::put('concepts/{id}/relate_concept', 'ConceptController@relateConcepts');
+Route::apiResource('concepts', 'API\ConceptController');
 
 Route::get('concepts_summary', function () {
     // Return only the preferred term
@@ -38,5 +35,6 @@ Route::get('concepts_summary', function () {
     // }])->get();
     return Term::where('preferred', 'true')->get();
 });
+Route::apiResource('concept_sources', 'API\ConceptSourceController');
 
 Route::apiResource('terms', 'API\TermController');
