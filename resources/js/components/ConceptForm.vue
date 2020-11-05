@@ -15,7 +15,7 @@
                     >
                     </b-form-input>
                     <b-input-group-append>
-                        <b-button @click="saveTerm(preferredTerm).prevent" class="btn btn-info" title="Make Preferred"><i class="fa fa-floppy-o"></i></b-button>
+                        <b-button @click="saveTerm(preferredTerm)" class="btn btn-info" title="Make Preferred"><i class="fa fa-floppy-o"></i></b-button>
                     </b-input-group-append>
                 </b-input-group>
                 <!-- DEBUG: {{preferredTerm.inEdit}} -->
@@ -34,9 +34,9 @@
                         </b-form-input>
 
                         <b-input-group-append>
-                            <b-button @click="saveTerm(term).prevent" class="btn btn-info" title="Make Preferred"><i class="fa fa-floppy-o"></i></b-button>
-                            <b-button @click="makeTermPreferred(term).prevent" class="btn btn-primary" title="Make Preferred"><i class="fa fa-check-square-o"></i></b-button>
-                            <b-button @click="deleteTerm(term).prevent" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i></b-button>
+                            <b-button @click="saveTerm(term)" class="btn btn-info" title="Make Preferred"><i class="fa fa-floppy-o"></i></b-button>
+                            <b-button @click="makeTermPreferred(term)" class="btn btn-primary" title="Make Preferred"><i class="fa fa-check-square-o"></i></b-button>
+                            <b-button @click="deleteTerm(term)" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i></b-button>
                         </b-input-group-append>
                     </b-input-group>
                     <!--DEBUG: {{term.inEdit}} -->
@@ -52,7 +52,78 @@
         </div>
         <div class="form-group">
             <h2>Relations</h2>
+            <div class="mt-3">
+                <b-button v-b-modal.concept-relations-search variant="info"><i class="fa fa-plus"></i> Add Relationship</b-button>
+            </div>
 
+            <b-modal
+                id="concept-relations-search"
+                title="Concept Relations"
+                size="xl"
+                @ok="relateConcept()"
+            >
+            <!-- ok-title="Create Relationship" -->
+                <form
+                    id="concept-relationship-form"
+                    @submit.stop.prevent="searchConcept()">
+                    <div class="form-group">
+                        <label for="relation-search">Related Concept</label>
+                        <div class="input-group mb-3">
+                            <input id="relation-search" ref="searchQuery" type="text" class="form-control" placeholder="Related Concept" aria-label="Related Concept">
+                            <div class="input-group-append">
+                                <button class="btn btn-info" type="button" @click="searchConcept()">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="is-preferred" v-model="allTermsSearch" title="Search only Preferred Terms">
+                        <label class="form-check-label" for="is-preferred" >Search non-preferred terms</label>
+                    </div>
+
+                    <h4 class="mt-4">Relation Type</h4>
+                    <div class="form-check">
+                        <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="broader">
+                        <label class="form-check-label" for="broader-relation-check">
+                            Broader
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="narrower">
+                        <label class="form-check-label" for="narrower-relation-check">
+                            Narrower
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="related">
+                        <label class="form-check-label" for="broader-relation-check">
+                            Related
+                        </label>
+                    </div>
+                    <div class="">
+                        <table class="table table-hover mt-3" v-if="termSearch.length">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Term</th>
+                                    <th>Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr :key="term.term_id" v-for="(term) in termSearch">
+                                    <td><input type="radio" name="relation-choice" :value="term.concept_id" v-model="selected_concept"></td>
+                                    <td> <a :href="term.concept_id">{{ term.term }}</a></td>
+                                    <td>{{ term.category }}</td>
+                                    <!-- <td>{{ term.preferred }}</td> -->
+                                    <!-- TODO: Handle multiple categories by conjoining.  -->
+                                    <!-- TODO: Display result count.  -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <b-button @click="relateConcept()" class="btn btn-info" title="Make Preferred">Relate Concepts <i class="fa fa-floppy-o"></i></b-button>
+                </form>
+
+            </b-modal>
 
         </div>
     </div>
@@ -76,8 +147,12 @@
                     // populating terms with our custom temporary variables
                     (term) => {term.inEdit = false; return term}
                 ),
-                editMode: false, // populating terms with our custom temporary variables
+                editMode: false,
                 // concept: this.termProps.slice()
+                termSearch: [],
+                allTermsSearch: false,
+                selected_concept: '',
+                relationType: '',
             }
         },
         computed: {
@@ -146,7 +221,7 @@
             },
             postTerm: function(term) {
                 console.log(`Creating new term ${term.text}`)
-                axios.post(`/concepts/${term.concept_id}/add_term`, term)
+                axios.post(`/concepts/${term.concept_id}/add_term`, term) // TODO: Move to an api call
                     .then(function(response) {
                         console.log("Created! ", response);
                         term.inEdit = false;
@@ -168,7 +243,6 @@
                     axios.patch(`/api/terms/${term.id}`, term)
                     .then(function(response) {
                         term.inEdit = false;
-                        console.log(response);
                         // vm.fetchConcept();    // Do we want to reload full concept after each save? Maybe not, if that would reset other unsaved fields...
                     }).catch(function(error) {
                         console.log(error);
@@ -184,7 +258,6 @@
                 }
 
                 var conceptID = this.terms[0].concept_id
-                console.log(conceptID)
                 var newTerm = {
                     concept_id : conceptID,
                     id: null,
@@ -195,6 +268,63 @@
                     inEdit: true
                 };
                 this.terms.push(newTerm);
+            },
+            searchConcept: function() {
+                let vm = this;
+                var query = this.$refs.searchQuery.value  // Is there a better way to do this?
+                if (this.allTermsSearch) {
+                    query += "&all_terms"
+                }
+
+                const promise = axios.get(`search?term=${query}`)
+                    promise.then(response => {
+                    let terms = response.data;
+                    let terms_result = terms.map(term => {
+                        return {
+                            id: term.term_id,
+                            concept_id: term.concept_id,
+                            term: term.text,
+                            category: term.category,
+                            preferred: term.preferred
+                        };
+                    });
+                    this.totalRows = response.data.total;
+                    this.termSearch = terms_result || [];
+                });
+            },
+            relateConcept: function() {
+                let concept_id = this.terms[0].concept_id
+                let relation_type = this.relationType
+
+                if(this.selected_concept == '' || relation_type == undefined) {
+                    return;
+                }
+
+                axios.put(`/api/concepts/${concept_id}/relate_concept?related_id=${this.selected_concept}&relation_type=${relation_type}`)
+                    .then(function(response) {
+                        console.log("related!", response);
+                        location.reload();
+                    }).catch(function(error) {
+                        console.log(error);
+                    })
+            },
+            getConcepts: function() {
+                let vm = this;
+                const promise = axios.get(`/search?term=teach`)
+                promise.then(response => {
+                    let terms = response.data;
+                    let terms_result = terms.map(term => {
+                        return {
+                            id: term.concept_id,
+                            link: "/concepts/"+term.concept_id,
+                            term: term.text,
+                            category: term.category,
+                            preferred: term.preferred
+                        };
+                    });
+                    this.totalRows = response.data.total;
+                    this.termSearch = terms_result || [];
+                });
             }
         }
     }
