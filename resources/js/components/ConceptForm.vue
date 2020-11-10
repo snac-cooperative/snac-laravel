@@ -61,10 +61,15 @@
                     <b-button variant="secondary" @click="fetchConcept();toggleEditMode()" v-show="editMode">Cancel</b-button>
                     <b-button variant="primary" @click="toggleEditMode()" v-show="!editMode"><i class="fa fa-edit"></i> Edit</b-button>
                 </div>
+
+                <div class="mt-3">
+                    <h4>Concept Sources</h4>
+                    <div class="mt-1" :key="source.id" v-for="source in sources">
+                      <concept-source :concept-id="source.concept_id" :concept-source-id="source.id"></concept-source>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <h2>Relations</h2>
             <div class="mt-3">
                 <b-button v-b-modal.concept-relations-search variant="info"><i class="fa fa-plus"></i> Add Relationship</b-button>
             </div>
@@ -186,7 +191,6 @@
                 propertyEditMode: false,
                 // populating terms with our custom temporary variables
                 // concept: this.termProps.slice()
-
                 categories: [
                     { value:  400833, text: 'Ethnicity'},
                     { value:  400831, text: 'Occupation'},
