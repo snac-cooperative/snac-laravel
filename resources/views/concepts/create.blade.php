@@ -11,7 +11,12 @@ Concepts
         <li>New</li>
     </ol>
     <div class="row">
-      <div class="col-md-8" id="conceptForm"></div>
+      <div class="col-md-8" id="conceptForm">
+                <concept-create
+                    id="conceptCreate"
+                >
+                </concept-create>
+        </div>
       <br>
     </div>
 @endsection

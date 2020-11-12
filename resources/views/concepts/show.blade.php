@@ -12,8 +12,12 @@
     <ol class="breadcrumb">
         {{-- TEST --}}
         {{-- TODO:  Rename Occupation Terms with dynamic concept category or categories   --}}
-        <li><a href="{{ env('SNAC_URL') }}/vocab_administrator/dashboard">Occupation Terms</a></li>
+        <li class="breadcrumb-item"><a href="{{ env('SNAC_URL') }}/vocab_administrator/dashboard">Concepts</a></li>
+
+        @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
+            <li class="breadcrumb-item active"><a href="{{ env('SNAC_URL') }}/vocab_administrator/dashboard"> {{ $concept->conceptCategories[0]['value']}} Terms</a></li>
         <!-- <li>{\{data.response.concepts[0].term}}</li> -->
+        @endif
     </ol>
 
         @if (false) #permissions.EditResources
@@ -31,9 +35,16 @@
                     id="conceptShow"
                     :concept-props="{{ $concept }}"
                     :term-props="{{ $concept->terms}}"
+                    :sources-props="{{ $concept->sources}}"
                 >
                 </concept-form>
 
+                <br>
+                @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
+                    <h5>Category: {{ $concept->conceptCategories[0]['value']}}</h5>
+                @endif
+
+                <h2>Relations</h2>
                 <div class="row">
                     @if (count($concept->broader))
                         <div class="col-xs-8" style="width:50%">
