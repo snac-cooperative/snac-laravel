@@ -43,15 +43,8 @@
                 @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
                     <h5>Category: {{ $concept->conceptCategories[0]['value']}}</h5>
                 @endif
-                <div class="form-group">
-                    <h2>Relations</h2>
-                    <div class="mt-3">
-                        <b-button variant="info"><i class="fa fa-plus"></i> Add Relationship</b-button>
-                    </div>
 
-
-                </div>
-
+                <h2>Relations</h2>
                 <div class="row">
                     @if (count($concept->broader))
                         <div class="col-xs-8" style="width:50%">

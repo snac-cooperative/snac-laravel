@@ -2,9 +2,9 @@
     <div id="concept-table" classname="">
         <div class="form-group">
             <div class="col-xs-8">
-                <h2>{{ preferredTerm.text}}</h2>
+                <h2>{{ preferredTerm.text }}</h2>
                 <h4>Preferred Term</h4>
-                <p v-show="!editMode"> {{preferredTerm.text}}</p>
+                <p v-show="!editMode"> {{ preferredTerm.text }}</p>
                 <b-input-group v-show="editMode" class="mt-3">
                     <!-- TODO: Do we want inputs to start as readonly? -->
                     <b-form-input type="text"
@@ -23,7 +23,7 @@
                 <h4 v-if="alternateTerms.length" class="mt-3">Alternate Terms</h4>
                 <div v-bind:key="term.id" v-for="term in alternateTerms">
                     <!-- Extract into Term Component? -->
-                    <p v-show="!editMode"> {{term.text}}</p>
+                    <p v-show="!editMode"> {{ term.text }}</p>
                     <b-input-group v-show="editMode" class="mt-2">
                         <b-form-input type="text"
                             :class="{'alert-info' : term.inEdit}"
@@ -70,90 +70,78 @@
                 </div>
             </div>
         </div>
-            <div class="mt-3">
-                <b-button v-b-modal.concept-relations-search variant="info"><i class="fa fa-plus"></i> Add Relationship</b-button>
-            </div>
+        <div class="mt-3">
+            <b-button v-b-modal.concept-relations-search variant="info"><i class="fa fa-plus"></i> Add Relationship</b-button>
+        </div>
 
-            <b-modal
-                id="concept-relations-search"
-                title="Concept Relations"
-                size="xl"
-                @ok="relateConcept()"
-            >
-            <!-- ok-title="Create Relationship" -->
-                <form
-                    id="concept-relationship-form"
-                    @submit.stop.prevent="searchConcept()">
-                    <div class="form-group">
-                        <label for="relation-search">Related Concept</label>
-                        <div class="input-group mb-3">
-                            <input id="relation-search" ref="searchQuery" type="text" class="form-control" placeholder="Related Concept" aria-label="Related Concept">
-                            <div class="input-group-append">
-                                <button class="btn btn-info" type="button" @click="searchConcept()">Search</button>
-                            </div>
+        <b-modal
+            id="concept-relations-search"
+            title="Concept Relations"
+            size="xl"
+            @ok="relateConcept()"
+        >
+        <!-- ok-title="Create Relationship" -->
+            <form
+                id="concept-relationship-form"
+                @submit.stop.prevent="searchConcept()">
+                <div class="form-group">
+                    <label for="relation-search">Related Concept</label>
+                    <div class="input-group mb-3">
+                        <input id="relation-search" ref="searchQuery" type="text" class="form-control" placeholder="Related Concept" aria-label="Related Concept">
+                        <div class="input-group-append">
+                            <button class="btn btn-info" type="button" @click="searchConcept()">Search</button>
                         </div>
                     </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="is-preferred" v-model="allTermsSearch" title="Search only Preferred Terms">
-                        <label class="form-check-label" for="is-preferred" >Search non-preferred terms</label>
-                    </div>
-
-                    <h4 class="mt-4">Relation Type</h4>
-                    <div class="form-check">
-                        <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="broader">
-                        <label class="form-check-label" for="broader-relation-check">
-                            Broader
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="narrower">
-                        <label class="form-check-label" for="narrower-relation-check">
-                            Narrower
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="related">
-                        <label class="form-check-label" for="broader-relation-check">
-                            Related
-                        </label>
-                    </div>
-                    <div class="">
-                        <table class="table table-hover mt-3" v-if="termSearch.length">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Term</th>
-                                    <th>Category</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr :key="term.term_id" v-for="(term) in termSearch">
-                                    <td><input type="radio" name="relation-choice" :value="term.concept_id" v-model="selected_concept"></td>
-                                    <td> <a :href="term.concept_id">{{ term.term }}</a></td>
-                                    <td>{{ term.category }}</td>
-                                    <!-- <td>{{ term.preferred }}</td> -->
-                                    <!-- TODO: Handle multiple categories by conjoining.  -->
-                                    <!-- TODO: Display result count.  -->
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <b-button @click="relateConcept()" class="btn btn-info" title="Make Preferred">Relate Concepts <i class="fa fa-floppy-o"></i></b-button>
-                </form>
-
-            </b-modal>
-
-                <div class="mt-3">
-                    <h4>Concept Sources</h4>
-                    <div class="mt-1" :key="source.id" v-for="source in sources">
-                      <concept-source :concept-id="source.concept_id" :concept-source-id="source.id"></concept-source>
-                    </div>
                 </div>
-            </div>
-        </div>
-        <!-- <div class="form-group">
-            <h2>Relations</h2>
-        </div> -->
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="is-preferred" v-model="allTermsSearch" title="Search only Preferred Terms">
+                    <label class="form-check-label" for="is-preferred" >Search non-preferred terms</label>
+                </div>
+
+                <h4 class="mt-4">Relation Type</h4>
+                <div class="form-check">
+                    <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="broader">
+                    <label class="form-check-label" for="broader-relation-check">
+                        Broader
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="narrower">
+                    <label class="form-check-label" for="narrower-relation-check">
+                        Narrower
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="related">
+                    <label class="form-check-label" for="broader-relation-check">
+                        Related
+                    </label>
+                </div>
+                <div class="">
+                    <table class="table table-hover mt-3" v-if="termSearch.length">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Term</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr :key="term.term_id" v-for="(term) in termSearch">
+                                <td><input type="radio" name="relation-choice" :value="term.concept_id" v-model="selected_concept"></td>
+                                <td> <a :href="term.concept_id">{{ term.term }}</a></td>
+                                <td>{{ term.category }}</td>
+                                <!-- <td>{{ term.preferred }}</td> -->
+                                <!-- TODO: Handle multiple categories by conjoining.  -->
+                                <!-- TODO: Display result count.  -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <b-button @click="relateConcept()" class="btn btn-info" title="Make Preferred">Relate Concepts <i class="fa fa-floppy-o"></i></b-button>
+            </form>
+
+        </b-modal>
     </div>
 </template>
 
