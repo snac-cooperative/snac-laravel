@@ -20,11 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-Route::get('concepts', function () {
-    return Concept::with('conceptCategories')->get();
-});
-
 Route::put('concepts/{id}/relate_concept', 'ConceptController@relateConcepts');
 Route::apiResource('concepts', 'API\ConceptController');
 

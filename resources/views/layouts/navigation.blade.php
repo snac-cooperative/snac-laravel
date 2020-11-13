@@ -94,19 +94,19 @@
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/messages"><i class="fa fa-fw fa-comments-o" aria-hidden="true"></i> Messaging Center</a></li>
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/api_key"><i class="fa fa-fw fa-key" aria-hidden="true"></i> Rest API Key</a></li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('logout') }}"
+                            <a class="dropdown-item" href="/logout/all"
                                onclick="event.preventDefault();
                                              document.getElementById('logout-form').submit();">
                                 <i class="fa fa-fw fa-sign-out" aria-hidden="true"></i> Logout
                             </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            <form id="logout-form" action="/logout/all" method="POST" style="display: none;">
                                 @csrf
                             </form>
                         </li>
                     </ul>
                     </li>
                 @else
-                <li class="nav-item"><a class="nav-link" href="login/github"><i class="fa fa-sign-in"></i> Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login/google"><i class="fa fa-sign-in"></i> Login</a></li>
                 @endauth
                 </ul>
             </div>
