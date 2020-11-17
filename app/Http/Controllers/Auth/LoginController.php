@@ -45,6 +45,7 @@ class LoginController extends Controller
 
     public function redirectToProvider()
     {
+        session(['_from_snac' => false]);
         return Socialite::driver('google')->redirect();
     }
 
@@ -57,8 +58,11 @@ class LoginController extends Controller
         }
         Auth::loginUsingId($localUser->id, true);
 
+        if(session('_from_snac')) {
+            return Redirect::away(env('SNAC_AUTHENTICATION_URL') . '?command=login3&code='.urlencode($user->token).'&r='.session('_redirect_after_login'));
+        }
         //SNAC LOGIN
-        return Redirect::away('http://localhost/index.php?command=login3&code='.urlencode($user->token));
+        return Redirect::away(env('SNAC_AUTHENTICATION_URL') . '?command=login3&code='.urlencode($user->token));
     }
 
     public function redirectToGitHubProvider()
