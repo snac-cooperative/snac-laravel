@@ -87,7 +87,7 @@
             @auth
                     <li class="dropdown nav-item">
                     <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <img src="{{ "#user.avatar" }}" style="width:20px; height:20px; margin-right: 10px;"> {{ Auth::user()->name }} <span class="caret"></span>
+                        <img src="{{ "#user.avatar" }}" style="width:20px; height:20px; margin-right: 10px;"> {{ Auth::user()->first }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/profile"><i class="fa fa-fw fa-id-card-o" aria-hidden="true"></i> User Profile</a></li>
