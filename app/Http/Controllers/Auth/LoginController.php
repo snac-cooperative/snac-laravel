@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {
@@ -43,10 +45,32 @@ class LoginController extends Controller
 
     public function redirectToProvider()
     {
-        return Socialite::driver('github')->redirect();
+        session(['_from_snac' => false]);
+        return Socialite::driver('google')->redirect();
     }
 
     public function handleProviderCallback()
+    {
+        $user = Socialite::driver('google')->user();
+        $localUser = User::select('id')->where('email', $user->email)->first();
+        if(!$localUser) {
+            return redirect('register');
+        }
+        Auth::loginUsingId($localUser->id, true);
+
+        if(session('_from_snac')) {
+            return Redirect::away(env('SNAC_AUTHENTICATION_URL') . '?command=login3&code='.urlencode($user->token).'&r='.session('_redirect_after_login'));
+        }
+        //SNAC LOGIN
+        return Redirect::away(env('SNAC_AUTHENTICATION_URL') . '?command=login3&code='.urlencode($user->token));
+    }
+
+    public function redirectToGitHubProvider()
+    {
+        return Socialite::driver('github')->redirect();
+    }
+
+    public function handleGitHubProviderCallback()
     {
         $user = Socialite::driver('github')->user();
         $localUser = User::select('id')->where('email', $user->email)->first();

@@ -18,7 +18,7 @@ class ConceptController extends Controller
      */
     public function index()
     {
-        //
+        return Concept::with('conceptCategories')->get();
     }
 
     /**
