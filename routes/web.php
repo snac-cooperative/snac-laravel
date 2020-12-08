@@ -52,6 +52,6 @@ Route::get('github/login', 'Auth\LoginController@handleGitHubProviderCallback');
 Route::get('login/google', 'Auth\LoginController@redirectToProvider');
 Route::get('google/login', 'Auth\LoginController@handleProviderCallback');
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::get('/', 'ConceptController@index');
