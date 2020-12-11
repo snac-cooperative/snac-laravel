@@ -36,6 +36,7 @@
                     :concept-props="{{ $concept }}"
                     :term-props="{{ $concept->terms}}"
                     :sources-props="{{ $concept->sources}}"
+                    can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
                 >
                 </concept-form>
 

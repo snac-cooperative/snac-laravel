@@ -24,7 +24,7 @@ Route::post('concepts',             'ConceptController@store')->middleware('can:
 Route::get('concepts/create',       'ConceptController@create')->middleware('can:edit-vocabulary');
 Route::get('concepts/search',       'ConceptController@search');
 Route::post('concepts/{concept}/add_term', 'ConceptController@addTerm')->middleware('can:edit-vocabulary');
-Route::get('concepts/{concept}',    'ConceptController@show')->middleware('can:edit-vocabulary');
+Route::get('concepts/{concept}',    'ConceptController@show');
 Route::delete('concepts/{concept}', 'ConceptController@destroy');
 
 Route::post('logout/all', function () {
