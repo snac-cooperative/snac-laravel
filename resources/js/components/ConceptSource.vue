@@ -57,7 +57,7 @@
       <p>{{url}}</p> <br/>
       <p>{{foundData}}</p> <br/>
       <p>{{note}}</p> <br/>
-      <b-button variant="primary" @click="toggleEditMode()" v-show="!editMode"><i class="fa fa-edit"></i> Edit Source</b-button>
+      <b-button variant="primary" @click="toggleEditMode()" v-if="isVocabularyEditor" v-show="!editMode"><i class="fa fa-edit"></i> Edit Source</b-button>
     </div>
   </div>
 </template>

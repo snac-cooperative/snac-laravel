@@ -6,6 +6,7 @@ use App\Models\Concept;
 use App\Models\Term;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ConceptController extends Controller
     {
@@ -126,7 +127,13 @@ class ConceptController extends Controller
                         ->with('sources')
                         ->findOrFail($concept_id);
 
-        return view('concepts.show', ['concept' => $concept]);
+        $isVocabularyEditor = false;
+        $user = Auth::user();
+        if (!Auth::guest()) {
+            $isVocabularyEditor = $user->isVocabularyEditor();
+        }
+
+        return view('concepts.show', ['concept' => $concept, 'isVocabularyEditor' => $isVocabularyEditor]);
     }
 
     /**

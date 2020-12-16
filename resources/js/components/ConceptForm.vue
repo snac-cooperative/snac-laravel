@@ -59,7 +59,7 @@
                     <!-- TODO: Backend calls -->
                     <b-button variant="success" @click="addTerm()" v-show="editMode"><i class="fa fa-plus"></i> Add Term</b-button>
                     <b-button variant="secondary" @click="fetchConcept();toggleEditMode()" v-show="editMode">Cancel</b-button>
-                    <b-button variant="primary" @click="toggleEditMode()" v-show="!editMode"><i class="fa fa-edit"></i> Edit</b-button>
+                    <b-button variant="primary" @click="toggleEditMode()" v-if="isVocabularyEditor" v-show="!editMode"><i class="fa fa-edit"></i> Edit</b-button>
                 </div>
 
                 <div class="mt-3">
@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="mt-3">
-            <b-button v-b-modal.concept-relations-search variant="info"><i class="fa fa-plus"></i> Add Relationship</b-button>
+            <b-button v-if="isVocabularyEditor" v-b-modal.concept-relations-search variant="info"><i class="fa fa-plus"></i> Add Relationship</b-button>
         </div>
 
         <b-modal
@@ -157,7 +157,8 @@
             },
             sourcesProps: {
                 type: Array
-            }
+            },
+            canEditVocabulary: false,
         },
         data() {
             return {
@@ -188,7 +189,8 @@
                     { value:  400832, text: 'Relation'},
                 ],
                 cats: this.conceptProps.concept_categories,
-                selectedCategory: this.conceptProps.concept_categories[0].id
+                selectedCategory: this.conceptProps.concept_categories[0].id,
+                isVocabularyEditor: this.canEditVocabulary === "false" ? false : true
             }
         },
         computed: {
