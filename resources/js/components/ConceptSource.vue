@@ -73,7 +73,8 @@
       },
       propertyEditMode: {
         type: Boolean
-      }
+      },
+      canEditVocabulary: false,
     },
     mounted() {
       this.getConceptSource();
@@ -84,7 +85,8 @@
         url: null,
         foundData: null,
         note: null,
-        editMode: this.propertyEditMode
+        editMode: this.propertyEditMode,
+        isVocabularyEditor: this.canEditVocabulary === "false" ? false : true
       }
     },
     methods: {

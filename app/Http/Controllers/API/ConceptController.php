@@ -91,6 +91,20 @@ class ConceptController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deprecate($id)
+    {
+        $concept = Concept::findOrFail($id);
+        $concept->deprecated = !$concept->deprecated;
+        $concept->save();
+        return $concept->deprecated ? 'true' : 'false' ;
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id

@@ -109,7 +109,7 @@
           let concept_result = concepts.map( concept => {
             return {
               id: concept.id,
-              link: "concepts/"+concept.id,
+              link: "/concepts/"+concept.id,
               preferredTerm: concept.preferred_term,
               category: concept.category
             };
