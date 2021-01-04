@@ -2,7 +2,7 @@
     <div id="concept-table" classname="">
         <div class="form-group">
             <div class="col-xs-8">
-                <h2>{{ preferredTerm.text }}</h2>
+                <h2>{{ preferredTerm.text }}<span v-if="deprecated">(deprecated)</span></h2>
                 <h4>Preferred Term</h4>
                 <p v-show="!editMode"> {{ preferredTerm.text }}</p>
                 <b-input-group v-show="editMode" class="mt-3">
@@ -65,7 +65,7 @@
                 <div class="mt-3">
                     <h4>Concept Sources</h4>
                     <div class="mt-1" :key="source.id" v-for="source in sources">
-                      <concept-source :concept-id="source.concept_id" :concept-source-id="source.id"></concept-source>
+                      <concept-source :concept-id="source.concept_id" :canEditVocabulary="isVocabularyEditor" :concept-source-id="source.id"></concept-source>
                     </div>
                 </div>
             </div>
@@ -142,6 +142,7 @@
             </form>
 
         </b-modal>
+        <b-button v-if="isVocabularyEditor" @click="deprecateConcept()" class="btn btn-danger" title="Deprecate Concept">Deprecate Concept <i class="fa fa-trash"></i></b-button>
     </div>
 </template>
 
@@ -162,6 +163,7 @@
         },
         data() {
             return {
+                deprecated: this.conceptProps.deprecated,
                 // Do we need to make a copy of termProps with slice() or [...this.termProps]?
                 terms: this.termProps.map(
                     // populating terms with our custom temporary variables
@@ -366,7 +368,18 @@
                     this.totalRows = response.data.total;
                     this.termSearch = terms_result || [];
                 });
-            }
+            },
+            deprecateConcept: function() {
+                let concept_id = this.terms[0].concept_id
+                 let vm = this;
+                axios.put(`/api/concepts/${concept_id}/deprecate`)
+                    .then(function(response) {
+                        console.log("deprecated!", response);
+                      vm.deprecated = response.data;
+                    }).catch(function(error) {
+                        console.log(error);
+                    })
+            },
         }
     }
 </script>

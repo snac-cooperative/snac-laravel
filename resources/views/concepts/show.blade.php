@@ -12,10 +12,10 @@
     <ol class="breadcrumb">
         {{-- TEST --}}
         {{-- TODO:  Rename Occupation Terms with dynamic concept category or categories   --}}
-        <li class="breadcrumb-item"><a href="{{ env('SNAC_URL') }}/vocab_administrator/dashboard">Concepts</a></li>
+        <li class="breadcrumb-item"><a href="/concepts">Concepts</a></li>
 
         @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
-            <li class="breadcrumb-item active"><a href="{{ env('SNAC_URL') }}/vocab_administrator/dashboard"> {{ $concept->conceptCategories[0]['value']}} Terms</a></li>
+            <li class="breadcrumb-item active">{{ $concept->conceptCategories[0]['value']}} Terms</li>
         <!-- <li>{\{data.response.concepts[0].term}}</li> -->
         @endif
     </ol>
