@@ -64,8 +64,19 @@
 
                 <div class="mt-3">
                     <h4>Concept Sources</h4>
-                    <div class="mt-1" :key="source.id" v-for="source in sources">
-                      <concept-source :concept-id="source.concept_id" :canEditVocabulary="isVocabularyEditor" :concept-source-id="source.id"></concept-source>
+                    <div class="mt-1" :key="source.id" v-for="(source, index) in sources">
+                      <concept-source
+                        :canEditVocabulary="isVocabularyEditor"
+                        :concept-id="source.concept_id"
+                        :concept-source-id="source.id"
+                        :property-edit-mode="source.editMode"
+                        v-on:delete-source="deleteConceptSource(index)"
+                        v-on:saved-source="updateSource"
+                        :source-index="index"
+                      ></concept-source>
+                    </div>
+                    <div class="mt-3">
+                      <b-button v-if="isVocabularyEditor" @click="addSource()" variant="info"><i class="fa fa-plus"></i> Add Source</b-button>
                     </div>
                 </div>
             </div>
@@ -159,7 +170,7 @@
             sourcesProps: {
                 type: Array
             },
-            canEditVocabulary: false,
+            canEditVocabulary: false
         },
         data() {
             return {
@@ -175,6 +186,7 @@
                 ),
                 editMode: false,
                 // concept: this.termProps.slice()
+                conceptId: this.conceptProps.id,
                 termSearch: [],
                 allTermsSearch: false,
                 selected_concept: '',
@@ -380,6 +392,15 @@
                         console.log(error);
                     })
             },
+          deleteConceptSource: function(conceptSourceIndex) {
+            this.$delete(this.sources,conceptSourceIndex);
+          },
+          addSource: function() {
+            this.sources.push({"concept_id": this.conceptId, "editMode": true });
+          },
+          updateSource: function(source, index) {
+            Vue.set(this.sources, index, source);
+          }
         }
     }
 </script>
