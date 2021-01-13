@@ -28,9 +28,13 @@ class ConceptSourceController extends Controller
      */
     public function store(Request $request)
     {
-        $concept = Concept::find($request->route('concept'));
+        $conceptId = $request['concept_id'];
+        if (method_exists($request, 'route') && $request->route('concept')) {
+            $conceptId = $request->route('concept');
+        }
+        $concept = Concept::findOrFail($conceptId);
         $conceptSource = ConceptSource::create($request->all());
-        $concept->concept_sources()->save($conceptSource);
+        $concept->sources()->save($conceptSource);
         return $conceptSource;
     }
 
@@ -67,6 +71,7 @@ class ConceptSourceController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $source = ConceptSource::findOrFail($id)->delete();
+        return response('Deleted'.$id, 204);
     }
 }

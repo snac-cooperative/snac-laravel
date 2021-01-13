@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ConceptSource extends Model
 {
     protected $fillable = [
+        "concept_id",
         "citation",
         "url",
         "found_data",

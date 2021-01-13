@@ -49,7 +49,8 @@
         </b-input-group>
       </b-row>
 
-      <b-button variant="primary" @click="saveConceptSource()" ><i class="fa fa-save"></i>Save</b-button>
+      <b-button @click="deleteSource()" variant="danger"><i class="fa fa-trash"></i> Delete</b-button>
+      <b-button variant="primary" @click="saveConceptSource()" ><i class="fa fa-save"></i> Save</b-button>
       <b-button @click="toggleEditMode()" >Cancel</b-button>
     </div>
     <div v-show="!editMode">
@@ -75,6 +76,7 @@
         type: Boolean
       },
       canEditVocabulary: false,
+      sourceIndex: null
     },
     mounted() {
       this.getConceptSource();
@@ -86,7 +88,8 @@
         foundData: null,
         note: null,
         editMode: this.propertyEditMode,
-        isVocabularyEditor: this.canEditVocabulary === "false" ? false : true
+        isVocabularyEditor: this.canEditVocabulary == "false" ? false : true,
+        index: this.sourceIndex
       }
     },
     methods: {
@@ -101,11 +104,11 @@
         } // if concept source is new => conceptSourceId = nil
       },
       saveConceptSource: function() {
-        console.log(`Saving ${this.conceptSourceId}`);
+        console.log(`Saving ${this.conceptSourceId} ConceptId: ${this.conceptId}, Index: ${this.index}`);
         let vm = this;
         // Check this with Joseph
         let currentSource = {
-            conceptId: this.conceptId,
+            concept_id: this.conceptId,
             citation: this.citation,
             url: this.url,
             found_data: this.foundData,
@@ -117,6 +120,7 @@
           )
             .then(function(response) {
               vm.editMode = false;
+              vm.$emit('saved-source', response.data, vm.index);
               console.log(response);
             }).catch(function(error) {
               console.log(error);
@@ -127,6 +131,7 @@
           )
             .then(function(response) {
               vm.editMode = false;
+              vm.$emit('saved-source', response.data, vm.index);
               console.log(response);
             }).catch(function(error) {
               console.log(error);
@@ -135,6 +140,24 @@
       },
       toggleEditMode: function() {
           this.editMode = !this.editMode
+      },
+      deleteSource: function() {
+        console.log(`Deleting Source with id ${this.conceptSourceId}`);
+        var vm = this;
+
+        if(this.conceptSourceId == null) {
+          vm.$emit('delete-source');
+          return;
+        }
+
+        axios.delete(`/api/concept_sources/${this.conceptSourceId}`)
+          .then(function(response) {
+            console.log("Deleted! ", response);
+            vm.$emit('delete-source');
+          }).catch(function(error) {
+            console.log(error);
+          })
+
       },
     }
     
