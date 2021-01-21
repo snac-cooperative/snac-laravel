@@ -88,7 +88,7 @@
         foundData: null,
         note: null,
         editMode: this.propertyEditMode,
-        isVocabularyEditor: this.canEditVocabulary == "false" ? false : true,
+        isVocabularyEditor: this.canEditVocabulary === true,
         index: this.sourceIndex
       }
     },

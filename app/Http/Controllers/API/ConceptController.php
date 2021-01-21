@@ -96,11 +96,17 @@ class ConceptController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function deprecate($id)
+    public function deprecate(Request $request, $id)
     {
         $concept = Concept::findOrFail($id);
-        $concept->deprecated = !$concept->deprecated;
-        $concept->save();
+        $to = $request->input('to');
+        if ($to) {
+            $replaceConcept = Concept::findOrFail($to);
+            $concept->setDeprecatedTo($replaceConcept);
+        } else {
+            $concept->deprecated = !$concept->deprecated;
+            $concept->save();
+        }
         return $concept->deprecated ? 'true' : 'false' ;
     }
 
