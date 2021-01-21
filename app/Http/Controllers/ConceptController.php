@@ -31,7 +31,9 @@ class ConceptController extends Controller
             })->leftJoin('terms', function($join) {
                 $join->on('concepts.id', '=', 'terms.concept_id');
                 $join->on('preferred', '=', DB::raw("True"));
-            })->select('concepts.id as id', 'vocabulary.value as category', 'terms.text as preferred_term')
+            })->where(
+                'deprecated', '=', false
+            )->select('concepts.id as id', 'vocabulary.value as category', 'terms.text as preferred_term')
                 ->orderBy($sortBy, $sortDesc)->paginate($perPage);
             return $concepts->toJson();
         }

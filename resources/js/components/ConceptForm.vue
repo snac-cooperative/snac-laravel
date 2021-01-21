@@ -153,7 +153,61 @@
             </form>
 
         </b-modal>
-        <b-button v-if="isVocabularyEditor" @click="deprecateConcept()" class="btn btn-danger" title="Deprecate Concept">Deprecate Concept <i class="fa fa-trash"></i></b-button>
+
+        <div class="mt-3">
+            <b-button v-if="isVocabularyEditor && !deprecated" v-b-modal.concept-deprecation-to-search variant="danger"><i class="fa fa-trash"></i> Deprecate Concept</b-button>
+        </div>
+
+        <b-modal
+            id="concept-deprecation-to-search"
+            title="Concept Deprecation"
+            size="xl"
+            @ok="deprecateConcept()"
+            ref="deprecate-modal"
+        >
+        <!-- ok-title="Create Relationship" -->
+            <form
+                id="concept-relationship-form"
+                @submit.stop.prevent="searchConcept()">
+                <div class="form-group">
+                    <label for="relation-search">Optional - Search and select the concept that replaces {{ preferredTerm.text }}</label>
+                    <div class="input-group mb-3">
+                        <input id="relation-search" ref="searchQuery" type="text" class="form-control" placeholder="Concept" aria-label="Concept">
+                        <div class="input-group-append">
+                            <button class="btn btn-info" type="button" @click="searchConcept()">Search</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="is-preferred" v-model="allTermsSearch" title="Search only Preferred Terms">
+                    <label class="form-check-label" for="is-preferred" >Search non-preferred terms</label>
+                </div>
+
+                <div class="">
+                    <table class="table table-hover mt-3" v-if="termSearch.length">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Term</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr :key="term.term_id" v-for="(term) in termSearch">
+                                <td><input type="radio" :id="term.concept_id"  name="relation-choice" :value="term.concept_id" v-model="selected_concept"></td>
+                                <td> <label :for="term.concept_id">{{ term.term }}</label> <a target="_blank" :href="term.concept_id"><i class="fa fa-external-link"></i></a></td>
+                                <td>{{ term.category }}</td>
+                                <!-- <td>{{ term.preferred }}</td> -->
+                                <!-- TODO: Handle multiple categories by conjoining.  -->
+                                <!-- TODO: Display result count.  -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <b-button @click="deprecateConcept()" class="btn btn-info" title="Make Preferred">Deprecate Concept <i class="fa fa-floppy-o"></i></b-button>
+            </form>
+
+        </b-modal>
     </div>
 </template>
 
@@ -362,6 +416,7 @@
                     }).catch(function(error) {
                         console.log(error);
                     })
+              this.selected_concept = '';
             },
             getConcepts: function() {
                 let vm = this;
@@ -382,15 +437,21 @@
                 });
             },
             deprecateConcept: function() {
-                let concept_id = this.terms[0].concept_id
-                 let vm = this;
-                axios.put(`/api/concepts/${concept_id}/deprecate`)
-                    .then(function(response) {
-                        console.log("deprecated!", response);
-                      vm.deprecated = response.data;
-                    }).catch(function(error) {
-                        console.log(error);
-                    })
+              let concept_id = this.terms[0].concept_id
+              let vm = this;
+              let url = `/api/concepts/${concept_id}/deprecate`;
+              if (this.selected_concept != '') {
+                url += `?to=${this.selected_concept}`;
+              }
+              axios.put(url)
+                .then(function(response) {
+                  console.log("deprecated!", response);
+                  vm.deprecated = response.data;
+                  vm.$refs['deprecate-modal'].hide();
+                }).catch(function(error) {
+                  console.log(error);
+                });
+              this.selected_concept = '';
             },
           deleteConceptSource: function(conceptSourceIndex) {
             this.$delete(this.sources,conceptSourceIndex);
