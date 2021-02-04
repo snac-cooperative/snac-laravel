@@ -102,6 +102,7 @@
         const toSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 
         const promise = axios.get(`?page=${this.currentPage}&per_page=${this.perPage}&sort_by=${toSnakeCase(this.sortBy)}&sort_desc=${this.sortDesc}`);
+        const baseURL = process.env.MIX_APP_URL;
 
         return promise.then( response => {
           console.log(response);
@@ -109,7 +110,7 @@
           let concept_result = concepts.map( concept => {
             return {
               id: concept.id,
-              link: "/concepts/"+concept.id,
+              link: `${baseURL}/concepts/${concept.id}`,
               preferredTerm: concept.preferred_term,
               category: concept.category
             };

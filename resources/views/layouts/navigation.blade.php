@@ -20,7 +20,7 @@
     @elseif (env('SNAC_INTERFACE_VERSION') == "demo")
     <nav class="navbar navbar-toggleable-sm navbar-dark fixed-top navbar-demo-version">
     @else
-    <nav class="navbar navbar-toggleable-sm navbar-dark fixed-top">
+    <nav class="navbar bg-info navbar-expand-lg navbar-dark fixed-top">
     @endif
     <div class="container">
         <div >
@@ -94,19 +94,19 @@
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/messages"><i class="fa fa-fw fa-comments-o" aria-hidden="true"></i> Messaging Center</a></li>
                         <li><a class="dropdown-item" href="{{env('SNAC_URL')}}/api_key"><i class="fa fa-fw fa-key" aria-hidden="true"></i> Rest API Key</a></li>
                         <li>
-                            <a class="dropdown-item" href="/logout/all"
+                            <a class="dropdown-item" href="{{env('APP_URL')}}/logout/all"
                                onclick="event.preventDefault();
                                              document.getElementById('logout-form').submit();">
                                 <i class="fa fa-fw fa-sign-out" aria-hidden="true"></i> Logout
                             </a>
-                            <form id="logout-form" action="/logout/all" method="POST" style="display: none;">
+                            <form id="logout-form" action="{{env('APP_URL')}}/logout/all" method="POST" style="display: none;">
                                 @csrf
                             </form>
                         </li>
                     </ul>
                     </li>
                 @else
-                <li class="nav-item"><a class="nav-link" href="/login/google"><i class="fa fa-sign-in"></i> Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{env('APP_URL')}}/login/google"><i class="fa fa-sign-in"></i> Login</a></li>
                 @endauth
                 </ul>
             </div>
