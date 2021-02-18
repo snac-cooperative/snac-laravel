@@ -23,12 +23,12 @@
         data() {
             return {
                 categories: [
-                    { value:  400833, text: 'Ethnicity'},
-                    { value:  400831, text: 'Occupation'},
-                    { value:  400830, text: 'Function'},
-                    { value:  400829, text: 'Subject'},
-                    { value:  400834, text: 'Religion'},
-                    { value:  400832, text: 'Relation'},
+                    { value:  process.env.MIX_ETHNICITY_ID, text: 'Ethnicity'},
+                    { value:  process.env.MIX_OCCUPATION_ID, text: 'Occupation'},
+                    { value:  process.env.MIX_ACTIVITY_ID, text: 'Function'},
+                    { value:  process.env.MIX_SUBJECT_ID, text: 'Subject'},
+                    { value:  process.env.MIX_RELIGION_ID, text: 'Religion'},
+                    { value:  process.env.MIX_RELATION_ID, text: 'Relation'},
                 ],
             }
         }

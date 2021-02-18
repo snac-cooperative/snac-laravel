@@ -27,12 +27,12 @@
         conceptId: null,
         saved: false,
         categories: [
-            { value:  400833, text: 'ethnicity'},
-            { value:  400831, text: 'occupation'},
-            { value:  400830, text: 'function'},
-            { value:  400829, text: 'subject'},
-            { value:  400834, text: 'religion'},
-            { value:  400832, text: 'relation'},
+          { value:  process.env.MIX_ETHNICITY_ID, text: 'Ethnicity'},
+          { value:  process.env.MIX_OCCUPATION_ID, text: 'Occupation'},
+          { value:  process.env.MIX_ACTIVITY_ID, text: 'Function'},
+          { value:  process.env.MIX_SUBJECT_ID, text: 'Subject'},
+          { value:  process.env.MIX_RELIGION_ID, text: 'Religion'},
+          { value:  process.env.MIX_RELATION_ID, text: 'Relation'},
         ],
         categoryId: null
       };
