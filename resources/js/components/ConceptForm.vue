@@ -258,7 +258,6 @@
                 ],
                 cats: this.conceptProps.concept_categories,
                 selectedCategory: this.conceptProps.concept_categories[0].id,
-                isVocabularyEditor: this.canEditVocabulary === "false" ? false : true
                 isVocabularyEditor: this.canEditVocabulary === "false" ? false : true,
                 baseURL: process.env.MIX_APP_URL
             }
