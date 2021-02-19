@@ -89,13 +89,14 @@
         note: null,
         editMode: this.propertyEditMode,
         isVocabularyEditor: this.canEditVocabulary === true,
-        index: this.sourceIndex
+        index: this.sourceIndex,
+        baseURL: process.env.MIX_APP_URL
       }
     },
     methods: {
       getConceptSource: function() {
         if(this.conceptSourceId != null) {
-          fetch('/api/concept_sources/' + this.conceptSourceId).then(data => data.json()).then(data => {
+          fetch(`${this.baseURL}/api/concept_sources/` + this.conceptSourceId).then(data => data.json()).then(data => {
             this.citation = data.citation;
             this.url = data.url;
             this.foundData = data.found_data;
@@ -115,7 +116,7 @@
             note: this.note
           };
         if (this.conceptSourceId) {
-          axios.patch(`/api/concept_sources/${this.conceptSourceId}`, 
+          axios.patch(`${this.baseURL}/api/concept_sources/${this.conceptSourceId}`,
             currentSource
           )
             .then(function(response) {
@@ -126,7 +127,7 @@
               console.log(error);
             });
         } else {
-          axios.post(`/api/concept_sources`, 
+          axios.post(`${this.baseURL}/api/concept_sources`,
             currentSource
           )
             .then(function(response) {
@@ -150,7 +151,7 @@
           return;
         }
 
-        axios.delete(`/api/concept_sources/${this.conceptSourceId}`)
+        axios.delete(`${this.baseURL}/api/concept_sources/${this.conceptSourceId}`)
           .then(function(response) {
             console.log("Deleted! ", response);
             vm.$emit('delete-source');
@@ -160,7 +161,7 @@
 
       },
     }
-    
+
   }
 </script>
 

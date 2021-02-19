@@ -259,6 +259,8 @@
                 cats: this.conceptProps.concept_categories,
                 selectedCategory: this.conceptProps.concept_categories[0].id,
                 isVocabularyEditor: this.canEditVocabulary === "false" ? false : true
+                isVocabularyEditor: this.canEditVocabulary === "false" ? false : true,
+                baseURL: process.env.MIX_APP_URL
             }
         },
         computed: {
@@ -281,7 +283,7 @@
         },
         methods: {
             fetchConcept: function() {
-                fetch('/api/concepts/' + this.terms[0].concept_id).then(data => data.json()).then(data => {
+                fetch(`${this.baseURL}/api/concepts/` + this.terms[0].concept_id).then(data => data.json()).then(data => {
                     console.log("here you are: ", data)
                     this.terms = data.terms.map(
                         // populating terms with our custom temporary variables
@@ -314,7 +316,7 @@
                     return;
                 }
 
-                axios.delete(`/api/terms/${term.id}`)
+                axios.delete(`${this.baseURL}/api/terms/${term.id}`)
                     .then(function(response) {
                         vm.terms.splice(vm.terms.indexOf(term), 1);
                         console.log("Deleted! ", response);
@@ -330,7 +332,7 @@
             },
             postTerm: function(term) {
                 console.log(`Creating new term ${term.text}`)
-                axios.post(`/concepts/${term.concept_id}/add_term`, term) // TODO: Move to an api call
+                axios.post(`${this.baseURL}/concepts/${term.concept_id}/add_term`, term) // TODO: Move to an api call
                     .then(function(response) {
                         console.log("Created! ", response);
                         term.inEdit = false;
@@ -349,7 +351,7 @@
                     this.postTerm(term);
                     // TODO: prevent a double-click from posting twice
                 } else {
-                    axios.patch(`/api/terms/${term.id}`, term)
+                    axios.patch(`${this.baseURL}/api/terms/${term.id}`, term)
                     .then(function(response) {
                         term.inEdit = false;
                         // vm.fetchConcept();    // Do we want to reload full concept after each save? Maybe not, if that would reset other unsaved fields...
@@ -409,7 +411,7 @@
                     return;
                 }
 
-                axios.put(`/api/concepts/${concept_id}/relate_concept?related_id=${this.selected_concept}&relation_type=${relation_type}`)
+                axios.put(`${this.baseURL}/api/concepts/${concept_id}/relate_concept?related_id=${this.selected_concept}&relation_type=${relation_type}`)
                     .then(function(response) {
                         console.log("related!", response);
                         location.reload();
@@ -420,7 +422,7 @@
             },
             getConcepts: function() {
                 let vm = this;
-                const promise = axios.get(`/search?term=teach`)
+                const promise = axios.get(`${this.baseURL}/search?term=teach`)
                 promise.then(response => {
                     let terms = response.data;
                     let terms_result = terms.map(term => {
@@ -439,7 +441,7 @@
             deprecateConcept: function() {
               let concept_id = this.terms[0].concept_id
               let vm = this;
-              let url = `/api/concepts/${concept_id}/deprecate`;
+              let url = `${this.baseURL}/api/concepts/${concept_id}/deprecate`;
               if (this.selected_concept != '') {
                 url += `?to=${this.selected_concept}`;
               }

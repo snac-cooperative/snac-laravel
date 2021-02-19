@@ -34,7 +34,8 @@
           { value:  process.env.MIX_RELIGION_ID, text: 'Religion'},
           { value:  process.env.MIX_RELATION_ID, text: 'Relation'},
         ],
-        categoryId: null
+        categoryId: null,
+        baseURL: process.env.MIX_APP_URL
       };
     },
     methods: {
@@ -44,7 +45,7 @@
           category_id: this.categoryId
         };
         let vm = this;
-        axios.post(`/api/concepts`, data)
+        axios.post(`${this.baseURL}/api/concepts`, data)
           .then(function(response) {
             let result = response.data;
             console.log(response);
