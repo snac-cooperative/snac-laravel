@@ -55,3 +55,8 @@ Route::get('google/login', 'Auth\LoginController@handleProviderCallback');
 Auth::routes(['register' => false]);
 
 Route::get('/', 'ConceptController@index');
+
+
+// Simple Repo Form Routes
+Route::get('repositories', 'RepositoryController@new');
+Route::post('repositories', 'RepositoryController@create');
