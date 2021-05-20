@@ -40,6 +40,10 @@ Vue.component('b-col', BCol);
 Vue.component('b-form-group', BFormGroup);
 Vue.component('b-form-select', BFormSelect);
 
+// Repository Forms
+Vue.component('language-select', require('./components/LanguageSelect.vue').default);
+Vue.component('repository-form', require('./components/RepositoryForm.vue').default);
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

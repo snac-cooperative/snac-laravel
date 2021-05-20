@@ -1,52 +1,8 @@
-@extends ('layouts.snac_layout')
-
-
-<script>
-
-
-window.addEventListener('load', function() {
-            $('[data-toggle="tooltip"]').tooltip()
-
-})
-
-    // $(document).ready(function() {
-    //     $('[data-toggle="tooltip"]').tooltip()
-
-
-
-    // });
-    // $(function () {
-    //     $('[data-toggle="tooltip"]').tooltip()
-    // })
-    // function showPhysicalAddress() {
-
-    // }
-</script>
-
-@section ('title')
-Create a Holding Repository
-@endsection
-@section ('content')
-
-{{-- <ol class="breadcrumb">
-    <li><a href="{{env('SNAC_URL')}}/vocab_administrator/dashboard">Vocabulary</a></li>
-    <li>New</li>
-</ol>
-<div class="row">
-    <div class="col-md-8" id="conceptForm">
-        <concept-create
-        id="conceptCreate"
-        >
-    </concept-create>
-</div>
-<br>
-</div> --}}
-
-
-
-<h1>New Holding Repository</h1>
+<template>
+  <div>
+    <h1>New Holding Repository</h1>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active"><a href="{{env('SNAC_URL')}}/repositories">Repository</a></li>
+        <li class="breadcrumb-item active"><a href="">Repository</a></li>
         <li class="breadcrumb-item">Address</li>
         <li class="breadcrumb-item">Contact</li>
     </ol>
@@ -54,19 +10,19 @@ Create a Holding Repository
 
     <hr>
     <form action="/repositories/create" method="post">
-        {{ csrf_field() }}
+
         <div class="form-group">
             <label for="title" >Repository Name</label>
             <i class="fa fa-question-circle-o" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="Full name, unabbreviated" ></i>
-            {{-- <i class="fa fa-question-circle-o" aria-hidden="true" data-toggle="sample-text" data-placement="right" title="Full name, unabbreviated" ></i> --}}
-            <input type="text" value="{{{ $repository->repository_name_unauthorized or '' }}}" class="form-control" id="taskTitle"  name="name" placeholder="e.g. Institutional Records and Archives, Getty Research Institute">
+
+            <input type="text" value="" class="form-control" id="taskTitle"  name="name" placeholder="e.g. Institutional Records and Archives, Getty Research Institute">
         </div>
         <div class="form-group">
             <label for="title">
                 Repository Description (optional)
                 <i class="fa fa-question-circle-o" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="Brief description of holding institution and scope of collections; may include access information"></i>
             </label>
-            <textarea type="text" value="{{{ $repository->repository_name_unauthorized or '' }}}" class="form-control" id="taskTitle"  name="name"> </textarea>
+            <textarea type="text" value="" class="form-control" id="taskTitle"  name="name"> </textarea>
         </div>
 
         <div>
@@ -101,22 +57,13 @@ Create a Holding Repository
         <div class="form-group">
             <label for="description">Repository Type</label>
             <select class="form-control" name="company">
-                <option {{{ (isset($repository->company) && $repository->company == 'Apple') ? "selected=\"selected\"" : "" }}}></option>
-                <option {{{ (isset($repository->company) && $repository->company == 'Apple') ? "selected=\"selected\"" : "" }}}>Municipal archive</option>
-                <option {{{ (isset($repository->company) && $repository->company == 'Google') ? "selected=\"selected\"" : "" }}}>National archive</option>
-                <option {{{ (isset($repository->company) && $repository->company == 'Mi') ? "selected=\"selected\"" : "" }}}>Private archive</option>
-                <option {{{ (isset($repository->company) && $repository->company == 'Samsung') ? "selected=\"selected\"" : "" }}}>D</option>
+                <option ></option>
+                <option>Municipal archive</option>
+                <option>National archive</option>
+                <option>Private archive</option>
+                <option>D</option>
             </select>
         </div>
-        {{-- <div class="form-group">
-            <label for="description">Product Amount</label>
-            <input type="text"  value="{{{ $repository->amount or '' }}}" class="form-control" id="productAmount" name="amount"/>
-        </div> --}}
-        {{-- <div class="form-group">
-            <label for="description">Product Available</label><br/>
-            <label class="radio-inline"><input type="radio" name="available" value="1" {{{ (isset($repository->available) && $repository->available == '1') ? "checked" : "" }}}> Yes</label>
-            <label class="radio-inline"><input type="radio" name="available" value="0" {{{ (isset($repository->available) && $repository->available == '0') ? "checked" : "" }}}> No</label>
-        </div> --}}
 
         <br>
         <br>
@@ -124,37 +71,27 @@ Create a Holding Repository
 
         <div class="form-group" id="address-question">
             <label for="description">Does this Repository have a physical address?</label><br/>
-            {{-- TODO: don't  --}}
             <label class="radio-inline"> <input type='radio' name="address-exists" onclick="$('#address-fields').slideDown()">Yes</label>
             <label class="radio-inline"> <input type='radio' name="address-exists" onclick="$('#address-fields').slideUp()">No</label>
-            {{-- <label onclick="$('#address-question').hide();$('#address-fields').show()" class="radio-inline"><input type="radio" name="available" value="1" {{{ (isset($repository->available) && $repository->available == '1') ? "checked" : "" }}}> Yes</label> --}}
-            {{-- <label onclick="$('#address-question').hide()" class="radio-inline"><input type="radio" name="available" value="0" {{{ (isset($repository->available) && $repository->available == '0') ? "checked" : "" }}}> No</label> --}}
         </div>
 
-        {{-- <div class="form-group" id="ZZZaddress-question">
-            <label for="description">Does this Repository have a physical address?</label><br/>
-            <button type='button' class="btn btn-primary" onclick="$('#address-question').hide();$('#address-fields').show()">Yes</button>
-            <button type='button' class="btn btn-primary" onclick="$('#address-question').hide()">No</button>
-        </div> --}}
-
-        {{-- TODO: Add undo/redo  --}}
 
         <div id="address-fields" style="" class="collapse">
             <div class="form-group">
                 <label for="description">Street Address</label>
-                <input type="text" value="{{{ $repository->street_address_1 or '' }}}" class="form-control" id="street_address_1"  name="street_address_1">
+                <input type="text" value="" class="form-control" id="street_address_1"  name="street_address_1">
             </div>
             <div class="form-group">
                 <label for="description">City</label>
-                <input type="text" value="{{{ $repository->street_address_1 or '' }}}" class="form-control" id="street_address_1"  name="street_address_1">
+                <input type="text" value="" class="form-control" id="street_address_1"  name="street_address_1">
             </div>
             <div class="form-group">
                 <label for="description">Postal Code</label>
-                <input type="text" value="{{{ $repository->street_address_1 or '' }}}" class="form-control" id="street_address_1"  name="street_address_1">
+                <input type="text" value="" class="form-control" id="street_address_1"  name="street_address_1">
             </div>
             <div class="form-group">
                 <label for="description">State/Province</label>
-                <input type="text" value="{{{ $repository->street_address_1 or '' }}}" class="form-control" id="street_address_1"  name="street_address_1">
+                <input type="text" value="" class="form-control" id="street_address_1"  name="street_address_1">
             </div>
         <div class="form-group">
             <label for="description">Country</label>
@@ -410,9 +347,6 @@ Create a Holding Repository
 
 
 
-        {{--  --}}
-
-    {{-- TODO: UNDO/Redo on questions --}}
 
 
         <div class="form-group" id="website-question">
@@ -426,31 +360,23 @@ Create a Holding Repository
 
             <div class="form-group">
                 <label for="description">Website URL</label>
-                <input type="text" value="{{{ $repository->street_address_1 or '' }}}" class="form-control" id="street_address_1"  name="street_address_1">
+                <input type="text" value="" class="form-control" id="street_address_1"  name="street_address_1">
             </div>
 
         </div>
 
-        {{-- <div class="form-group"> --}}
-            {{-- Tooltip and placeholder for  website, with HTTPS --}}
-            {{-- <label for="description">General Contact Information</label> --}}
-            {{-- <input type="text" value="{{{ $repository->street_address_1 or '' }}}" class="form-control" id="street_address_1"  placeholder="Phone, email, etc"> --}}
-        {{-- </div> --}}
         <div class="form-group">
-            {{-- Tooltip and placeholder for  website, with HTTPS --}}
             <label for="description">Phone</label>
-            <input type="text" value="{{{ $repository->street_address_1 or '' }}}" class="form-control" id="street_address_1"  placeholder="">
+            <input type="text" value="" class="form-control" id="street_address_1"  placeholder="">
         </div>
         <div class="form-group">
-            {{-- Tooltip and placeholder for  website, with HTTPS --}}
             <label for="description">Email</label>
-            <input type="text" value="{{{ $repository->street_address_1 or '' }}}" class="form-control" id="street_address_1"  placeholder=" ">
+            <input type="text" value="" class="form-control" id="street_address_1"  placeholder=" ">
         </div>
 
         <div class="form-group">
-            {{-- Tooltip and placeholder for  website, with HTTPS --}}
             <label for="description">Access Conditions</label>
-            <input type="text" value="{{{ $repository->street_address_1 or '' }}}" class="form-control" id="street_address_1"  placeholder=" ">
+            <input type="text" value="" class="form-control" id="street_address_1"  placeholder=" ">
         </div>
 
         <br>
@@ -458,7 +384,6 @@ Create a Holding Repository
         <!--  LANGUAGES -->
         <!--  LANGUAGES -->
 
-        {{-- TODO: reference vs archival info --}}
         <div class="form-group" id="language-question">
             <label for="description">What languages are reference services offered in?
                 <i class="fa fa-question-circle-o" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="List the languages dominantly used in your institution"></i>
@@ -467,7 +392,6 @@ Create a Holding Repository
         <language-select :multiple="true"></language-select>
 
 
-{{--
         <div class="form-group language-input">
             <label class="control-label col-xs-2" data-content="hello" data-toggle="popover"
                 data-placement="top"> Language of Resources</label>
@@ -476,30 +400,28 @@ Create a Holding Repository
                     required>
 
             </select>
-        </div> --}}
+        </div>
 
 <div>
-    {{-- <br>
-    <button type='button' class="btn btn-success" onclick="$('#website-question').hide();$('#website-fields').show()">Add Language</button> --}}
 
 </div>
 <br>
 <br>
 
 </div>
+</form>
+  </div>
+</template>
 
-
-{{-- TODO: Access policy  --}}
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        <button type="submit" class="btn btn-primary">Continue</button>
-    </form>
-@endsection
+<script>
+Vue.component('term', require('./Term.vue').default);
+Vue.component('language-select', require('./LanguageSelect.vue').default);
+export default {
+  props: ['concept'],
+  methods: {
+    mounted(){
+      console.log('Component mounted!');
+    }
+  }
+}
+</script>
