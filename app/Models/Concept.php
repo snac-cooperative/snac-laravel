@@ -38,6 +38,22 @@ class Concept extends Model
         return $this->hasMany("App\Models\Term");
     }
 
+    public function notes() {
+        return $this->hasMany("App\Models\ConceptNote");
+    }
+
+    public function archivalScopeNotes() {
+        return $query->join("vocabulary", "concept_notes.type_id", "vocabulary.id")
+                    ->where("vocabulary.type", "concept_note_type")
+                    ->where("vocabulary.value", "scope");
+    }
+
+    public function historicNotes() {
+        return $query->join("vocabulary", "concept_notes.type_id", "vocabulary.id")
+                    ->where("vocabulary.type", "concept_note_type")
+                    ->where("vocabulary.value", "historical");
+    }
+
     public function broader() {
         return $this->belongsToMany("App\Models\Concept", "concept_relationships", "concept_id", "related_concept_id")
                         ->withPivot("relationship_type")

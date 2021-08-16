@@ -32,5 +32,6 @@ Route::get('concepts_summary', function () {
     return Term::where('preferred', 'true')->get();
 });
 Route::apiResource('concept_sources', 'API\ConceptSourceController');
+Route::apiResource('concept_notes', 'API\ConceptNoteController');
 
 Route::apiResource('terms', 'API\TermController');
