@@ -79,6 +79,48 @@
                       <b-button v-if="isVocabularyEditor" @click="addSource()" variant="info"><i class="fa fa-plus"></i> Add Source</b-button>
                     </div>
                 </div>
+                <div class="mt-3">
+                    <h4>Scope Notes</h4>
+                    <div class="mt-1" :key="note.id" v-for="(note, index) in archivalScopeNotes">
+                      <concept-note
+                        :canEditVocabulary="isVocabularyEditor"
+                        :concept-id="note.concept_id"
+                        :prop-note-id="note.id"
+                        :prop-note="note.note"
+                        :prop-type="note.type_id"
+                        prop-delete-event='delete-archival-scope-note'
+                        prop-save-event='save-archival-scope-note'
+                        :property-edit-mode="note.editMode"
+                        v-on:delete-archival-scope-note="deleteArchivalScopeNote(index)"
+                        v-on:save-archival-scope-note="updateArchivalScopeNote"
+                        :note-index="index"
+                      ></concept-note>
+                    </div>
+                    <div class="mt-3">
+                      <b-button v-if="isVocabularyEditor" @click="addArchivalScopeNote()" variant="info"><i class="fa fa-plus"></i> Add Scope Note</b-button>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h4>Historical Notes</h4>
+                    <div class="mt-1" :key="note.id" v-for="(note, index) in historicalNotes">
+                      <concept-note
+                        :canEditVocabulary="isVocabularyEditor"
+                        :concept-id="note.concept_id"
+                        :prop-note-id="note.id"
+                        :prop-note="note.note"
+                        :prop-type="note.type_id"
+                        prop-delete-event='delete-historical-note'
+                        prop-save-event='save-historical-note'
+                        :property-edit-mode="note.editMode"
+                        v-on:delete-historical-note="deleteHistoricalNote(index)"
+                        v-on:save-historical-note="updateHistoricalNote"
+                        :note-index="index"
+                      ></concept-note>
+                    </div>
+                    <div class="mt-3">
+                      <b-button v-if="isVocabularyEditor" @click="addHistoricalNote()" variant="info"><i class="fa fa-plus"></i> Add Historical Note</b-button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="mt-3">
@@ -226,6 +268,15 @@
             sourcesProps: {
                 type: Array
             },
+            notesProps: {
+                type: Array
+            },
+            archivalScopeNoteTypeIdProps: {
+              type: Number
+            },
+            historicalNoteTypeIdProps: {
+              type: Number
+            },
             canEditVocabulary: false
         },
         data() {
@@ -240,6 +291,18 @@
                     // populating terms with our custom temporary variables
                     (source) => {source.inEdit = false; return source}
                 ),
+                notes: this.notesProps.map(
+                    // populating terms with our custom temporary variables
+                    (note) => {note.inEdit = false; return note}
+                ),
+                archivalScopeNotes: this.notesProps.map((note) => {
+                  note.inEdit = false;
+                  return note
+                }).filter(note => note.type_id == this.archivalScopeNoteTypeIdProps).sort(),
+                historicalNotes: this.notesProps.map((note) => {
+                  note.inEdit = false;
+                  return note
+                }).filter(note => note.type_id == this.historicalNoteTypeIdProps).sort(),
                 editMode: false,
                 // concept: this.termProps.slice()
                 conceptId: this.conceptProps.id,
@@ -464,6 +527,24 @@
           },
           updateSource: function(source, index) {
             Vue.set(this.sources, index, source);
+          },
+          deleteArchivalScopeNote: function(noteIndex) {
+            this.$delete(this.archivalScopeNotes,noteIndex);
+          },
+          addArchivalScopeNote: function() {
+            this.archivalScopeNotes.push({"concept_id": this.conceptId, "editMode": true, "type_id": this.archivalScopeNoteTypeIdProps });
+          },
+          updateArchivalScopeNote: function(note, index) {
+            Vue.set(this.archivalScopeNotes, index, note);
+          },
+          deleteHistoricalNote: function(noteIndex) {
+            this.$delete(this.historicalNotes,noteIndex);
+          },
+          addHistoricalNote: function() {
+            this.historicalNotes.push({"concept_id": this.conceptId, "editMode": true, "type_id": this.historicalNoteTypeIdProps });
+          },
+          updateHistoricalNote: function(note, index) {
+            Vue.set(this.historicalNotes, index, note);
           }
         }
     }

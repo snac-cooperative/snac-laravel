@@ -34,6 +34,7 @@ Vue.component('concept-category', require('./components/ConceptCategory.vue').de
 Vue.component('concept-create', require('./components/ConceptCreate.vue').default);
 Vue.component('concept-source', require('./components/ConceptSource.vue').default);
 Vue.component('concept-search', require('./components/ConceptSearch.vue').default);
+Vue.component('concept-note', require('./components/ConceptNote.vue').default);
 Vue.component('term-item', require('./components/TermItem.vue').default);
 Vue.component('b-table', BTable);
 Vue.component('b-pagination', BPagination);

@@ -36,6 +36,9 @@
                     :concept-props="{{ $concept }}"
                     :term-props="{{ $concept->terms}}"
                     :sources-props="{{ $concept->sources}}"
+                    :notes-props="{{ $concept->notes }}"
+                    :archival-scope-note-type-id-props="{{ $concept->archival_scope_note_type_id }}"
+                    :historical-note-type-id-props="{{ $concept->historical_note_type_id }}"
                     can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
                 >
                 </concept-form>

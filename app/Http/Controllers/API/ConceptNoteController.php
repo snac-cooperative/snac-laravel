@@ -29,12 +29,15 @@ class ConceptNoteController extends Controller
     public function store(Request $request)
     {
         $conceptId = $request['concept_id'];
-        if (method_exists($request, 'route') && $request->route('concept')) {
-            $conceptId = $request->route('concept');
-        }
         $concept = Concept::findOrFail($conceptId);
-        $conceptNote = ConceptNote::create($request->all());
-        $concept->sources()->save($conceptNote);
+        $language_id = 130;
+        $conceptNote = ConceptNote::create([
+            'concept_id' => $concept['id'],
+            'note' => $request['note'],
+            'type_id' => $request['type_id'],
+            'language_id' => $language_id,
+        ]);
+        $concept->notes()->save($conceptNote);
         return $conceptNote;
     }
 
@@ -59,7 +62,9 @@ class ConceptNoteController extends Controller
     public function update(Request $request, $id)
     {
         $note = ConceptNote::findOrFail($id);
-        $note->update($request->all());
+        $note->update([
+            'note' => $request['note'],
+        ]);
         return $note;
     }
 
@@ -71,7 +76,7 @@ class ConceptNoteController extends Controller
      */
     public function destroy($id)
     {
-        $source = ConceptSource::findOrFail($id)->delete();
+       $note  = ConceptNote::findOrFail($id)->delete();
         return response('Deleted'.$id, 204);
     }
 }

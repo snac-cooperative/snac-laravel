@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ConceptNote extends Model {
 
     protected $fillable = [
+        "concept_id",
         "note",
         "language_id",
         "type_id",

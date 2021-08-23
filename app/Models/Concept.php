@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Vocabulary;
 use Illuminate\Database\Eloquent\Model;
 
 class Concept extends Model
@@ -43,15 +44,25 @@ class Concept extends Model
     }
 
     public function archivalScopeNotes() {
-        return $query->join("vocabulary", "concept_notes.type_id", "vocabulary.id")
+        return $this->hasMany("App\Models\ConceptNote")->join("vocabulary", "concept_notes.type_id", "vocabulary.id")
                     ->where("vocabulary.type", "concept_note_type")
                     ->where("vocabulary.value", "scope");
     }
 
-    public function historicNotes() {
-        return $query->join("vocabulary", "concept_notes.type_id", "vocabulary.id")
+    public function historicNotes($query) {
+        return $this->hasMany("App\Models\ConceptNote")->join("vocabulary", "concept_notes.type_id", "vocabulary.id")
                     ->where("vocabulary.type", "concept_note_type")
                     ->where("vocabulary.value", "historical");
+    }
+
+    public function getArchivalScopeNoteTypeIdAttribute($value) {
+        return (Vocabulary::where("type", "concept_note_type")
+            ->where("value","scope"))->first()['id'];
+    }
+
+    public function getHistoricalNoteTypeIdAttribute() {
+        return (Vocabulary::where("type", "concept_note_type")
+            ->where("value","historical"))->first()['id'];
     }
 
     public function broader() {

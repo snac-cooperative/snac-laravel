@@ -12,13 +12,14 @@
         </b-input-group>
       </b-row>
 
-      <b-button @click="deleteSource()" variant="danger"><i class="fa fa-trash"></i> Delete</b-button>
-      <b-button variant="primary" @click="saveConceptSource()" ><i class="fa fa-save"></i> Save</b-button>
+      <b-button @click="deleteNote()" variant="danger"><i class="fa fa-trash"></i> Delete</b-button>
+      <b-button variant="primary" @click="saveNote()" ><i class="fa fa-save"></i> Save</b-button>
       <b-button @click="toggleEditMode()" >Cancel</b-button>
     </div>
     <div v-show="!editMode">
       <p>{{note}}</p> <br/>
       <p>{{type}}</p> <br/>
+      <p>{{noteId}}</p> <br/>
       <b-button variant="primary" @click="toggleEditMode()" v-if="isVocabularyEditor" v-show="!editMode"><i class="fa fa-edit"></i> Edit Note</b-button>
     </div>
   </div>
@@ -27,22 +28,40 @@
 <script>
   export default{
     props: {
-      noteId: {
+      conceptId: {
         type: Number
+      },
+      propNoteId: {
+        type: Number
+      },
+      propNote: {
+        type: String
+      },
+      propType: {
+        type: Number
+      },
+      propDeleteEvent: {
+        type: String
+      },
+      propSaveEvent: {
+        type: String
       },
       propertyEditMode: {
         type: Boolean
       },
       canEditVocabulary: false,
+      noteIndex: null
     },
     mounted() {
-      /*this.getNote();*/
+      this.getNote();
     },
     data() {
       return {
-        note: null,
-        type: null,
+        noteId: this.propNoteId,
+        note: this.propNote,
+        type: this.propType,
         editMode: this.propertyEditMode,
+        index: this.noteIndex,
         isVocabularyEditor: this.canEditVocabulary === true,
         baseURL: process.env.MIX_APP_URL
       }
@@ -60,31 +79,30 @@
         console.log(`Saving ${this.noteId} NoteId: ${this.noteId}, Index: ${this.index}`);
         let vm = this;
         // Check this with Joseph
-        let currentSource = {
+        let currentNote = {
             concept_id: this.conceptId,
-            citation: this.citation,
-            url: this.url,
-            found_data: this.foundData,
-            note: this.note
+            note: this.note,
+            type_id: this.type ,
           };
-        if (this.conceptSourceId) {
-          axios.patch(`${this.baseURL}/api/concept_sources/${this.conceptSourceId}`,
-            currentSource
+        if (this.noteId) {
+          console.log("Coing to call patch");
+          axios.patch(`${this.baseURL}/api/concept_notes/${this.noteId}`,
+            currentNote
           )
             .then(function(response) {
               vm.editMode = false;
-              vm.$emit('saved-note', response.data, vm.index);
+              vm.$emit(vm.propSaveEvent, response.data, vm.index);
               console.log(response);
             }).catch(function(error) {
               console.log(error);
             });
         } else {
-          axios.post(`${this.baseURL}/api/concept_sources`,
-            currentSource
+          axios.post(`${this.baseURL}/api/concept_notes`,
+            currentNote
           )
             .then(function(response) {
               vm.editMode = false;
-              vm.$emit('saved-note', response.data, vm.index);
+              vm.$emit(vm.propSaveEvent, response.data, vm.index);
               console.log(response);
             }).catch(function(error) {
               console.log(error);
@@ -94,23 +112,22 @@
       toggleEditMode: function() {
           this.editMode = !this.editMode
       },
-      deleteSource: function() {
-        console.log(`Deleting Note with id ${this.conceptSourceId}`);
+      deleteNote: function() {
+        console.log(`Deleting Note with id ${this.noteId}`);
         var vm = this;
 
-        if(this.conceptSourceId == null) {
-          vm.$emit('delete-note');
+        if(this.noteId == null) {
+          vm.$emit(vm.propDeleteEvent, vm.index);
           return;
         }
 
-        axios.delete(`${this.baseURL}/api/concept_sources/${this.conceptSourceId}`)
+        axios.delete(`${this.baseURL}/api/concept_notes/${this.noteId}`)
           .then(function(response) {
             console.log("Deleted! ", response);
-            vm.$emit('delete-source');
+            vm.$emit(vm.propDeleteEvent, vm.index);
           }).catch(function(error) {
             console.log(error);
           })
-
       },
     }
 
