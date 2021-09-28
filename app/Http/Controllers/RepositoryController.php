@@ -15,13 +15,13 @@ class RepositoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function new(Request $request)
+    public function create(Request $request)
     {
         $repository = $request->session()->get('repository') ?? new Repository;
         // $repository = new Repository;
         // require('/Users/josephglass/.composer/vendor/autoload.php');
         // \Psy\Shell::debug(get_defined_vars(), $this);
-        return view('repositories.create-step1', compact('repository', $repository));
+        return view('repositories.create_step_1', compact('repository', $repository));
     }
 
     /**
@@ -30,7 +30,7 @@ class RepositoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
 
         $validatedData = $request->validate([
@@ -40,8 +40,8 @@ class RepositoryController extends Controller
             // 'available' => 'required',
             // 'description' => 'required',
         ]);
-            require('/Users/josephglass/.composer/vendor/autoload.php');
-            \Psy\Shell::debug(get_defined_vars(), $this);
+            // require('/Users/josephglass/.composer/vendor/autoload.php');
+            // \Psy\Shell::debug(get_defined_vars(), $this);
         if (empty($request->session()->get('repository'))) {
             $repository = new Repository();
             $repository->fill($validatedData);

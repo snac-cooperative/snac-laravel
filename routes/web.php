@@ -58,5 +58,5 @@ Route::get('/', 'ConceptController@index');
 
 
 // Simple Repo Form Routes
-Route::get('repositories', 'RepositoryController@new');
-Route::post('repositories', 'RepositoryController@create');
+Route::get('repositories', 'RepositoryController@create');
+Route::post('repositories', 'RepositoryController@store');
