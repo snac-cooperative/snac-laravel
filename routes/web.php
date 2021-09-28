@@ -57,7 +57,8 @@ Auth::routes(['register' => false]);
 Route::get('/', 'ConceptController@index');
 
 
-// Simple Repo Form Routes
+// Simple Form Routes
 Route::get('repositories', 'RepositoryController@create');
 Route::post('repositories', 'RepositoryController@store');
 Route::get('resources_guided', 'ResourceController@create');
+Route::get('cpfs', 'EntityController@create');
