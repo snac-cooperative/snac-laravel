@@ -37,7 +37,14 @@ class ConceptController extends Controller
                 ->orderBy($sortBy, $sortDesc)->paginate($perPage);
             return $concepts->toJson();
         }
-        return view('concepts.index');
+
+        $user = Auth::user();
+        $isVocabularyEditor = false;
+        if (!Auth::guest()) {
+            $isVocabularyEditor = $user->isVocabularyEditor();
+        }
+        $terms = [];
+        return view('concepts.index', ['isVocabularyEditor' => $isVocabularyEditor, 'terms' => $terms]);
     }
 
     /**
@@ -170,6 +177,16 @@ class ConceptController extends Controller
     public function destroy(Concept $concept)
     {
         //
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Concept  $concept
+     * @return \Illuminate\Http\Response
+     */
+    public function search_page(Concept $concept)
+    {
+        return view('concepts.search');
     }
 
     /**

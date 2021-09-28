@@ -91,6 +91,7 @@
             size="xl"
             @ok="relateConcept()"
         >
+        <!-- TODO: extract concept search form into ConceptSearch.vue-->
         <!-- ok-title="Create Relationship" -->
             <form
                 id="concept-relationship-form"
@@ -166,6 +167,7 @@
             ref="deprecate-modal"
         >
         <!-- ok-title="Create Relationship" -->
+        <!-- TODO: Rename this form to fix collision -->
             <form
                 id="concept-relationship-form"
                 @submit.stop.prevent="searchConcept()">

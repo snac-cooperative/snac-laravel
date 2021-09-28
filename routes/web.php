@@ -20,10 +20,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('concepts',              'ConceptController@index');
-Route::post('concepts',             'ConceptController@store')->middleware('can:edit-vocabulary');
-Route::get('concepts/create',       'ConceptController@create')->middleware('can:edit-vocabulary');
-Route::get('concepts/search',       'ConceptController@search');
-Route::post('concepts/{concept}/add_term', 'ConceptController@addTerm')->middleware('can:edit-vocabulary');
+// Route::post('concepts',             'ConceptController@store')->middleware('can:edit-vocabulary'); // TODO: switch to can:edit-vocabulary after demo testing
+Route::post('concepts',             'ConceptController@store')->middleware('auth');
+Route::get('concepts/create',       'ConceptController@create')->middleware('auth');
+Route::get('concepts/search',       'ConceptController@search')->name('search');
+Route::get('concepts/search_page',       'ConceptController@search_page');
+Route::post('concepts/{concept}/add_term', 'ConceptController@addTerm')->middleware('auth');
 Route::get('concepts/{concept}',    'ConceptController@show');
 Route::delete('concepts/{concept}', 'ConceptController@destroy');
 
