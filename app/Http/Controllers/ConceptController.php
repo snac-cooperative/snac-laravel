@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class ConceptController extends Controller
-    {
+{
     /**
      * Display a listing of the resource.
      *
@@ -204,7 +204,7 @@ class ConceptController extends Controller
 
 
     /**
-     * Relate Concepts 
+     * Relate Concepts
      *
      * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
