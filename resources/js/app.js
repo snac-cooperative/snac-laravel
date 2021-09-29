@@ -35,11 +35,17 @@ Vue.component('concept-create', require('./components/ConceptCreate.vue').defaul
 Vue.component('concept-source', require('./components/ConceptSource.vue').default);
 Vue.component('concept-search', require('./components/ConceptSearch.vue').default);
 Vue.component('term-item', require('./components/TermItem.vue').default);
+Vue.component('cpf-form', require('./components/CPFForm.vue').default);
 Vue.component('b-table', BTable);
 Vue.component('b-pagination', BPagination);
 Vue.component('b-col', BCol);
 Vue.component('b-form-group', BFormGroup);
 Vue.component('b-form-select', BFormSelect);
+
+// Repository Forms
+Vue.component('language-select', require('./components/LanguageSelect.vue').default);
+Vue.component('repository-form', require('./components/RepositoryForm.vue').default);
+Vue.component('radio-question', require('./components/RadioQuestion.vue').default);
 
 
 /**
