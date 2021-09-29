@@ -497,6 +497,7 @@
           // https://v3.vuejs.org/guide/component-template-refs.html
 
         this.cpfSearch  = [];
+        delete axios.defaults.headers.common['X-Requested-With']; //TODO: find consistent CORS solution
         const promise = axios.put(`http://localhost/~josephglass/snac/rest/`, {"command": "search", "term":`${query}`,"entity_type":`${entityType}`,"start":"0","count":`${searchCount}`,"facets":[]})
         // const promise = axios.get(`search?term=${query}`)
         // {"command":"search","term":"james","entity_type":"","start":"0","count":"10","facets":[]}

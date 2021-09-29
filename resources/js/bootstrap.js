@@ -21,8 +21,7 @@ try {
 
 window.axios = require('axios');
 
-// TODO: Disabled for CORS issues. Investigate X-Requested-With and determine if needed.
-// window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
