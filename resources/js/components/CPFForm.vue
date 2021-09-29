@@ -362,7 +362,7 @@
     </b-modal>
 
     <div class="mt-3">
-      <b-button v-if="true" v-b-modal.concept-deprecation-to-search variant="primary"><i class="fa fa-search"></i> Relate CPF </b-button>
+      <b-button v-if="true" v-b-modal.concept-deprecation-to-search variant="primary"><i class="fa fa-search"></i> Relate to another CPF </b-button>
     </div>
 
     <b-modal
@@ -462,7 +462,7 @@
     data() {
       return {
         showAdditionalInfo: '',
-        entityType: 'person',
+        entityType: '',
 
         editMode: true,
         cpfSearch: [],
