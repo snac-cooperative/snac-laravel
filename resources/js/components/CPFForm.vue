@@ -1,7 +1,13 @@
 <template>
 
+  <!--TODO: Add Example CPF records:
+  Peratrovich, Elizabeth Jean (https://snaccooperative.org/view/28265874)
+  Quander Family (https://snaccooperative.org/ark:/99166/w6f58cqk)
+  Instituto Laboral de la Raza (https://snaccooperative.org/view/1584971)
+  -->
   <div id="concept-table" classname="">
-
+    <!-- TODO: replace header after entityTypeChanges -->
+  <h1 id="page-title" ref="title">New Person, Family, or Corporate Body</h1>
 
     <button class="btn btn-primary form-group"
       @click.prevent="entityType = ''"
@@ -11,12 +17,12 @@
 
     <div class="form-group" style="width:50%" v-show="entityType == ''">
       <!-- <label for="description">Entity Type</label> -->
-      <label for="">Do you want to describe a person, family, or organization?</label>
+      <label for="">Do you want to describe a Person, Family, or Corporate Body?</label>
       <select class="form-control" name="entityType" v-model="entityType">
         <option value="" selected></option>
         <option value="person">Person</option>
         <option value="family">Family</option>
-        <option value="corporateBody">corporateBody</option> --}}
+        <option value="corporateBody">Corporate Body</option> --}}
       </select>
     </div>
 
@@ -69,7 +75,6 @@
             <ul>
               <li>Mrs.</li>
               <li>Saint</li>
-              <li>Reverend? Colonel?</li>
             </ul>
             <p>Identifying component:</p>
             <ul>
@@ -141,14 +146,14 @@
           <label for="">Occupations</label>
           <div class="input-group">
 
-          <input name="" id="" class="form-control" type="text" placeholder="Search for Occupations">
+          <input name="" id="occupations" class="form-control" type="text" placeholder="Search for Occupations" :disabled=!showAdditionalInfo>
           <div  class="input-group-append"><button type="button" class="btn btn-info">Search</button></div>
           </div>
         </div>
 
         <div class="form-group">
           <label for="" v-show="entityType == 'person'">Biographical Note</label>
-          <textarea name="" id="" type="text" class="form-control" ></textarea>
+          <textarea name="" id="" type="text" class="form-control" :disabled=!showAdditionalInfo></textarea>
         </div>
       </div>
 
@@ -384,7 +389,7 @@
               <option value="">All Types</option>
               <option value="person">Person</option>
               <option value="family">Family</option>
-              <option value="corporateBody">CorporateBody</option>
+              <option value="corporateBody">Corporate Body</option>
             </select>
             <input id="relation-search" ref="searchQuery" type="text" class="form-control" placeholder="Name" aria-label="Name" style="width: 75%;">
             <div class="input-group-append">
@@ -461,9 +466,8 @@
     },
     data() {
       return {
-        showAdditionalInfo: '',
         entityType: '',
-
+        showAdditionalInfo: false,
         editMode: true,
         cpfSearch: [],
         relatedCPFs: [],
@@ -486,6 +490,10 @@
     computed: {
       displayName() {
         // return
+      },
+      pageTitle() {
+
+        return
       }
     },
     methods: {
@@ -534,6 +542,9 @@
         var vm = this;
         vm.relatedCPFs.splice(vm.terms.indexOf(term), 1);
       },
+      clearAdditionalInfo: function() {
+        // Disable all inputs under showAdditionalInfo
+      }
       // relateConcept: function() {
       //   let concept_id = this.terms[0].concept_id
       //   let relation_type = this.relationType
@@ -561,6 +572,11 @@
     //   updateSource: function(source, index) {
     //   Vue.set(this.sources, index, source);
 
+    },
+    watch: {
+      entityType: function() {
+        this.$refs["title"].innerText = this.entityType[0].toUpperCase() + this.entityType.substring(1);
+      }
     }
   }
 </script>
