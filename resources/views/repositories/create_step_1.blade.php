@@ -99,7 +99,8 @@ Create a Holding Repository
                 </b-card>
             </b-collapse>
 
-            <input type="text" value="{{ $repository->street_address_1 or '' }}" class="form-control" id="street_address_1"  placeholder=" ">
+            <textarea name="" value="{{ $repository->street_address_1 or '' }}" class="form-control" id="street_address_1"  placeholder=" "></textarea>
+
         </div>
 
 
@@ -209,12 +210,12 @@ Create a Holding Repository
                 <input type="text" value="" class="form-control">
             </div>
             <div class="form-group">
-                <label for="description">Postal Code</label>
-                <input type="number" value="" class="form-control">
-            </div>
-            <div class="form-group">
                 <label for="description">State/Province</label>
                 <input type="text" value="" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="description">Postal Code</label>
+                <input value="" class="form-control">
             </div>
             <div class="form-group">
                 <label for="description">Country</label>
@@ -533,11 +534,11 @@ Create a Holding Repository
             </div>
         @endif
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-4">
                 {{-- <button type="submit" class="btn btn-primary">Save Repository</button> --}}
                 <button type="button" class="btn btn-primary">Save Repository</button>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-4">
                 <a type="button" class="btn btn-success" href="/resources_guided">Add Resources</a>
             </div>
         </div>

@@ -50,6 +50,9 @@ Create a Resource
     <form action="/repositories/create" method="post" style="max-width: 70%">
         {{ csrf_field() }}
 
+        <p> Example Resource Description: <a href="https://snaccooperative.org/vocab_administrator/resources/7754921" target="_blanck">Edgar A. Mearns correspondence</a></p>
+        <hr>
+
         <div class="form-group">
             <label for="description">Repository</label>
             <select class="form-control" name="company">
@@ -83,7 +86,7 @@ Create a Resource
 
 
                     <p>The title should contain the name of the creator(s) or collector(s) of the collection and the kinds of materials the collection contains (e.g., papers, photographs, correspondence, etc.)</p>
-                    <p>e.g. <a href="https://snaccooperative.org/vocab_administrator/resources/7754921">Edgar A. Mearns correspondence</a></p>
+                    <p>e.g. Edgar A. Mearns correspondence</p>
                     <p>e.g. Libbie Henrietta Hyman taxonomic records</p>
                     <p>e.g. Harold S. Spencer papers</p>
                     <p>e.g. William E. Speier account book</p>
@@ -92,7 +95,7 @@ Create a Resource
                     {{-- <p>Title: The resource title consists of the name of the creator(s) or collector(s) of the collection, along with the nature of materials and the date span, with a bulk date if necessary. Example: Frida Kahlo papers, 1930-1950. Or Frida Kahlo collection of posters, approximately 1940s.</p> --}}
                 </b-card>
             </b-collapse>
-            <input type="text" value="" class="form-control" id="taskTitle"  name="name" placeholder="e.g. Edgar A. Mearns correspondence">
+            <input type="text" value="" class="form-control required" id="taskTitle"  name="name" placeholder="e.g. Edgar A. Mearns correspondence">
         </div>
 
 
@@ -102,7 +105,7 @@ Create a Resource
 
             <b-collapse id="collapse-2">
                 <b-card style="background-color: #f5f5f5">
-                    <p>Earliest and latest The dates of material in this resource. YYYY, YYYY-MM, YYYY-MM-DD formats. For a range, separate with a slash.</p>
+                    <p>Earliest and latest dates of material in this resource. YYYY, YYYY-MM, YYYY-MM-DD formats. For a range, separate with a slash.</p>
                     <p>e.g. 1883-1915</p>
                     <p>e.g. 1785-1960, bulk 1916-1958</p>
                     <p>e.g. approximately 1940s</p>
@@ -179,6 +182,10 @@ Create a Resource
                     <p>e.g. 5 binders of photographs</p>
                     <p>e.g. 1 case containing 25 optical disks</p>
                     <p>e.g. 1 camera in case</p>
+                    <p>e.g. 350 MB (300 digital files)</p>
+                    <p>e.g. 1452 volumes</p>
+                    <p>e.g. 155 pages</p>
+
 
                 </b-card>
             </b-collapse>
@@ -207,7 +214,7 @@ Create a Resource
                     <p>e.g. Personnel records (Boxes 33-36) closed until 2050 due to personal information.</p>
                 </b-card>
             </b-collapse>
-            <input type="text" value="" class="form-control" id="taskTitle"  name="name" placeholder="">
+            <textarea type="text" value="" class="form-control" id="taskTitle"  name="name" placeholder=""></textarea>
         </div>
 
 
@@ -295,7 +302,8 @@ Create a Resource
                     <button type="button" class="btn btn-primary">Search for Creator</button>
                 </div>
                 <div class="col-md-4">
-                    <a type="button" class="btn btn-success" href="{{env('SNAC_URL')}}/resources_guided">Add Creator to SNAC</a>
+                    <a type="button" class="btn btn-success" href="/cpfs">Add Creator to SNAC</a>
+                    {{-- <a type="button" class="btn btn-success" href="{{env('SNAC_URL')}}/cpfs">Add Creator to SNAC</a> --}}
                 </div>
             </div>
 
