@@ -17,7 +17,7 @@ class ConceptCategory extends Model {
     // Add ConceptCategories to Vocabulary table
     // INSERT INTO vocabulary (type, value) VALUES
     // ('concept_category', 'Subject'),
-    // ('concept_category', 'Function'),
+    // ('concept_category', 'Activity'),
     // ('concept_category', 'Occupation'),
     // ('concept_category', 'Relation'),
     // ('concept_category', 'Ethnicity'),

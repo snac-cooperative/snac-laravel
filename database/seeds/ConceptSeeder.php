@@ -5,6 +5,7 @@ use App\Models\Concept;
 use App\Models\ConceptSource;
 use App\Models\ConceptProperty;
 use App\Models\Term;
+use App\Models\Vocabulary;
 
 class ConceptSeeder extends Seeder
 {
@@ -19,8 +20,6 @@ class ConceptSeeder extends Seeder
 
         // Load ConceptCategories
         $religion = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Religion')->first();
-        $ethnicity = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Ethnicity')->first();
-        $relation = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Relation')->first();
         $occupation = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Occupation')->first();
         $function = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Function')->first();
         $subject = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Subject')->first();
@@ -30,7 +29,7 @@ class ConceptSeeder extends Seeder
             'ethnicity' => $ethnicity,
             'relation' => $relation,
             'occupation' => $occupation,
-            'function' => $function,
+            'activity' => $activity,
             'subject' => $subject
         ];
 
