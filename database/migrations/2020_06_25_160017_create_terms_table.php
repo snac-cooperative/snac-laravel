@@ -26,6 +26,7 @@ class CreateTermsTable extends Migration
                 ->references('id')
                 ->on('concepts');
             $table->timestamps();
+            $table->index('text');
         });
     }
 
