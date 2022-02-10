@@ -155,7 +155,7 @@
 
         </b-modal>
 
-        <div class="mt-3">
+        <div class="mt-3" v-show="devFeatures">
             <b-button v-if="isVocabularyEditor && !deprecated" v-b-modal.concept-deprecation-to-search variant="danger"><i class="fa fa-trash"></i> Deprecate Concept</b-button>
         </div>
 
@@ -261,7 +261,8 @@
                 cats: this.conceptProps.concept_categories,
                 selectedCategory: this.conceptProps.concept_categories[0].id,
                 isVocabularyEditor: this.canEditVocabulary === "false" ? false : true,
-                baseURL: process.env.MIX_APP_URL
+                baseURL: process.env.MIX_APP_URL,
+                devFeatures: process.env.MIX_INCLUDE_DEVELOPMENT_FEATURES == "true"
             }
         },
         computed: {

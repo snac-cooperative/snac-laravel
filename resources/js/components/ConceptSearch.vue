@@ -4,9 +4,9 @@
             id="concept-relationship-form"
             @submit.stop.prevent="searchConcept()">
             <div class="form-group">
-                <label for="relation-search">Related Concept</label>
+                <label for="relation-search">Concept</label>
                 <div class="input-group mb-3">
-                    <input id="relation-search" ref="searchQuery" type="text" class="form-control" placeholder="Related Concept" aria-label="Related Concept">
+                    <input id="relation-search" ref="searchQuery" type="text" class="form-control" placeholder="Concept" aria-label="Related Concept">
                     <div class="input-group-append">
                         <button class="btn btn-info" type="button" @click="searchConcept()">Search</button>
                     </div>
