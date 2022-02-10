@@ -15,7 +15,7 @@ class CreateConceptsTable extends Migration
     {
         Schema::create('concepts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->boolean('deprecated');
+            $table->boolean('deprecated')->default('f');
             $table->bigInteger('deprecated_to')->nullable()->unsigned();
             $table->foreign('deprecated_to')
                 ->references('id')
