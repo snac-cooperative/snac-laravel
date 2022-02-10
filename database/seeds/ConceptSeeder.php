@@ -10,7 +10,9 @@ use App\Models\Vocabulary;
 class ConceptSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Ingest concept terms from the Library of Congress demographic group terms and
+     * create relationships between them
+     *
      *
      * @return void
      */
@@ -19,10 +21,12 @@ class ConceptSeeder extends Seeder
         $loc_concepts_json = json_decode($json_data, true);
 
         // Load ConceptCategories
-        $religion = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Religion')->first();
-        $occupation = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Occupation')->first();
-        $function = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Function')->first();
-        $subject = App\Models\Vocabulary::where('type', 'concept_category')->where('value', 'Subject')->first();
+        $religion = Vocabulary::where('type', 'concept_category')->where('value', 'Religion')->first();
+        $ethnicity = Vocabulary::where('type', 'concept_category')->where('value', 'Ethnicity')->first();
+        $relation = Vocabulary::where('type', 'concept_category')->where('value', 'Relation')->first();
+        $occupation = Vocabulary::where('type', 'concept_category')->where('value', 'Occupation')->first();
+        $activity = Vocabulary::where('type', 'concept_category')->where('value', 'Activity')->first();
+        $subject = Vocabulary::where('type', 'concept_category')->where('value', 'Subject')->first();
 
         $categories = [
             'religion' => $religion,
@@ -35,14 +39,23 @@ class ConceptSeeder extends Seeder
 
 
         foreach ($loc_concepts_json["record"] as $concept) {
+            $term = Term::where('text', $concept["preferredTerm"])->first();
 
-            $newConcept = Concept::create(["deprecated" => false]);
+            if ($term) {
+                $LOCConcept = $term->concept;
+            } else {
+                // create concept and preferred term
+                $LOCConcept = Concept::create(["deprecated" => false]);
+                $preferredTerm = ["text" => $concept["preferredTerm"], "preferred" => true];
+                $LOCConcept->terms()->create($preferredTerm);
+            }
+
             $source = new ConceptSource(["url" => $concept["sourceURL"]]);
-            $newConcept->sources()->save($source);
+            $LOCConcept->sources()->save($source);
 
             if (isset($concept["scopeNote"])) {
                 $property = new App\Models\ConceptProperty([ "type" => "scopeNote", "value" => $concept["scopeNote"]]);
-                $newConcept->conceptProperties()->save($property);
+                $LOCConcept->conceptProperties()->save($property);
             }
 
             // add category
@@ -51,12 +64,10 @@ class ConceptSeeder extends Seeder
                 $conceptTypes = [$concept["conceptType"]];
             }
             foreach ($conceptTypes as $conceptType) {
-                $newConcept->conceptCategories()->save($categories[$conceptType]);
+                if (!$LOCConcept->conceptCategories()->find($categories[$conceptType])) {
+                    $LOCConcept->conceptCategories()->save($categories[$conceptType]);
+                }
             }
-
-            // create preferred term
-            $preferredTerm = ["text" => $concept["preferredTerm"], "preferred" => true];
-            $newConcept->terms()->create($preferredTerm);
 
             // create alternative terms
             if (isset($concept["alternativeTerm"])) {
@@ -66,7 +77,7 @@ class ConceptSeeder extends Seeder
                 }
                 foreach ($alternativeTerms as $alternativeTerm) {
                     $newAlternativeTerm = ["text" => $alternativeTerm, "preferred" => false];
-                    $newConcept->terms()->create($newAlternativeTerm);
+                    $LOCConcept->terms()->create($newAlternativeTerm);
                 }
             }
         }
