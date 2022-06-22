@@ -5,6 +5,7 @@
         :class="'alert-info'"
         :required="true"
         v-model="preferredTerm"
+        style="width:75%"
       >
       </b-form-input>
     <h4>Concept Category</h4>

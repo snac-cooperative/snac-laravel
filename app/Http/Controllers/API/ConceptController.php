@@ -29,42 +29,49 @@ class ConceptController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request['preferred_term'] && $request['category_id']) {
-            DB::beginTransaction();
-            try {
-                $concept = new Concept;
-                $concept->deprecated = false;
-                $concept->save();
-                $term = new Term;
-                $term->text = $request['preferred_term'];
-                $term->preferred = true;
-                if(!$concept->terms()->save($term)) {
-                    throw new \Exception('Concept not created for term');
-                }
-                $conceptCategory = new ConceptCategory;
-                $conceptCategory->concept_id = $concept->id;
-                $conceptCategory->category_id = $request['category_id'];
-                if(!$conceptCategory->save()) {
-                    throw new \Exception('Concept Category not created for Concept');
-                }
-                DB::commit();
-                return [
-                    "id" => $concept->id,
-                    "termId" => $term->id
-                ];
-            } catch (\Exception $e) {
-                DB::rollback();
-                return [
-                    "id" => false,
-                    "error" => "Error creating new Concept",
-                    "exception" => $e->getMessage()
-                ];
-            }
+        if ($request['category'] && !isset($request['category_id'])) {
+            // find category_id
+            $request['category_id'] = config('cache.category_ids')[$request['category']];
         }
-        return [
-            "id" => false,
-            "error" => "preffered_term and category_id are required fields"
-        ];
+
+        if (!$request['preferred_term'] || !($request['category_id'] || $request['category'])) {
+            // TODO: Return 400 error code
+            return response()->json([
+                "id" => false,
+                "error" => "preferred_term and category_id are required fields"
+            ], 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            $concept = new Concept;
+            $concept->deprecated = false;
+            $concept->save();
+            $term = new Term;
+            $term->text = $request['preferred_term'];
+            $term->preferred = true;
+            if(!$concept->terms()->save($term)) {
+                throw new \Exception('Concept not created for term');
+            }
+            $conceptCategory = new ConceptCategory;
+            $conceptCategory->concept_id = $concept->id;
+            $conceptCategory->category_id = $request['category_id'];
+            if(!$conceptCategory->save()) {
+                throw new \Exception('Concept Category not created for Concept');
+            }
+            DB::commit();
+            return response()->json([
+                "id" => $concept->id,
+                "termId" => $term->id
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                "id" => false,
+                "error" => "Error creating new Concept",
+                "exception" => $e->getMessage()
+            ], 400);
+        }
     }
 
     /**

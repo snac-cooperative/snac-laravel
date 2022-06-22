@@ -101,4 +101,15 @@ return [
 
     'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
 
+
+    // Category ID cache
+    'category_ids' => [
+        'ethnicity' => 401525,
+        'occupation' => 401522,
+        'activity' => 401521,
+        'subject' => 401520,
+        'religion' => 401524,
+        'relation' => 401523
+    ],
+
 ];
