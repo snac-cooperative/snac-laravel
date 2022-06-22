@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-use App\Concept;
+use App\Models\Concept;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
