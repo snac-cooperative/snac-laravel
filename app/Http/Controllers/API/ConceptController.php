@@ -29,17 +29,13 @@ class ConceptController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request['category'] && !isset($request['category_id'])) {
-            // find category_id
-            $request['category_id'] = config('cache.category_ids')[$request['category']];
-        }
+        $request->validate([
+            'preferred_term' => 'required',
+            'category_id' => 'required_without:category'
+        ]);
 
-        if (!$request['preferred_term'] || !($request['category_id'] || $request['category'])) {
-            // TODO: Return 400 error code
-            return response()->json([
-                "id" => false,
-                "error" => "preferred_term and category_id are required fields"
-            ], 400);
+        if (!isset($request['category_id'])) {
+            $request['category_id'] = config('cache.category_ids')[$request['category']];
         }
 
         DB::beginTransaction();
