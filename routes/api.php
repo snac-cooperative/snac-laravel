@@ -20,6 +20,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('concepts/reconcile/{id}', 'API\ConceptController@reconcile');
+Route::get('concepts/reconcile', 'API\ConceptController@reconcile');
+
 Route::put('concepts/{id}/relate_concept', 'ConceptController@relateConcepts');
 Route::put('concepts/{id}/deprecate', 'API\ConceptController@deprecate');
 Route::apiResource('concepts', 'API\ConceptController');
