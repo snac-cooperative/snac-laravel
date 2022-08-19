@@ -123,4 +123,38 @@ class ConceptController extends Controller
     {
         //
     }
+
+    /**
+     * Reconcile Concept for OpenRefine
+     *
+     * Return an json reconciliation result for OpenRefine concept reconciliation
+     * e.g. api/concepts/reconcile?term=teacher&category=occupation
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JSONResponse
+     */
+    public function reconcile(Request $request)
+    {
+        $request->validate([
+            'term' => 'required',
+            'category' => 'required'
+        ]);
+
+        if (isset($request['category'])) {
+             $category_id = config('cache.category_ids')[$request['category']] ?? null;
+            $category = isset($category_id) ? $request['category'] : null;
+        }
+        $term = $_GET["term"];
+
+        $terms = DB::table('concepts')->select('concepts.id as id', 'text as name')
+            ->addSelect(DB::raw("true as match, 100 as score, '$category' as type"))
+            ->leftJoin('terms', 'concepts.id', '=', 'terms.concept_id')
+            ->leftJoin('concept_categories', 'concepts.id', '=', 'concept_categories.concept_id')
+                ->where([['text', 'ILIKE', $term]])
+                ->where('concept_categories.category_id', $category_id)
+                ->where('deprecated', false)
+                ->orderBy('preferred', 'desc');
+
+        return response()->json($terms->get());
+    }
 }
