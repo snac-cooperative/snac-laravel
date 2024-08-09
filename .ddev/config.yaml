@@ -16,6 +16,11 @@ disable_settings_management: true
 web_environment: []
 corepack_enable: false
 
+web_extra_daemons:
+  - name: 'mix'
+    command: 'npm install && npm run watch'
+    directory: /var/www/html
+
 # Key features of DDEV's config.yaml:
 
 # name: <projectname> # Name of the project, automatically provides

@@ -28,7 +28,7 @@
 
 <!-- SNAC Styles -->
 <!--<link rel="stylesheet" href="{{env('SNAC_URL')}}/css/snac.css">-->
-<link rel="stylesheet" href="{{ mix('/css/app.css')}}">
+<link rel="stylesheet" href="{{ mix('css/app.css')}}">
 
  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
@@ -67,6 +67,6 @@
 @yield('content')
 </div>
 @include('layouts.generic_footer')
-    <script src="{{ mix('/js/app.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>
