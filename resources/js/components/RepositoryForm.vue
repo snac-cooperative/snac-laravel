@@ -412,6 +412,8 @@
 </template>
 
 <script>
+import Vue from 'vue'
+window.Vue = require('vue');
 Vue.component('term', require('./Term.vue').default);
 Vue.component('language-select', require('./LanguageSelect.vue').default);
 export default {

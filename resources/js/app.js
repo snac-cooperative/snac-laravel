@@ -7,10 +7,9 @@
 require('./bootstrap');
 import { BTable, BPagination, BCol, BFormGroup, BFormSelect } from 'bootstrap-vue';
 
-window.Vue = require('vue');
-
 // BootstrapVue
 // TODO: Determine how much of bootstrap-vue we need to include
+import Vue from 'vue'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 Vue.use(BootstrapVue)
 import 'bootstrap/dist/css/bootstrap.css'
