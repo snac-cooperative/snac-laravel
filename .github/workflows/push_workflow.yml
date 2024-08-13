@@ -96,7 +96,7 @@ jobs:
       - name: Deploy to PRODUCTION Server
         env:
           DOT_ENV: ${{ secrets.DOT_ENV_PRODUCTION }}
-        run: dep deploy production --tag=${{ env.GITHUB_REF }} -vvv
+        run: dep deploy production -vvv
   deploy-development:
     name: Deploy Project to DEVELOPMENT Server
     runs-on: ubuntu-latest
@@ -116,12 +116,12 @@ jobs:
           extension-csv: mbstring, bcmath
       - name: Composer install
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-      - name: Setup Deployer
-        uses: atymic/deployer-php-action@master
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssh-known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Deploy to Dev
-        env:
-          DOT_ENV: ${{ secrets.DOT_ENV_DEVELOPMENT }}
-        run: dep deploy development --tag=${{ env.GITHUB_REF }} -vvv
+        uses: deployphp/action@v1
+        with:
+          dep: deploy development
+          options:
+            keep_releases: 10
+          private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          verbosity: -vvv

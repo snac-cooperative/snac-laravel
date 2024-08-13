@@ -32,13 +32,13 @@ task('deploy:secrets', function () {
 
 host('snaccooperative.org')
   ->set('hostname', 'snaccooperative.org')
-  ->set('labels', ['stage' => 'production'])
+  ->set('labels', ['env' => 'production', 'stage' => 'production'])
   ->set('remote_user', 'snacworker')
   ->set('deploy_path', '/lv2/snac-laravel');
 
 host('snac-dev.iath.virginia.edu')
   ->set('hostname', 'snac-dev.iath.virginia.edu')
-  ->set('labels', ['stage' => 'development'])
+  ->set('labels', ['env' => 'development', 'stage' => 'development'])
   ->set('remote_user', 'snacworker')
   ->set('deploy_path', '/lv2/snac-laravel');
 
