@@ -120,8 +120,8 @@ jobs:
         uses: deployphp/action@v1
         with:
           dep: deploy development
-          options:
-            keep_releases: 10
           private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
           verbosity: -vvv
+          options:
+            keep_releases: 10
