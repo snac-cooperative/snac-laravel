@@ -119,7 +119,7 @@ jobs:
       - name: Deploy to Dev
         uses: deployphp/action@v1
         with:
-          dep: deploy development
+          dep: deploy stage=development
           private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
           verbosity: -vvv
