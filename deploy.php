@@ -31,15 +31,15 @@ task('deploy:secrets', function () {
 });
 
 host('snaccooperative.org')
-  ->hostname('snaccooperative.org')
-  ->stage('production')
-  ->user('snacworker')
+  ->alias('snaccooperative.org')
+  ->set('labels', ['stage' => 'production'])
+  ->remote_user('snacworker')
   ->set('deploy_path', '/lv2/snac-laravel');
 
 host('snac-dev.iath.virginia.edu')
-  ->hostname('snac-dev.iath.virginia.edu')
-  ->stage('staging')
-  ->user('snacworker')
+  ->alias('snac-dev.iath.virginia.edu')
+  ->set('labels', ['stage' => 'development'])
+  ->remote_user('snacworker')
   ->set('deploy_path', '/lv2/snac-laravel');
 
 after('deploy:failed', 'deploy:unlock');
