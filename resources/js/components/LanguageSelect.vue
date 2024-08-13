@@ -22,6 +22,8 @@
   import Multiselect from 'vue-multiselect'
 
   // register globally
+  import Vue from 'vue'
+  window.Vue = require('vue');
   Vue.component('multiselect', Multiselect)
 
   export default {

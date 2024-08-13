@@ -6,7 +6,7 @@ use App\Models\Entity;
 use App\Models\Repository;
 use Illuminate\Http\Request;
 
-class entityController extends Controller
+class EntityController extends Controller
 {
     /**
      * Show the form for creating a new resource.
