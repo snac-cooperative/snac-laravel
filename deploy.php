@@ -63,5 +63,5 @@ task('deploy', [
     'artisan:queue:restart',
     'deploy:symlink',
     'deploy:unlock',
-    'cleanup',
+    'deploy:cleanup',
 ]);
