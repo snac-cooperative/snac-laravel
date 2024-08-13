@@ -2,8 +2,8 @@
 
 namespace Deployer;
 
-require 'vendor/deployer/recipes/recipe/laravel.php';
-require 'vendor/deployer/recipes/recipe/rsync.php';
+require 'recipe/laravel.php';
+require 'contrib/rsync.php';
 
 set('application', 'SNAC-Laravel');
 set('ssh_multiplexing', true);
