@@ -123,5 +123,3 @@ jobs:
           private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
           verbosity: -vvv
-          options:
-            keep_releases: 10
