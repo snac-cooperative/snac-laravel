@@ -99,7 +99,7 @@ jobs:
         run: dep deploy production -vvv
   deploy-development:
     name: Deploy Project to DEVELOPMENT Server
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [build-js-staging, app-tests]
     if: github.ref == 'refs/heads/jnm/laravel-deploy'
     steps:
