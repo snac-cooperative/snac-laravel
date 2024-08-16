@@ -42,7 +42,6 @@
             >
             </concept-form>
 
-            <br>
             @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
                 <h5>Category: {{ $concept->conceptCategories[0]['value']}}</h5>
             @endif
