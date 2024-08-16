@@ -54,10 +54,10 @@
       <b-button @click="toggleEditMode()" >Cancel</b-button>
     </div>
     <div v-show="!editMode">
-      <p>{{citation}}</p>
-      <a :href="url">{{url}}</a>
-      <p>{{foundData}}</p>
-      <p>{{note}}</p>
+      <p v-if="citation">{{citation}}</p>
+      <a :href="url" v-if="url">{{url}}</a>
+      <p v-if="foundData">{{foundData}}</p>
+      <p v-if="note">{{note}}</p>
       <b-button variant="primary" @click="toggleEditMode()" v-if="isVocabularyEditor" v-show="!editMode"><i class="fa fa-edit"></i> Edit Source</b-button>
     </div>
   </div>

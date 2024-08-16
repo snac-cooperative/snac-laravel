@@ -63,7 +63,7 @@
                 </div>
 
                 <div class="mt-3">
-                    <h4>Concept Sources</h4>
+                    <h4 v-if="sources.length">Concept Sources</h4>
                     <div class="mt-1" :key="source.id" v-for="(source, index) in sources">
                       <concept-source
                         :canEditVocabulary="isVocabularyEditor"
