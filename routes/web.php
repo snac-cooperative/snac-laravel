@@ -1,5 +1,15 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ConceptController;
+use App\Http\Controllers\EntityController;
+use App\Http\Controllers\RepositoryController;
+use App\Http\Controllers\ResourceController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -9,58 +19,65 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-use App\Models\Concept;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
-Route::get('concepts',              'ConceptController@index');
-// Route::post('concepts',             'ConceptController@store')->middleware('can:edit-vocabulary'); // TODO: switch to can:edit-vocabulary after demo testing
-Route::post('concepts',             'ConceptController@store')->middleware('auth');
-Route::get('concepts/create',       'ConceptController@create')->middleware('auth');
-Route::get('concepts/search',       'ConceptController@search')->name('search');
-Route::get('concepts/search_page',       'ConceptController@search_page');
-Route::post('concepts/{concept}/add_term', 'ConceptController@addTerm')->middleware('auth');
-Route::get('concepts/{concept}',    'ConceptController@show');
-Route::delete('concepts/{concept}', 'ConceptController@destroy');
+#=====================================
+# Authentication
+#=====================================
+// Disable Laravel user registration
+Auth::routes(['register' => false]);
 
 Route::post('logout/all', function () {
     return Redirect::away(env('SNAC_AUTHENTICATION_URL') . '?command=logout3');
 });
 Route::get('logoff', function () {
     Auth::logout();
-    if(isset($_GET['redirect'])) {
+    if (isset($_GET['redirect'])) {
         return redirect(urldecode($_GET['redirect']));
     }
     return redirect('/');
 });
 
-Route::get('login/snac', function() {
+Route::get('login/snac', function () {
     session(['_from_snac' => true]);
-    if(isset($_GET['redirect'])) {
+    if (isset($_GET['redirect'])) {
         session(['_redirect_after_login' => $_GET['redirect']]);
     }
     return Socialite::driver('google')->redirect();
 });
 
-Route::get('login/github', 'Auth\LoginController@redirectToGitHubProvider');
-Route::get('github/login', 'Auth\LoginController@handleGitHubProviderCallback');
+Route::get('login/google', [LoginController::class, 'redirectToProvider']);
+Route::get('google/login', [LoginController::class, 'handleProviderCallback']);
 
-Route::get('login/google', 'Auth\LoginController@redirectToProvider');
-Route::get('google/login', 'Auth\LoginController@handleProviderCallback');
+#=====================================
+# Controlled Concepts
+#=====================================
+Route::get('/', [ConceptController::class, 'index']);
 
-Auth::routes(['register' => false]);
+Route::controller(ConceptController::class)->group(function () {
+    Route::get('concepts', 'index')->name('concepts.index');
 
-Route::get('/', 'ConceptController@index');
+    Route::get('concepts/search', 'search')->name('search');
+    Route::get('concepts/search_page', 'search_page');
 
+    Route::middleware(['auth'])->name('concepts.')->group(function () {
+        Route::post('concepts', 'store')->name('store');
+        Route::get('concepts/create', 'create')->name('create');
+        Route::post('concepts/{concept}/add_term', 'addTerm')->name('addTerm');
+        Route::delete('concepts/{concept}', 'destroy')->name('destroy');
+    });
 
+    Route::get('concepts/{concept}', 'show');
+
+});
+
+// Route::post('concepts',             'ConceptController@store')->middleware('can:edit-vocabulary'); // TODO: switch to can:edit-vocabulary after demo testing
+
+#=====================================
+# Misc
+#=====================================
 // Simple Form Routes
-Route::get('repositories', 'RepositoryController@create');
-Route::post('repositories', 'RepositoryController@store');
-Route::get('resources_guided', 'ResourceController@create');
-Route::get('cpfs', 'EntityController@create');
+Route::get('repositories', [RepositoryController::class, 'create']);
+Route::post('repositories', [RepositoryController::class, 'store']);
+Route::get('resources_guided', [ResourceController::class, 'create']);
+Route::get('cpfs', [EntityController::class, 'create']);
