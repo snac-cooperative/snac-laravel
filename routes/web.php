@@ -21,27 +21,11 @@ use Laravel\Socialite\Facades\Socialite;
 |
  */
 
+#=====================================
+# Authentication
+#=====================================
 // Disable Laravel user registration
 Auth::routes(['register' => false]);
-
-Route::get('/', [ConceptController::class, 'index']);
-
-Route::controller(ConceptController::class)->group(function () {
-    Route::get('concepts', 'index')->name('concepts.index');
-
-    Route::get('concepts/search', 'search')->name('search');
-    Route::get('concepts/search_page', 'search_page');
-    Route::get('concepts/{concept}', 'show');
-
-    Route::middleware(['auth'])->name('concepts.')->group(function () {
-        Route::post('concepts', 'store')->name('store');
-        Route::get('concepts/create', 'create')->name('create');
-        Route::post('concepts/{concept}/add_term', 'addTerm')->name('addTerm');
-        Route::delete('concepts/{concept}', 'destroy')->name('destroy');
-    });
-});
-
-// Route::post('concepts',             'ConceptController@store')->middleware('can:edit-vocabulary'); // TODO: switch to can:edit-vocabulary after demo testing
 
 Route::post('logout/all', function () {
     return Redirect::away(env('SNAC_AUTHENTICATION_URL') . '?command=logout3');
@@ -68,6 +52,31 @@ Route::get('github/login', [LoginController::class, 'handleGitHubProviderCallbac
 Route::get('login/google', [LoginController::class, 'redirectToProvider']);
 Route::get('google/login', [LoginController::class, 'handleProviderCallback']);
 
+#=====================================
+# Controlled Concepts
+#=====================================
+Route::get('/', [ConceptController::class, 'index']);
+
+Route::controller(ConceptController::class)->group(function () {
+    Route::get('concepts', 'index')->name('concepts.index');
+
+    Route::get('concepts/search', 'search')->name('search');
+    Route::get('concepts/search_page', 'search_page');
+    Route::get('concepts/{concept}', 'show');
+
+    Route::middleware(['auth'])->name('concepts.')->group(function () {
+        Route::post('concepts', 'store')->name('store');
+        Route::get('concepts/create', 'create')->name('create');
+        Route::post('concepts/{concept}/add_term', 'addTerm')->name('addTerm');
+        Route::delete('concepts/{concept}', 'destroy')->name('destroy');
+    });
+});
+
+// Route::post('concepts',             'ConceptController@store')->middleware('can:edit-vocabulary'); // TODO: switch to can:edit-vocabulary after demo testing
+
+#=====================================
+# Misc
+#=====================================
 // Simple Form Routes
 Route::get('repositories', [RepositoryController::class, 'create']);
 Route::post('repositories', [RepositoryController::class, 'store']);
