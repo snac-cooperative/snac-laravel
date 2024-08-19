@@ -46,9 +46,6 @@ Route::get('login/snac', function () {
     return Socialite::driver('google')->redirect();
 });
 
-Route::get('login/github', [LoginController::class, 'redirectToGitHubProvider']);
-Route::get('github/login', [LoginController::class, 'handleGitHubProviderCallback']);
-
 Route::get('login/google', [LoginController::class, 'redirectToProvider']);
 Route::get('google/login', [LoginController::class, 'handleProviderCallback']);
 
