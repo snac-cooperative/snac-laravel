@@ -62,7 +62,6 @@ Route::controller(ConceptController::class)->group(function () {
 
     Route::get('concepts/search', 'search')->name('search');
     Route::get('concepts/search_page', 'search_page');
-    Route::get('concepts/{concept}', 'show');
 
     Route::middleware(['auth'])->name('concepts.')->group(function () {
         Route::post('concepts', 'store')->name('store');
@@ -70,6 +69,9 @@ Route::controller(ConceptController::class)->group(function () {
         Route::post('concepts/{concept}/add_term', 'addTerm')->name('addTerm');
         Route::delete('concepts/{concept}', 'destroy')->name('destroy');
     });
+
+    Route::get('concepts/{concept}', 'show');
+
 });
 
 // Route::post('concepts',             'ConceptController@store')->middleware('can:edit-vocabulary'); // TODO: switch to can:edit-vocabulary after demo testing
