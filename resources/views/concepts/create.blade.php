@@ -11,12 +11,12 @@ Concepts
         <li class="breadcrumb-item active"> New </li>
     </ol>
     <div class="row">
-      <div class="col-md-8" id="conceptForm">
+        <div class="col-md-8" id="conceptForm">
                 <concept-create-form
                     id="conceptCreate"
                 >
                 </concept-create-form>
         </div>
-      <br>
+        <br>
     </div>
 @endsection
