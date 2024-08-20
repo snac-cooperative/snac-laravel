@@ -12,10 +12,10 @@ Concepts
     </ol>
     <div class="row">
       <div class="col-md-8" id="conceptForm">
-                <concept-create
+                <concept-create-form
                     id="conceptCreate"
                 >
-                </concept-create>
+                </concept-create-form>
         </div>
       <br>
     </div>
