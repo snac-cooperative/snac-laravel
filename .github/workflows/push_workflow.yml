@@ -26,7 +26,7 @@ jobs:
         uses: shivammathur/setup-php@master
         with:
           php-version: 8.3
-          extension-csv: mbstring, bcmath
+          extensions: mbstring, bcmath, csv
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Composer Dependencies
@@ -111,6 +111,8 @@ jobs:
           path: public
       - name: Setup PHP
         uses: shivammathur/setup-php@master
+        env:
+          runner: self-hosted
         with:
           php-version: 8.3
           extensions: mbstring, bcmath, csv
