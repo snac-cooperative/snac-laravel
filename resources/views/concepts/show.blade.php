@@ -79,6 +79,4 @@
             @endif
         </form>
     </div>
-
-</table>
 @endsection
