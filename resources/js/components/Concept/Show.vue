@@ -1,5 +1,5 @@
 <template>
-    <div id="concept-table" classname="" v-show="!editMode">
+    <div id="concept-table" v-show="!editMode">
         <div class="form-group">
             <div class="col-xs-8">
                 <h2>{{ preferredTerm.text }}<span v-if="deprecated">(deprecated)</span></h2>
@@ -39,132 +39,6 @@
         <div class="mt-3">
             <b-button v-if="isVocabularyEditor" v-b-modal.concept-relations-search variant="info"><i class="fa fa-plus"></i> Add Relationship</b-button>
         </div>
-
-        <b-modal
-            id="concept-relations-search"
-            title="Concept Relations"
-            size="xl"
-            @ok="relateConcept()"
-        >
-            <!-- TODO: extract concept search form into ConceptSearch.vue-->
-            <!-- ok-title="Create Relationship" -->
-            <form
-                id="concept-relationship-form"
-                @submit.stop.prevent="searchConcept()">
-                <div class="form-group">
-                    <label for="relation-search">Related Concept</label>
-                    <div class="input-group mb-3">
-                        <input id="relation-search" ref="searchQuery" type="text" class="form-control" placeholder="Related Concept" aria-label="Related Concept">
-                        <div class="input-group-append">
-                            <button class="btn btn-info" type="button" @click="searchConcept()">Search</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="is-preferred" v-model="allTermsSearch" title="Search only Preferred Terms">
-                    <label class="form-check-label" for="is-preferred" >Search non-preferred terms</label>
-                </div>
-
-                <h4 class="mt-4">Relation Type</h4>
-                <div class="form-check">
-                    <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="broader">
-                    <label class="form-check-label" for="broader-relation-check">
-                        Broader
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="narrower">
-                    <label class="form-check-label" for="narrower-relation-check">
-                        Narrower
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" v-model="relationType" type="radio" name="relation-type" value="related">
-                    <label class="form-check-label" for="broader-relation-check">
-                        Related
-                    </label>
-                </div>
-                <div class="">
-                    <table class="table table-hover mt-3" v-if="termSearch.length">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Term</th>
-                            <th>Category</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr :key="term.term_id" v-for="(term) in termSearch">
-                            <td><input type="radio" name="relation-choice" :value="term.concept_id" v-model="selected_concept"></td>
-                            <td> <a :href="term.concept_id">{{ term.term }}</a></td>
-                            <td>{{ term.category }}</td>
-                            <!-- <td>{{ term.preferred }}</td> -->
-                            <!-- TODO: Handle multiple categories by conjoining.  -->
-                            <!-- TODO: Display result count.  -->
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <b-button @click="relateConcept()" class="btn btn-info" title="Make Preferred">Relate Concepts <i class="fa fa-floppy-o"></i></b-button>
-            </form>
-
-        </b-modal>
-
-        <div class="mt-3" v-show="devFeatures">
-            <b-button v-if="isVocabularyEditor && !deprecated" v-b-modal.concept-deprecation-to-search variant="danger"><i class="fa fa-trash"></i> Deprecate Concept</b-button>
-        </div>
-
-        <b-modal
-            id="concept-deprecation-to-search"
-            title="Concept Deprecation"
-            size="xl"
-            @ok="deprecateConcept()"
-            ref="deprecate-modal"
-        >
-            <!-- ok-title="Create Relationship" -->
-            <!-- TODO: Rename this form to fix collision -->
-            <form
-                id="concept-relationship-form"
-                @submit.stop.prevent="searchConcept()">
-                <div class="form-group">
-                    <label for="relation-search">Optional - Search and select the concept that replaces {{ preferredTerm.text }}</label>
-                    <div class="input-group mb-3">
-                        <input id="relation-search" ref="searchQuery" type="text" class="form-control" placeholder="Concept" aria-label="Concept">
-                        <div class="input-group-append">
-                            <button class="btn btn-info" type="button" @click="searchConcept()">Search</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="is-preferred" v-model="allTermsSearch" title="Search only Preferred Terms">
-                    <label class="form-check-label" for="is-preferred" >Search non-preferred terms</label>
-                </div>
-
-                <div class="">
-                    <table class="table table-hover mt-3" v-if="termSearch.length">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Term</th>
-                            <th>Category</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr :key="term.term_id" v-for="(term) in termSearch">
-                            <td><input type="radio" :id="term.concept_id"  name="relation-choice" :value="term.concept_id" v-model="selected_concept"></td>
-                            <td> <label :for="term.concept_id">{{ term.term }}</label> <a target="_blank" :href="term.concept_id"><i class="fa fa-external-link"></i></a></td>
-                            <td>{{ term.category }}</td>
-                            <!-- <td>{{ term.preferred }}</td> -->
-                            <!-- TODO: Handle multiple categories by conjoining.  -->
-                            <!-- TODO: Display result count.  -->
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <b-button @click="deprecateConcept()" class="btn btn-info" title="Make Preferred">Deprecate Concept <i class="fa fa-floppy-o"></i></b-button>
-            </form>
-
-        </b-modal>
     </div>
 </template>
 
@@ -205,17 +79,9 @@ export default {
             propertyEditMode: false,
             // populating terms with our custom temporary variables
             // concept: this.termProps.slice()
-            categories: [
-                { value:  process.env.MIX_ETHNICITY_ID, text: 'Ethnicity'},
-                { value:  process.env.MIX_OCCUPATION_ID, text: 'Occupation'},
-                { value:  process.env.MIX_ACTIVITY_ID, text: 'Activity'},
-                { value:  process.env.MIX_SUBJECT_ID, text: 'Subject'},
-                { value:  process.env.MIX_RELIGION_ID, text: 'Religion'},
-                { value:  process.env.MIX_RELATION_ID, text: 'Relation'},
-            ],
             cats: this.conceptProps.concept_categories,
             selectedCategory: this.conceptProps.concept_categories[0].id,
-            isVocabularyEditor: this.canEditVocabulary === "false" ? false : true,
+            isVocabularyEditor: this.canEditVocabulary !== "false",
             baseURL: process.env.MIX_APP_URL,
             devFeatures: process.env.MIX_INCLUDE_DEVELOPMENT_FEATURES == "true"
         }
@@ -254,7 +120,7 @@ export default {
                 return;
             }
 
-            var oldPreferred = this.preferredTerm;
+            const oldPreferred = this.preferredTerm;
             oldPreferred.preferred = false;
             term.preferred = true;
 
@@ -265,7 +131,7 @@ export default {
         },
         deleteTerm: function(term) {
             console.log(`Deleting ${term.text} with id ${term.id}`);
-            var vm = this;
+            const vm = this;
 
             // if term is not saved, simply drop
             if (!term.id) {
@@ -302,8 +168,6 @@ export default {
         saveTerm: function(term) {
             console.log(`Saving ${term.text} with id ${term.id}`);
 
-            var vm = this;
-
             if (!term.id) {
                 this.postTerm(term);
                 // TODO: prevent a double-click from posting twice
@@ -325,8 +189,8 @@ export default {
                 return;
             }
 
-            var conceptID = this.terms[0].concept_id
-            var newTerm = {
+            const conceptID = this.terms[0].concept_id
+            const newTerm = {
                 concept_id : conceptID,
                 id: null,
                 language_id: null,
@@ -338,16 +202,15 @@ export default {
             this.terms.push(newTerm);
         },
         searchConcept: function() {
-            let vm = this;
-            var query = this.$refs.searchQuery.value  // Is there a better way to do this?
+            let query = this.$refs.searchQuery.value  // Is there a better way to do this?
             if (this.allTermsSearch) {
                 query += "&all_terms"
             }
 
             const promise = axios.get(`search?term=${query}`)
             promise.then(response => {
-                let terms = response.data;
-                let terms_result = terms.map(term => {
+                const terms = response.data;
+                const terms_result = terms.map(term => {
                     return {
                         id: term.term_id,
                         concept_id: term.concept_id,
@@ -361,10 +224,10 @@ export default {
             });
         },
         relateConcept: function() {
-            let concept_id = this.terms[0].concept_id
-            let relation_type = this.relationType
+            const concept_id = this.terms[0].concept_id
+            const relation_type = this.relationType
 
-            if(this.selected_concept == '' || relation_type == undefined) {
+            if(!this.selected_concept || relation_type === undefined) {
                 return;
             }
 
@@ -378,11 +241,10 @@ export default {
             this.selected_concept = '';
         },
         getConcepts: function() {
-            let vm = this;
             const promise = axios.get(`${this.baseURL}/search?term=teach`)
             promise.then(response => {
-                let terms = response.data;
-                let terms_result = terms.map(term => {
+                const terms = response.data;
+                const terms_result = terms.map(term => {
                     return {
                         id: term.concept_id,
                         link: "/concepts/"+term.concept_id,
@@ -396,10 +258,10 @@ export default {
             });
         },
         deprecateConcept: function() {
-            let concept_id = this.terms[0].concept_id
-            let vm = this;
+            const concept_id = this.terms[0].concept_id
+            const vm = this;
             let url = `${this.baseURL}/api/concepts/${concept_id}/deprecate`;
-            if (this.selected_concept != '') {
+            if (this.selected_concept) {
                 url += `?to=${this.selected_concept}`;
             }
             axios.put(url)

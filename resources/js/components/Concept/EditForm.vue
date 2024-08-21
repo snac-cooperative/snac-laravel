@@ -1,5 +1,5 @@
 <template>
-    <div id="concept-table" classname="" v-show="editMode">
+    <div id="concept-table" v-show="editMode">
         <div class="form-group">
             <div class="col-xs-8">
                 <h2>{{ preferredTerm.text }}<span v-if="deprecated">(deprecated)</span></h2>
@@ -7,10 +7,10 @@
                 <b-input-group class="mt-3">
                     <!-- TODO: Do we want inputs to start as readonly? -->
                     <b-form-input type="text"
-                                  :class="{'alert-info' : preferredTerm.inEdit}"
-                                  :required="true"
-                                  @change=editTerm(preferredTerm)
-                                  v-model="preferredTerm.text"
+                      :class="{'alert-info' : preferredTerm.inEdit}"
+                      :required="true"
+                      @change=editTerm(preferredTerm)
+                      v-model="preferredTerm.text"
                     >
                     </b-form-input>
                     <b-input-group-append>
@@ -24,10 +24,10 @@
                     <!-- Extract into Term Component? -->
                     <b-input-group class="mt-2">
                         <b-form-input type="text"
-                                      :class="{'alert-info' : term.inEdit}"
-                                      :required="true"
-                                      @change=editTerm(term)
-                                      v-model="term.text"
+                          :class="{'alert-info' : term.inEdit}"
+                          :required="true"
+                          @change=editTerm(term)
+                          v-model="term.text"
                         >
                         </b-form-input>
 
@@ -43,6 +43,12 @@
                 </div>
 
                 <div class="mt-3">
+                    <!-- TODO: Backend calls -->
+                    <b-button variant="success" @click="addTerm()"><i class="fa fa-plus"></i> Add Term</b-button>
+                    <b-button variant="secondary" @click="fetchConcept();toggleEditMode()">Cancel</b-button>
+                </div>
+
+                <div class="mt-3">
                     <!-- // TODO: Category editing and backend calls  -->
                     <h4>Concept Categories</h4>
 
@@ -51,12 +57,6 @@
                             <b-form-select v-model="category.id" :options="categories"></b-form-select>
                         </div>
                     </b-col>
-                </div>
-
-                <div class="mt-3">
-                    <!-- TODO: Backend calls -->
-                    <b-button variant="success" @click="addTerm()"><i class="fa fa-plus"></i> Add Term</b-button>
-                    <b-button variant="secondary" @click="fetchConcept();toggleEditMode()">Cancel</b-button>
                 </div>
 
                 <div class="mt-3">
@@ -248,16 +248,16 @@ export default {
             // populating terms with our custom temporary variables
             // concept: this.termProps.slice()
             categories: [
-                { value:  process.env.MIX_ETHNICITY_ID, text: 'Ethnicity'},
-                { value:  process.env.MIX_OCCUPATION_ID, text: 'Occupation'},
-                { value:  process.env.MIX_ACTIVITY_ID, text: 'Activity'},
-                { value:  process.env.MIX_SUBJECT_ID, text: 'Subject'},
-                { value:  process.env.MIX_RELIGION_ID, text: 'Religion'},
-                { value:  process.env.MIX_RELATION_ID, text: 'Relation'},
+                { value: process.env.MIX_ETHNICITY_ID, text: 'Ethnicity'},
+                { value: process.env.MIX_OCCUPATION_ID, text: 'Occupation'},
+                { value: process.env.MIX_ACTIVITY_ID, text: 'Activity'},
+                { value: process.env.MIX_SUBJECT_ID, text: 'Subject'},
+                { value: process.env.MIX_RELIGION_ID, text: 'Religion'},
+                { value: process.env.MIX_RELATION_ID, text: 'Relation'},
             ],
             cats: this.conceptProps.concept_categories,
             selectedCategory: this.conceptProps.concept_categories[0].id,
-            isVocabularyEditor: this.canEditVocabulary === "false" ? false : true,
+            isVocabularyEditor: this.canEditVocabulary !== "false",
             baseURL: process.env.MIX_APP_URL,
             devFeatures: process.env.MIX_INCLUDE_DEVELOPMENT_FEATURES == "true"
         }
@@ -271,7 +271,7 @@ export default {
         },
         preferredTerm() {
             return this.terms.find(term => term.preferred)
-        }
+        },
     },
     created() {
         console.log("Concept component loaded");
@@ -296,7 +296,7 @@ export default {
                 return;
             }
 
-            var oldPreferred = this.preferredTerm;
+            const oldPreferred = this.preferredTerm;
             oldPreferred.preferred = false;
             term.preferred = true;
 
@@ -307,7 +307,7 @@ export default {
         },
         deleteTerm: function(term) {
             console.log(`Deleting ${term.text} with id ${term.id}`);
-            var vm = this;
+            const vm = this;
 
             // if term is not saved, simply drop
             if (!term.id) {
@@ -343,9 +343,6 @@ export default {
         },
         saveTerm: function(term) {
             console.log(`Saving ${term.text} with id ${term.id}`);
-
-            var vm = this;
-
             if (!term.id) {
                 this.postTerm(term);
                 // TODO: prevent a double-click from posting twice
@@ -367,8 +364,8 @@ export default {
                 return;
             }
 
-            var conceptID = this.terms[0].concept_id
-            var newTerm = {
+            const conceptID = this.terms[0].concept_id
+            const newTerm = {
                 concept_id : conceptID,
                 id: null,
                 language_id: null,
@@ -380,16 +377,15 @@ export default {
             this.terms.push(newTerm);
         },
         searchConcept: function() {
-            let vm = this;
-            var query = this.$refs.searchQuery.value  // Is there a better way to do this?
+            let query = this.$refs.searchQuery.value  // Is there a better way to do this?
             if (this.allTermsSearch) {
                 query += "&all_terms"
             }
 
             const promise = axios.get(`search?term=${query}`)
             promise.then(response => {
-                let terms = response.data;
-                let terms_result = terms.map(term => {
+                const terms = response.data;
+                const terms_result = terms.map(term => {
                     return {
                         id: term.term_id,
                         concept_id: term.concept_id,
@@ -403,10 +399,10 @@ export default {
             });
         },
         relateConcept: function() {
-            let concept_id = this.terms[0].concept_id
-            let relation_type = this.relationType
+            const concept_id = this.terms[0].concept_id
+            const relation_type = this.relationType
 
-            if(this.selected_concept == '' || relation_type == undefined) {
+            if(!this.selected_concept || relation_type === undefined) {
                 return;
             }
 
@@ -420,11 +416,10 @@ export default {
             this.selected_concept = '';
         },
         getConcepts: function() {
-            let vm = this;
             const promise = axios.get(`${this.baseURL}/search?term=teach`)
             promise.then(response => {
-                let terms = response.data;
-                let terms_result = terms.map(term => {
+                const terms = response.data;
+                const terms_result = terms.map(term => {
                     return {
                         id: term.concept_id,
                         link: "/concepts/"+term.concept_id,
@@ -438,10 +433,10 @@ export default {
             });
         },
         deprecateConcept: function() {
-            let concept_id = this.terms[0].concept_id
-            let vm = this;
+            const concept_id = this.terms[0].concept_id
+            const vm = this;
             let url = `${this.baseURL}/api/concepts/${concept_id}/deprecate`;
-            if (this.selected_concept != '') {
+            if (this.selected_concept) {
                 url += `?to=${this.selected_concept}`;
             }
             axios.put(url)
