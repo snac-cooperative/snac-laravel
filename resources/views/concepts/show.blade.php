@@ -40,20 +40,13 @@
             can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
         >
         </concept-show>
-        <concept-edit-form
-            id="conceptEditForm"
-            :concept-props="{{ $concept }}"
-            :term-props="{{ $concept->terms }}"
-            :sources-props="{{ $concept->sources }}"
-            can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
-        >
-        </concept-edit-form>
 
         @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
             <h5>Category: {{ $concept->conceptCategories[0]['value']}}</h5>
         @endif
 
         @if ($showRelations)
+            <hr>
             <h2>Relations</h2>
             <div class="relations row mx-0">
                 @if (count($concept->broader))

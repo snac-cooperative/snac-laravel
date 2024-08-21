@@ -1,8 +1,7 @@
 <template>
-    <div id="concept-table" v-show="editMode">
+    <div id="concept-table">
         <div class="form-group">
             <div class="col-xs-8">
-                <h2>{{ preferredTerm.text }}<span v-if="deprecated">(deprecated)</span></h2>
                 <h4>Preferred Term</h4>
                 <b-input-group class="mt-3">
                     <!-- TODO: Do we want inputs to start as readonly? -->
@@ -49,6 +48,21 @@
                 </div>
 
                 <div class="mt-3">
+                    <h4>Concept Sources</h4>
+                    <div class="mt-1" :key="source.id" v-for="(source, index) in sources">
+                        <concept-source
+                            :canEditVocabulary="isVocabularyEditor"
+                            :concept-id="source.concept_id"
+                            :concept-source-id="source.id"
+                            v-on:delete-source="deleteConceptSource(index)"
+                            v-on:saved-source="updateSource"
+                            :parent-edit-mode="editMode"
+                            :source-index="index"
+                        ></concept-source>
+                    </div>
+                </div>
+
+                <div class="mt-3">
                     <!-- // TODO: Category editing and backend calls  -->
                     <h4>Concept Categories</h4>
 
@@ -58,26 +72,9 @@
                         </div>
                     </b-col>
                 </div>
-
-                <div class="mt-3">
-                    <h4 v-if="sources.length">Concept Sources</h4>
-                    <div class="mt-1" :key="source.id" v-for="(source, index) in sources">
-                        <concept-source
-                            :canEditVocabulary="isVocabularyEditor"
-                            :concept-id="source.concept_id"
-                            :concept-source-id="source.id"
-                            :property-edit-mode="source.editMode"
-                            v-on:delete-source="deleteConceptSource(index)"
-                            v-on:saved-source="updateSource"
-                            :source-index="index"
-                        ></concept-source>
-                    </div>
-                    <div class="mt-3">
-                        <b-button v-if="isVocabularyEditor" @click="addSource()" variant="info"><i class="fa fa-plus"></i> Add Source</b-button>
-                    </div>
-                </div>
             </div>
         </div>
+
         <div class="mt-3">
             <b-button v-if="isVocabularyEditor" v-b-modal.concept-relations-search variant="info"><i class="fa fa-plus"></i> Add Relationship</b-button>
         </div>
@@ -220,6 +217,9 @@ export default {
         termProps: {
             type: Array
         },
+        propertyEditMode: {
+            type: Boolean
+        },
         sourcesProps: {
             type: Array
         },
@@ -237,14 +237,13 @@ export default {
                 // populating terms with our custom temporary variables
                 (source) => {source.inEdit = false; return source}
             ),
-            editMode: false,
             // concept: this.termProps.slice()
             conceptId: this.conceptProps.id,
             termSearch: [],
             allTermsSearch: false,
             selected_concept: '',
             relationType: '',
-            propertyEditMode: false,
+            editMode: false,
             // populating terms with our custom temporary variables
             // concept: this.termProps.slice()
             categories: [
@@ -356,9 +355,6 @@ export default {
                 })
             }
         },
-        toggleEditMode: function() {
-            this.editMode = !this.editMode
-        },
         addTerm: function() {
             if (!this.terms[this.terms.length - 1].text) {
                 return;
@@ -452,12 +448,12 @@ export default {
         deleteConceptSource: function(conceptSourceIndex) {
             this.$delete(this.sources,conceptSourceIndex);
         },
-        addSource: function() {
-            this.sources.push({"concept_id": this.conceptId, "editMode": true });
-        },
         updateSource: function(source, index) {
             Vue.set(this.sources, index, source);
-        }
+        },
+        toggleEditMode: function() {
+            this.editMode = !this.editMode
+        },
     }
 }
 </script>

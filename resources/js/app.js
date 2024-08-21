@@ -46,7 +46,11 @@ Vue.component(
 );
 Vue.component(
   'concept-source',
-  require('./components/ConceptSource.vue').default,
+  require('./components/Concept/Source.vue').default,
+);
+Vue.component(
+  'concept-source-edit',
+  require('./components/Concept/SourceEdit.vue').default,
 );
 Vue.component(
   'concept-search',

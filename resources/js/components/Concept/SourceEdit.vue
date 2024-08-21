@@ -1,66 +1,54 @@
 <template>
-  <div>
     <div v-show="editMode" class="mt-3">
-      <b-row class='my-1'>
+        <b-row class='my-1'>
+            <b-input-group class="mt-2">
+                <b-col sm="2">
+                    <label for="citation">Citation:</label>
+                </b-col>
+                <b-col sm="10">
+                    <b-form-input v-model="citation" :citation="citation" type="text"></b-form-input>
+                </b-col>
+            </b-input-group>
+        </b-row>
 
-        <b-input-group class="mt-2">
-          <b-col sm="2">
-            <label for="citation">Citation:</label>
-          </b-col>
-          <b-col sm="10">
-            <b-form-input v-model="citation" :citation="citation" type="text"></b-form-input>
-          </b-col>
-        </b-input-group>
-      </b-row>
+        <b-row class='my-1'>
+            <b-input-group class="mt-2">
+                <b-col sm="2">
+                    <label for="url">URL:</label>
+                </b-col>
+                <b-col sm="10">
+                    <b-form-input v-model="url" :url="url" type="text"></b-form-input>
+                </b-col>
+            </b-input-group>
+        </b-row>
 
-      <b-row class='my-1'>
+        <b-row class='my-1'>
+            <b-input-group class="mt-2">
+                <b-col sm="2">
+                    <label for="found_data">Found Data:</label>
+                </b-col>
+                <b-col sm="10">
+                   <b-form-input v-model="foundData" :foundData="foundData" type="text"></b-form-input>
+                </b-col>
+            </b-input-group>
+        </b-row>
 
-        <b-input-group class="mt-2">
-          <b-col sm="2">
-            <label for="url">URL:</label>
-          </b-col>
-          <b-col sm="10">
-            <b-form-input v-model="url" :url="url" type="text"></b-form-input>
-          </b-col>
-        </b-input-group>
-      </b-row>
+        <b-row class='my-1'>
 
-      <b-row class='my-1'>
+            <b-input-group class="mt-2">
+                <b-col sm="2">
+                    <label for="note">Note:</label>
+                </b-col>
+                <b-col sm="10">
+                    <b-form-input v-model="note" :note="note" type="text"></b-form-input>
+                </b-col>
+            </b-input-group>
+        </b-row>
 
-        <b-input-group class="mt-2">
-          <b-col sm="2">
-            <label for="found_data">Found Data:</label>
-          </b-col>
-          <b-col sm="10">
-            <b-form-input v-model="foundData" :foundData="foundData" type="text"></b-form-input>
-          </b-col>
-        </b-input-group>
-      </b-row>
-
-      <b-row class='my-1'>
-
-        <b-input-group class="mt-2">
-          <b-col sm="2">
-            <label for="note">Note:</label>
-          </b-col>
-          <b-col sm="10">
-            <b-form-input v-model="note" :note="note" type="text"></b-form-input>
-          </b-col>
-        </b-input-group>
-      </b-row>
-
-      <b-button @click="deleteSource()" variant="danger"><i class="fa fa-trash"></i> Delete</b-button>
-      <b-button variant="primary" @click="saveConceptSource()" ><i class="fa fa-save"></i> Save</b-button>
-      <b-button @click="toggleEditMode()" >Cancel</b-button>
+        <b-button @click="deleteSource()" variant="danger"><i class="fa fa-trash"></i> Delete</b-button>
+        <b-button variant="primary" @click="saveConceptSource()" ><i class="fa fa-save"></i> Save</b-button>
+        <b-button @click="toggleEditMode()">Cancel</b-button>
     </div>
-    <div v-show="!editMode">
-      <p v-if="citation">{{citation}}</p>
-      <a :href="url" v-if="url">{{url}}</a>
-      <p v-if="foundData">{{foundData}}</p>
-      <p v-if="note">{{note}}</p>
-      <b-button variant="primary" @click="toggleEditMode()" v-if="isVocabularyEditor" v-show="!editMode"><i class="fa fa-edit"></i> Edit Source</b-button>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -86,8 +74,8 @@
         citation: null,
         url: null,
         foundData: null,
+        editMode: false,
         note: null,
-        editMode: this.propertyEditMode,
         isVocabularyEditor: this.canEditVocabulary === true,
         index: this.sourceIndex,
         baseURL: process.env.MIX_APP_URL
@@ -139,9 +127,6 @@
             });
         }
       },
-      toggleEditMode: function() {
-          this.editMode = !this.editMode
-      },
       deleteSource: function() {
         console.log(`Deleting Source with id ${this.conceptSourceId}`);
         var vm = this;
@@ -159,6 +144,9 @@
             console.log(error);
           })
 
+      },
+      toggleEditMode: function() {
+        this.editMode = !this.editMode
       },
     }
 
