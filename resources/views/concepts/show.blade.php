@@ -32,51 +32,57 @@
     <div id="conceptShow" data-concept="$concept"></div>
 
     <div id="app">
-        <form v-on:submit.prevent action="index.html" method="post">
-            <concept-form
-                id="conceptShow"
-                :concept-props="{{ $concept }}"
-                :term-props="{{ $concept->terms}}"
-                :sources-props="{{ $concept->sources}}"
-                can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
-            >
-            </concept-form>
+        <concept-show
+            id="conceptShow"
+            :concept-props="{{ $concept }}"
+            :term-props="{{ $concept->terms }}"
+            :sources-props="{{ $concept->sources }}"
+            can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
+        >
+        </concept-show>
+        <concept-edit-form
+            id="conceptEditForm"
+            :concept-props="{{ $concept }}"
+            :term-props="{{ $concept->terms }}"
+            :sources-props="{{ $concept->sources }}"
+            can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
+        >
+        </concept-edit-form>
 
-            @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
-                <h5>Category: {{ $concept->conceptCategories[0]['value']}}</h5>
-            @endif
+        @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
+            <h5>Category: {{ $concept->conceptCategories[0]['value']}}</h5>
+        @endif
 
-            @if ($showRelations)
-                <h2>Relations</h2>
-                <div class="relations row mx-0">
-                    @if (count($concept->broader))
-                        <div class="col-xs-8" style="width:50%">
-                            <h3>Broader</h3>
-                            @foreach($concept->broader as $broader)
-                                <term-item :term="{{ $broader->terms[0]}}"></term-item>
-                            @endforeach
-                        </div>
-                    @endif
+        @if ($showRelations)
+            <h2>Relations</h2>
+            <div class="relations row mx-0">
+                @if (count($concept->broader))
+                    <div class="col-xs-8" style="width:50%">
+                        <h3>Broader</h3>
+                        @foreach($concept->broader as $broader)
+                            <term-item :term="{{ $broader->terms[0] }}"></term-item>
+                        @endforeach
+                    </div>
+                @endif
 
-                    @if (count($concept->narrower))
-                        <div class="col-xs-8" style="width:50%">
-                            <h3>Narrower</h3>
-                            @foreach($concept->narrower as $narrower)
-                                <term-item :term="{{ $narrower->terms[0]}}"></term-item>
-                            @endforeach
-                        </div>
-                    @endif
+                @if (count($concept->narrower))
+                    <div class="col-xs-8" style="width:50%">
+                        <h3>Narrower</h3>
+                        @foreach($concept->narrower as $narrower)
+                            <term-item :term="{{ $narrower->terms[0] }}"></term-item>
+                        @endforeach
+                    </div>
+                @endif
 
-                    @if (count($concept->related))
-                        <div class="col-xs-8" style="width:50%">
-                            <h3>Related</h3>
-                            @foreach($concept->related as $related)
-                                <term-item :term="{{ $related->terms[0]}}"></term-item>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
-            @endif
-        </form>
+                @if (count($concept->related))
+                    <div class="col-xs-8" style="width:50%">
+                        <h3>Related</h3>
+                        @foreach($concept->related as $related)
+                            <term-item :term="{{ $related->terms[0] }}"></term-item>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        @endif
     </div>
 @endsection
