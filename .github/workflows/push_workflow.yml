@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup PHP
-        uses: shivammathur/setup-php@master
+        uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
           extensions: mbstring, bcmath, csv
@@ -82,7 +82,7 @@ jobs:
           name: assets
           path: public
       - name: Setup PHP
-        uses: shivammathur/setup-php@master
+        uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
           extensions: mbstring, bcmath, csv
@@ -110,7 +110,7 @@ jobs:
           name: assets
           path: public
       - name: Setup PHP
-        uses: shivammathur/setup-php@master
+        uses: shivammathur/setup-php@v2
         env:
           runner: self-hosted
         with:
