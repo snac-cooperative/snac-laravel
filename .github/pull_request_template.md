@@ -1,5 +1,3 @@
-## PR Title
-
 **Link to Ticket:**  
 [Add a link to the relevant ticket here]
 
