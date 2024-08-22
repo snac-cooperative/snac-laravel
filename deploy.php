@@ -50,6 +50,7 @@ task('deploy', [
     'deploy:info',
     'deploy:prepare',
     'deploy:release',
+    'deploy:unlock',
     'rsync',
     'deploy:secrets',
     'deploy:shared',
