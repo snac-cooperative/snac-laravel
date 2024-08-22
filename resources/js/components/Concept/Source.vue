@@ -1,32 +1,35 @@
 <template>
   <div>
-    <div v-if="!editMode">
-      <p v-if="citation">{{ citation }}</p>
-      <a :href="url" v-if="url">{{ url }}</a>
-      <p v-if="foundData">{{ foundData }}</p>
-      <p v-if="note">{{ note }}</p>
+    <div style="display: flex; gap: 0.5rem; align-items: baseline;">
+      <b-button
+        variant="primary"
+        @click="toggleEditMode()"
+        v-if="isVocabularyEditor"
+        v-show="conceptEditMode()"
+      ><i class="fa fa-edit"></i> Edit Source</b-button>
+
+      <div v-show="!editMode">
+        <p class="mb-0" v-if="citation">{{ citation }}</p>
+        <a :href="url" v-if="url">{{ url }}</a>
+        <p class="mb-0" v-if="foundData">{{ foundData }}</p>
+        <p class="mb-0" v-if="note">{{ note }}</p>
+      </div>
     </div>
 
     <concept-source-edit
-      v-if="editMode"
-      :canEditVocabulary="isVocabularyEditor"
-      :concept-id="source.concept_id"
-      :concept-source-id="source.id"
-      :source-index="index"
-      :property-toggle-edit-mode="toggleEditMode"
-    ></concept-source-edit>
-
-    <b-button
-      variant="primary"
-      @click="toggleEditMode()"
       v-if="isVocabularyEditor"
-      v-show="parentEditMode"
-      ><i class="fa fa-edit"></i> Edit Source</b-button
-    >
+      v-show="editMode"
+      :canEditVocabulary="isVocabularyEditor"
+      :concept-id="conceptId"
+      :concept-source-id="conceptSourceId"
+      :source-index="index"
+    ></concept-source-edit>
   </div>
 </template>
 
 <script>
+import state from '../../states/concept';
+
 export default {
   props: {
     conceptId: {
@@ -34,12 +37,6 @@ export default {
     },
     conceptSourceId: {
       type: Number,
-    },
-    propertyEditMode: {
-      type: Boolean,
-    },
-    propertyParentEditMode: {
-      type: Boolean,
     },
     canEditVocabulary: false,
     sourceIndex: null,
@@ -54,28 +51,33 @@ export default {
       foundData: null,
       note: null,
       editMode: false,
-      parentEditMode: false,
       isVocabularyEditor: this.canEditVocabulary === true,
       index: this.sourceIndex,
       baseURL: process.env.MIX_APP_URL,
+      state: state,
     };
   },
   methods: {
     getConceptSource: function () {
-      if (this.conceptSourceId != null) {
-        fetch(`${this.baseURL}/api/concept_sources/` + this.conceptSourceId)
-          .then((data) => data.json())
-          .then((data) => {
-            this.citation = data.citation;
-            this.url = data.url;
-            this.foundData = data.found_data;
-            this.note = data.note;
-          });
-      } // if concept source is new => conceptSourceId = nil
+      if (!this.conceptSourceId) {
+        return;
+      }
+
+      fetch(`${this.baseURL}/api/concept_sources/` + this.conceptSourceId)
+        .then((data) => data.json())
+        .then((data) => {
+          this.citation = data.citation;
+          this.url = data.url;
+          this.foundData = data.found_data;
+          this.note = data.note;
+        });
     },
     toggleEditMode: function () {
       this.editMode = !this.editMode;
     },
+    conceptEditMode: function () {
+      return this.state.editMode;
+    }
   },
 };
 </script>

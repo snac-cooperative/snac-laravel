@@ -58,7 +58,7 @@
     <b-button variant="primary" @click="saveConceptSource()"
       ><i class="fa fa-save"></i> Save</b-button
     >
-    <b-button @click="toggleEditMode()">Cancel</b-button>
+    <b-button @click="toggleEditMode">Cancel</b-button>
   </div>
 </template>
 
@@ -70,9 +70,6 @@ export default {
     },
     conceptSourceId: {
       type: Number,
-    },
-    propertyEditMode: {
-      type: Boolean,
     },
     canEditVocabulary: false,
     sourceIndex: null,
@@ -94,16 +91,18 @@ export default {
   },
   methods: {
     getConceptSource: function () {
-      if (this.conceptSourceId != null) {
-        fetch(`${this.baseURL}/api/concept_sources/` + this.conceptSourceId)
-          .then((data) => data.json())
-          .then((data) => {
-            this.citation = data.citation;
-            this.url = data.url;
-            this.foundData = data.found_data;
-            this.note = data.note;
-          });
-      } // if concept source is new => conceptSourceId = nil
+      if (!this.conceptSourceId) {
+        return;
+      }
+
+      fetch(`${this.baseURL}/api/concept_sources/` + this.conceptSourceId)
+        .then((data) => data.json())
+        .then((data) => {
+          this.citation = data.citation;
+          this.url = data.url;
+          this.foundData = data.found_data;
+          this.note = data.note;
+        });
     },
     saveConceptSource: function () {
       console.log(
@@ -149,7 +148,7 @@ export default {
       console.log(`Deleting Source with id ${this.conceptSourceId}`);
       var vm = this;
 
-      if (this.conceptSourceId == null) {
+      if (!this.conceptSourceId) {
         vm.$emit('delete-source');
         return;
       }
@@ -164,9 +163,9 @@ export default {
           console.log(error);
         });
     },
-    toggleEditMode: function () {
-      this.editMode = !this.editMode;
-    },
+    toggleEditMode() {
+      this.$parent.toggleEditMode();
+    }
   },
 };
 </script>

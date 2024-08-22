@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="mb-3 float-right">
+    <div class="mb-3 float-right" v-if="isVocabularyEditor">
       <b-button
         variant="primary"
         @click="toggleEditMode()"
-        v-if="isVocabularyEditor && !editMode"
+        v-show="!getEditMode()"
         ><i class="fa fa-edit"></i> Edit</b-button
       >
-      <b-button variant="secondary" @click="toggleEditMode()" v-if="editMode"
+      <b-button variant="secondary" @click="toggleEditMode()" v-show="getEditMode()"
         >Cancel</b-button
       >
     </div>
@@ -15,7 +15,7 @@
     <h2>{{ preferredTerm.text }}<span v-if="deprecated">(deprecated)</span></h2>
     <hr />
 
-    <div id="concept-table" v-show="!editMode">
+    <div id="concept-table" v-show="!getEditMode()">
       <div class="form-group">
         <div class="col-xs-8">
           <h4>Preferred Term</h4>
@@ -39,7 +39,6 @@
                 :canEditVocabulary="isVocabularyEditor"
                 :concept-id="source.concept_id"
                 :concept-source-id="source.id"
-                :property-parent-edit-mode="editMode"
                 :source-index="index"
               ></concept-source>
             </div>
@@ -51,7 +50,7 @@
     <concept-edit-form
       id="conceptEditForm"
       v-if="isVocabularyEditor"
-      v-show="editMode"
+      v-show="getEditMode()"
       :concept-props="conceptProps"
       :term-props="terms"
       :sources-props="sources"
@@ -63,6 +62,8 @@
 
 <script>
 // import TermItem from './TermItem.vue';
+import state from '../../states/concept';
+
 export default {
   props: {
     conceptProps: {
@@ -94,14 +95,13 @@ export default {
           return source;
         },
       ),
-      editMode: false,
       // concept: this.termProps.slice()
       conceptId: this.conceptProps.id,
       termSearch: [],
       allTermsSearch: false,
       selected_concept: '',
       relationType: '',
-      propertyEditMode: false,
+      state: state,
       // populating terms with our custom temporary variables
       // concept: this.termProps.slice()
       cats: this.conceptProps.concept_categories,
@@ -141,7 +141,10 @@ export default {
         });
     },
     toggleEditMode: function () {
-      this.editMode = !this.editMode;
+      this.state.editMode = !this.state.editMode;
+    },
+    getEditMode: function () {
+      return this.state.editMode;
     },
   },
 };
