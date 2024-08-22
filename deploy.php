@@ -7,11 +7,11 @@ require 'contrib/rsync.php';
 
 set('application', 'SNAC-Laravel');
 set('ssh_multiplexing', true);
+set('repository', 'git@github.com:snac-cooperative/snac-laravel.git');
 
 set('rsync_src', function () {
     return __DIR__;
 });
-
 
 add('rsync', [
     'exclude' => [
@@ -40,6 +40,7 @@ host('snac-dev.iath.virginia.edu')
   ->set('hostname', 'snac-dev.iath.virginia.edu')
   ->set('labels', ['env' => 'development', 'stage' => 'development'])
   ->set('remote_user', 'snacworker')
+  ->set('identity_file', '/home/snacworker/.ssh/id_ed25519_github')
   ->set('deploy_path', '/lv2/snac-laravel');
 
 after('deploy:failed', 'deploy:unlock');
