@@ -116,6 +116,5 @@ jobs:
         with:
           dep: deploy stage=development
           private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
           skip-ssh-setup: true
           verbosity: -vvv
