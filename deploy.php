@@ -49,7 +49,6 @@ desc('Deploy the application');
 task('deploy', [
     'deploy:info',
     'deploy:prepare',
-    'deploy:lock',
     'deploy:release',
     'rsync',
     'deploy:secrets',
@@ -62,6 +61,5 @@ task('deploy', [
     'artisan:migrate',
     'artisan:queue:restart',
     'deploy:symlink',
-    'deploy:unlock',
     'deploy:cleanup',
 ]);
