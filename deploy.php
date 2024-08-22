@@ -36,8 +36,8 @@ host('snaccooperative.org')
   ->set('remote_user', 'snacworker')
   ->set('deploy_path', '/lv2/snac-laravel');
 
-host('localhost')
-  ->set('hostname', 'localhost')
+host('snac-dev.iath.virginia.edu')
+  ->set('hostname', 'snac-dev.iath.virginia.edu')
   ->set('labels', ['env' => 'development', 'stage' => 'development'])
   ->set('remote_user', 'snacworker')
   ->set('deploy_path', '/lv2/snac-laravel');
