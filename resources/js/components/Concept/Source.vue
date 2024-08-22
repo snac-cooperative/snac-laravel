@@ -16,7 +16,7 @@
             :property-toggle-edit-mode="toggleEditMode"
         ></concept-source-edit>
 
-        <b-button variant="primary" @click="toggleEditMode()" v-if="isVocabularyEditor && parentEditMode"><i class="fa fa-edit"></i> Edit Source</b-button>
+        <b-button variant="primary" @click="toggleEditMode()" v-if="isVocabularyEditor" v-show="parentEditMode"><i class="fa fa-edit"></i> Edit Source</b-button>
     </div>
 </template>
 
@@ -29,10 +29,10 @@
       conceptSourceId: {
         type: Number
       },
-      parentEditMode: {
+      propertyEditMode: {
         type: Boolean
       },
-      propertyEditMode: {
+      propertyParentEditMode: {
         type: Boolean
       },
       canEditVocabulary: false,
@@ -48,6 +48,7 @@
         foundData: null,
         note: null,
         editMode: false,
+        parentEditMode: false,
         isVocabularyEditor: this.canEditVocabulary === true,
         index: this.sourceIndex,
         baseURL: process.env.MIX_APP_URL

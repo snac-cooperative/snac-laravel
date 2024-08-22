@@ -127,6 +127,9 @@
             });
         }
       },
+      addSource: function() {
+        this.sources.push({"concept_id": this.conceptId, "editMode": true });
+      },
       deleteSource: function() {
         console.log(`Deleting Source with id ${this.conceptSourceId}`);
         var vm = this;

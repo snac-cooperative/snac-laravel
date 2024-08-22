@@ -32,16 +32,15 @@
                                 :source-index="index"
                             ></concept-source>
                         </div>
-                        <div class="mt-3">
-                            <b-button v-if="isVocabularyEditor" @click="addSource()" variant="info"><i class="fa fa-plus"></i> Add Source</b-button>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <concept-edit-form
             id="conceptEditForm"
-            v-if="editMode"
+            v-if="isVocabularyEditor"
+            v-show="editMode"
             :concept-props="conceptProps"
             :term-props="terms"
             :sources-props="sources"
@@ -115,9 +114,6 @@ export default {
                     (term) => {term.inEdit = false; return term}
                 )
             })
-        },
-        addSource: function() {
-            this.sources.push({"concept_id": this.conceptId, "editMode": true });
         },
         toggleEditMode: function() {
             this.editMode = !this.editMode

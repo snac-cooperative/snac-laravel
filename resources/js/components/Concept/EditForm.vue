@@ -54,11 +54,15 @@
                             :canEditVocabulary="isVocabularyEditor"
                             :concept-id="source.concept_id"
                             :concept-source-id="source.id"
+                            :property-parent-edit-mode="editMode"
+                            :source-index="index"
                             v-on:delete-source="deleteConceptSource(index)"
                             v-on:saved-source="updateSource"
-                            :parent-edit-mode="editMode"
-                            :source-index="index"
                         ></concept-source>
+                    </div>
+
+                    <div class="mt-3">
+                        <b-button v-if="isVocabularyEditor" @click="addSource()" variant="info"><i class="fa fa-plus"></i> Add Source</b-button>
                     </div>
                 </div>
 
