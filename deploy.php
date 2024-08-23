@@ -47,6 +47,7 @@ after('deploy:failed', 'deploy:unlock');
 desc('Deploy the application');
 
 task('deploy', [
+    'deploy:unlock',
     'deploy:prepare',
     'deploy:secrets',
     'deploy:vendors',
