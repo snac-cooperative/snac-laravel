@@ -28,7 +28,7 @@
             <!-- Extract into Term Component? -->
           </div>
 
-          <div class="mt-3">
+          <div class="mt-3" v-if="sources.length || getEditMode()">
             <h4>Concept Sources</h4>
             <div
               class="mt-1"
