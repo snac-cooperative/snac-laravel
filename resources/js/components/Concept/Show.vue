@@ -8,7 +8,7 @@
         ><i class="fa fa-edit"></i> Edit</b-button
       >
       <b-button variant="secondary" @click="toggleEditMode()" v-show="getEditMode()"
-        >Cancel</b-button
+        >Done Editing</b-button
       >
     </div>
 
