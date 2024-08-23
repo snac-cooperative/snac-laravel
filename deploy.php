@@ -47,15 +47,9 @@ after('deploy:failed', 'deploy:unlock');
 desc('Deploy the application');
 
 task('deploy', [
-    'deploy:info',
     'deploy:prepare',
-    'deploy:release',
-    'deploy:unlock',
-    'rsync',
     'deploy:secrets',
-    'deploy:shared',
     'deploy:vendors',
-    'deploy:writable',
     'artisan:storage:link',
     'artisan:view:cache',
     'artisan:config:cache',
