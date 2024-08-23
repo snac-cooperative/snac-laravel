@@ -364,9 +364,6 @@ export default {
     termProps: {
       type: Array,
     },
-    propertyEditMode: {
-      type: Boolean,
-    },
     sourcesProps: {
       type: Array,
     },
