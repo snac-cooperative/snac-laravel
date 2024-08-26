@@ -9,6 +9,14 @@ set('application', 'SNAC-Laravel');
 set('ssh_multiplexing', true);
 set('repository', 'git@github.com:snac-cooperative/snac-laravel.git');
 
+set('bin/php', function () {
+    return '/usr/bin/php83';
+});
+
+set('bin/composer', function () {
+    return '/usr/bin/php83 /usr/local/bin/composer';
+});
+
 set('rsync_src', function () {
     return __DIR__;
 });
