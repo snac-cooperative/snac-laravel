@@ -14,7 +14,7 @@ set('bin/php', function () {
 });
 
 set('bin/composer', function () {
-    return '/usr/bin/php83 /usr/local/bin/composer';
+    return '/usr/bin/php83 /usr/bin/composer';
 });
 
 set('rsync_src', function () {
