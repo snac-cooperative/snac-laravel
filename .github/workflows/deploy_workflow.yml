@@ -93,10 +93,7 @@ jobs:
         uses: atymic/deployer-php-action@master
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssh-known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Deploy to PRODUCTION Server
-        env:
-          DOT_ENV: ${{ secrets.DOT_ENV_PRODUCTION }}
         run: dep deploy production -vvv
   deploy-development:
     name: Deploy Project to DEVELOPMENT Server
