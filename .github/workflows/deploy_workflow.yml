@@ -102,7 +102,7 @@ jobs:
     name: Deploy Project to DEVELOPMENT Server
     runs-on: self-hosted
     needs: [build-js-staging, app-tests]
-    if: github.ref == 'refs/heads/jnm/laravel-deploy'
+    if: github.ref == 'refs/heads/development'
     steps:
       - uses: actions/checkout@v4
       - name: Fetch built assets from Artifacts
