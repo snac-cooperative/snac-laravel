@@ -1,9 +1,10 @@
-name: PUSH Workflow
+name: Deploy Workflow
 
 on:
   push:
     branches:
-      - jnm/laravel-deploy
+      - development
+      - master
 
 jobs:
   app-tests:
