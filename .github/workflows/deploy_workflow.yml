@@ -72,7 +72,7 @@ jobs:
           path: public
   deploy-production:
     name: Deploy Project to PRODUCTION Server
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [build-js-production, app-tests]
     if: github.ref == 'refs/heads/master'
     steps:
