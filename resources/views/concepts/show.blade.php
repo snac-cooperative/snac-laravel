@@ -7,17 +7,12 @@
         </div>
     @endif
 
-{{--    <h1>Term: {{ $concept->terms[0]->text}}</h1> --}}
-
-{{--    {{ dump($concept['terms']) }}--}}
     <ol class="breadcrumb">
-        {{-- TEST --}}
         {{-- TODO:  Rename Occupation Terms with dynamic concept category or categories   --}}
         <li class="breadcrumb-item"><a href="/concepts">Concepts</a></li>
 
         @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
             <li class="breadcrumb-item active">{{ $concept->conceptCategories[0]['value']}} Terms</li>
-        <!-- <li>{\{data.response.concepts[0].term}}</li> -->
         @endif
     </ol>
 
@@ -32,49 +27,32 @@
     <div id="conceptShow" data-concept="$concept"></div>
 
     <div id="app">
-        <concept-show
-            id="conceptShow"
+        <concept
+            id="concept"
             :concept-props="{{ $concept }}"
             :term-props="{{ $concept->terms }}"
             :sources-props="{{ $concept->sources }}"
             can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
         >
-        </concept-show>
+        </concept>
 
         @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
             <h5>Category: {{ $concept->conceptCategories[0]['value']}}</h5>
         @endif
 
-        @if ($showRelations)
+        @if ( count($relations) )
             <hr>
             <h2>Relations</h2>
-            <div class="relations row mx-0">
-                @if (count($concept->broader))
-                    <div class="col-xs-8" style="width:50%">
-                        <h3>Broader</h3>
-                        @foreach($concept->broader as $broader)
-                            <term-item :term="{{ $broader->terms[0] }}"></term-item>
-                        @endforeach
-                    </div>
-                @endif
 
-                @if (count($concept->narrower))
-                    <div class="col-xs-8" style="width:50%">
-                        <h3>Narrower</h3>
-                        @foreach($concept->narrower as $narrower)
-                            <term-item :term="{{ $narrower->terms[0] }}"></term-item>
+            <div class="relations mx-0" style="display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); column-gap: 2rem;">
+                @foreach($relations as $title => $terms)
+                    <div>
+                        <h3>{{ $title }}</h3>
+                        @foreach($terms as $term)
+                            <term-item :term="{{ $term }}"></term-item>
                         @endforeach
                     </div>
-                @endif
-
-                @if (count($concept->related))
-                    <div class="col-xs-8" style="width:50%">
-                        <h3>Related</h3>
-                        @foreach($concept->related as $related)
-                            <term-item :term="{{ $related->terms[0] }}"></term-item>
-                        @endforeach
-                    </div>
-                @endif
+                @endforeach
             </div>
         @endif
     </div>

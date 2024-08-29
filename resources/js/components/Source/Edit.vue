@@ -52,7 +52,7 @@
       </b-input-group>
     </b-row>
 
-    <b-button @click="deleteSource()" variant="danger"
+    <b-button @click="deleteSource()" variant="danger" class="float-right"
       ><i class="fa fa-trash"></i> Delete</b-button
     >
     <b-button variant="primary" @click="saveConceptSource()"

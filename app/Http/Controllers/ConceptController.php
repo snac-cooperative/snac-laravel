@@ -142,9 +142,33 @@ class ConceptController extends Controller
             $isVocabularyEditor = $user->isVocabularyEditor();
         }
 
-        $showRelations = count($concept->broader) || count($concept->narrower) || count($concept->related);
+        $relations = [];
 
-        return view('concepts.show', compact('concept', 'isVocabularyEditor', 'showRelations'));
+        if( count($concept->broader) ) {
+            $relations['Broader'] = [];
+            foreach($concept->broader as $broader) {
+                $relations['Broader'][] = $broader->terms[0];
+            }
+        }
+
+        if( count($concept->narrower) ) {
+            $relations['Narrower'] = [];
+            foreach($concept->narrower as $narrower) {
+                $relations['Narrower'][] = $narrower->terms[0];
+            }
+        }
+
+        if( count($concept->related) ) {
+            $relations['Related'] = [];
+            foreach($concept->related as $related) {
+                $relations['Related'][] = $related->terms[0];
+            }
+        }
+
+        return view(
+            'concepts.show',
+            compact('concept', 'isVocabularyEditor', 'relations')
+        );
     }
 
     /**

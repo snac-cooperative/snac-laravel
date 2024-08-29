@@ -1,3 +1,6 @@
-export default {
-  editMode: false
+const state = {
+  editMode: false,
+  isDirty: {},
 };
+
+export default state;

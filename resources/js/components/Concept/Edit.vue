@@ -41,7 +41,7 @@
               <b-button
                 @click="saveTerm(term)"
                 class="btn btn-info"
-                title="Make Preferred"
+                title="Save"
                 ><i class="fa fa-floppy-o"></i
               ></b-button>
               <b-button
@@ -75,30 +75,6 @@
             "
             >Cancel</b-button
           >
-        </div>
-
-        <div class="mt-3">
-          <h4>Concept Sources</h4>
-          <div class="mt-1" :key="source.id" v-for="(source, index) in sources">
-            <concept-source
-              :canEditVocabulary="isVocabularyEditor"
-              :concept-id="source.concept_id"
-              :concept-source-id="source.id"
-              :property-parent-edit-mode="editMode"
-              :source-index="index"
-              v-on:delete-source="deleteConceptSource(index)"
-              v-on:saved-source="updateSource"
-            ></concept-source>
-          </div>
-
-          <div class="mt-3">
-            <b-button
-              v-if="isVocabularyEditor"
-              @click="addSource()"
-              variant="info"
-              ><i class="fa fa-plus"></i> Add Source</b-button
-            >
-          </div>
         </div>
 
         <div class="mt-3">
@@ -462,26 +438,6 @@ export default {
 
       this.saveTerm(oldPreferred);
       this.saveTerm(term);
-    },
-    deleteTerm: function (term) {
-      console.log(`Deleting ${term.text} with id ${term.id}`);
-      const vm = this;
-
-      // if term is not saved, simply drop
-      if (!term.id) {
-        vm.terms.splice(vm.terms.indexOf(term), 1);
-        return;
-      }
-
-      axios
-        .delete(`${this.baseURL}/api/terms/${term.id}`)
-        .then(function (response) {
-          vm.terms.splice(vm.terms.indexOf(term), 1);
-          console.log('Deleted! ', response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
     },
     editTerm: function (term) {
       console.log(`Editing ${term.text} with id ${term.id}`);
