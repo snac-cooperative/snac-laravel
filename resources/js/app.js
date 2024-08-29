@@ -5,15 +5,21 @@
  */
 
 require('./bootstrap');
-import { BTable, BPagination, BCol, BFormGroup, BFormSelect } from 'bootstrap-vue';
+import {
+  BTable,
+  BPagination,
+  BCol,
+  BFormGroup,
+  BFormSelect,
+} from 'bootstrap-vue';
 
 // BootstrapVue
 // TODO: Determine how much of bootstrap-vue we need to include
-import Vue from 'vue'
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-Vue.use(BootstrapVue)
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import Vue from 'vue';
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
+Vue.use(BootstrapVue);
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 // BootstrapVue
 
 /**
@@ -29,10 +35,22 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.component('concept', require('./components/Concept.vue').default);
 Vue.component('concept-list', require('./components/ConceptList.vue').default);
 Vue.component('concept-form', require('./components/ConceptForm.vue').default);
-Vue.component('concept-category', require('./components/ConceptCategory.vue').default);
-Vue.component('concept-create', require('./components/ConceptCreate.vue').default);
-Vue.component('concept-source', require('./components/ConceptSource.vue').default);
-Vue.component('concept-search', require('./components/ConceptSearch.vue').default);
+Vue.component(
+  'concept-category',
+  require('./components/ConceptCategory.vue').default,
+);
+Vue.component(
+  'concept-create-form',
+  require('./components/Concept/CreateForm.vue').default,
+);
+Vue.component(
+  'concept-source',
+  require('./components/ConceptSource.vue').default,
+);
+Vue.component(
+  'concept-search',
+  require('./components/ConceptSearch.vue').default,
+);
 Vue.component('term-item', require('./components/TermItem.vue').default);
 Vue.component('cpf-form', require('./components/CPFForm.vue').default);
 Vue.component('b-table', BTable);
@@ -42,10 +60,18 @@ Vue.component('b-form-group', BFormGroup);
 Vue.component('b-form-select', BFormSelect);
 
 // Repository Forms
-Vue.component('language-select', require('./components/LanguageSelect.vue').default);
-Vue.component('repository-form', require('./components/RepositoryForm.vue').default);
-Vue.component('radio-question', require('./components/RadioQuestion.vue').default);
-
+Vue.component(
+  'language-select',
+  require('./components/LanguageSelect.vue').default,
+);
+Vue.component(
+  'repository-form',
+  require('./components/RepositoryForm.vue').default,
+);
+Vue.component(
+  'radio-question',
+  require('./components/RadioQuestion.vue').default,
+);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -54,5 +80,5 @@ Vue.component('radio-question', require('./components/RadioQuestion.vue').defaul
  */
 
 const app = new Vue({
-    el: '#app',
+  el: '#app',
 });
