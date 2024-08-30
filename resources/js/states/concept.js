@@ -1,6 +1,6 @@
 const state = {
   editMode: false,
-  isDirty: {},
+  isDirty: [],
 };
 
 export default state;

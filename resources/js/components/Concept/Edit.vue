@@ -352,19 +352,6 @@ export default {
 
       term.inEdit = true;
     },
-    postTerm: function (term) {
-      console.log(`Creating new term ${term.text}`);
-      axios
-        .post(`${this.baseURL}/concepts/${term.concept_id}/add_term`, term) // TODO: Move to an api call
-        .then(function (response) {
-          console.log('Created! ', response);
-          term.inEdit = false;
-          // this.fetchConcept();
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
     saveTerm: function (term) {
       console.log(`Saving ${term.text} with id ${term.id}`);
       if (!term.id) {

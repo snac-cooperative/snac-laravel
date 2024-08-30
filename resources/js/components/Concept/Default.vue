@@ -187,13 +187,14 @@ export default {
       const vm = this;
       if (!term.id) {
         this.postTerm(term);
+        vm.cleanDirty(term);
         // TODO: prevent a double-click from posting twice
       } else {
         axios
           .patch(`${this.baseURL}/api/terms/${term.id}`, term)
           .then(function (response) {
             term.inEdit = false;
-            delete vm.state.isDirty[term.id];
+            vm.cleanDirty(term);
             vm.flashSuccessAlert();
             // vm.fetchConcept();    // Do we want to reload full concept after each save? Maybe not, if that would reset other unsaved fields...
           })
@@ -202,12 +203,43 @@ export default {
           });
       }
     },
+    postTerm: function (term) {
+      console.log(`Creating new term ${term.text}`);
+      axios
+        .post(`${this.baseURL}/concepts/${term.concept_id}/add_term`, term) // TODO: Move to an api call
+        .then(function (response) {
+          console.log('Created! ', response);
+          term.inEdit = false;
+          // this.fetchConcept();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     deleteTerm: function(term) {
+      if(!confirm('Are you sure you want to delete this term?')) {
+        return;
+      }
+
       let index = this.terms.findIndex((t) => t.id === term.id);
       if (index === -1) {
         index = this.terms.findIndex((t) => t.text === term.text);
       }
       this.terms.splice(index, 1);
+
+      this.cleanDirty(term);
+
+      if(term.id) {
+        axios
+          .delete(`${this.baseURL}/api/terms/${term.id}/destroy`)
+          .then(function (response) {
+            term.inEdit = false;
+            // vm.fetchConcept();    // Do we want to reload full concept after each save? Maybe not, if that would reset other unsaved fields...
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
     },
     toggleEditMode: function () {
       if ( this.getEditMode() && this.isDirty() ) {
@@ -232,19 +264,48 @@ export default {
       );
     },
     isDirty: function () {
-      for (const prop in this.state.isDirty) {
-        if (Object.hasOwn(this.state.isDirty, prop)) {
-          return true;
+      return this.state.isDirty.length > 0;
+    },
+    flagDirty: function ( obj ) {
+      if ( obj.dirty ) {
+        this.markDirty(obj);
+      } else {
+        this.cleanDirty(obj);
+      }
+    },
+    markDirty: function(obj) {
+      if(obj.id) {
+        for (let i = 0; i < this.state.isDirty.length; i++) {
+          if (this.state.isDirty[i].id === obj.id) {
+            return;
+          }
+        }
+      } else {
+        for (let i = 0; i < this.state.isDirty.length; i++) {
+          if (this.state.isDirty[i].text === obj.previous) {
+            this.state.isDirty[i].text = obj.text;
+            return;
+          }
         }
       }
-      return false;
+      this.state.isDirty[this.state.isDirty.length] = obj;
     },
-    flagDirty: function ( args ) {
-      if ( args.dirty ) {
-        this.state.isDirty[args.id] = true;
-      } else {
-        delete this.state.isDirty[args.id];
+    cleanDirty: function(obj) {
+      for (let i = 0; i < this.state.isDirty.length; i++) {
+        if (this.state.isDirty[i].id && this.state.isDirty[i].id === obj.id) {
+          this.state.isDirty.splice(i, 1);
+          return;
+        } else if (this.state.isDirty[i].text && this.state.isDirty[i].text === obj.text) {
+          this.state.isDirty.splice(i, 1);
+          return;
+        } else if (this.state.isDirty[i].value && this.state.isDirty[i].value === obj.value) {
+          this.state.isDirty.splice(i, 1);
+          return;
+        }
       }
+    },
+    resetDirty: function() {
+      this.state.isDirty = [];
     },
   },
 };
