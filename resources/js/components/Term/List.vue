@@ -9,6 +9,7 @@
           v-else
           :term="term"
           @save-term="saveTerm"
+          @delete-term="deleteTerm"
           @input="flagDirty"
         ></Editable>
       </p>
@@ -51,6 +52,9 @@ export default {
     },
     addTerm: function () {
       this.$parent.addTerm();
+    },
+    deleteTerm: function (term) {
+      this.$parent.deleteTerm(term);
     },
     flagDirty: function(args) {
       this.$parent.flagDirty(args);

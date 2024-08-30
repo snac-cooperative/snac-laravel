@@ -202,6 +202,13 @@ export default {
           });
       }
     },
+    deleteTerm: function(term) {
+      let index = this.terms.findIndex((t) => t.id === term.id);
+      if (index === -1) {
+        index = this.terms.findIndex((t) => t.text === term.text);
+      }
+      this.terms.splice(index, 1);
+    },
     toggleEditMode: function () {
       if ( this.getEditMode() && this.isDirty() ) {
         if ( !confirm('You have unsaved changes. Are you sure you want to exit Edit Mode?') ) {
