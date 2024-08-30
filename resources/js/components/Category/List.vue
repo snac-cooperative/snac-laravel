@@ -12,8 +12,8 @@
           v-else
           :category="cat"
           :is-primary="0 === index"
-          @save-cat="saveCategory"
-          @input="flagDirty"
+          @save-category="saveCategory"
+          @change="flagDirty"
         ></Editable>
       </p>
     </div>
@@ -58,8 +58,8 @@ export default {
     conceptEditMode: function () {
       return this.state.editMode;
     },
-    saveCategory: function (cat) {
-      this.$parent.saveCategory(cat);
+    saveCategory: function (newCat,oldCat) {
+      this.$parent.saveCategory(newCat,oldCat);
     },
     addCategory: function () {
       this.$parent.addCategory();

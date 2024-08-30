@@ -1,9 +1,9 @@
 <template>
   <BInputGroup>
     <BFormSelect
-      v-model="category.id"
+      v-model="originalId"
       @input="updateCategory"
-      :options="getCategories()"
+      :options="getCategories"
       :class="{ 'alert-info': isDirty }"
     ></BFormSelect>
 
@@ -44,8 +44,9 @@ import {
 export default {
   data() {
     return {
-      originalCat: this.category.id,
-      isDirty: false,
+      originalId: this.category.id,
+      originalValue: this.category.value,
+      selectedId: this.category.id,
     };
   },
   model: {
@@ -62,23 +63,41 @@ export default {
     BFormSelect,
     BButton,
   },
+  computed: {
+    getCategories() {
+      return this.$parent.getCategories(this.getCategory.id);
+    },
+    isDirty() {
+      if(!this.category.value) {
+        return !!this.category.id;
+      }
+      return parseInt(this.originalId) !== this.category.id;
+    },
+    getCategory() {
+      return this.category;
+    },
+    resetCategory() {
+      this.originalId = this.getCategory.id;
+      this.originalValue = this.getCategory.value;
+    },
+  },
   methods: {
-    updateCategory(category) {
-      // this.isDirty = parseInt( category ) !== parseInt( this.originalCat );
-      this.$emit('input', { ...this.category, category: category, dirty: this.isDirty });
+    updateCategory(categoryId) {
+      this.selectedId = parseInt(categoryId);
+      this.$emit('change', { ...this.getCategory, category: this.selectedId, dirty: this.isDirty });
     },
     emitSaveCategory() {
-      this.$emit('save-category', this.category);
+      console.log('newId',categoryId);
+      console.log('oldId',this.category.id);
+
+      this.$emit('save-category', this.selectedId, this.category.id);
     },
     emitMakeCategoryPrimary() {
-      this.$emit('make-category-primary', this.category);
+      this.$emit('make-category-primary', this.getCategory);
     },
     emitDeleteCategory() {
-      this.$emit('delete-category', this.category);
+      this.$emit('delete-category', this.getCategory);
     },
-    getCategories() {
-      return this.$parent.getCategories(this.category.id);
-    }
   },
 };
 </script>

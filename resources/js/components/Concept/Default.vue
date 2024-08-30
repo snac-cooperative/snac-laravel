@@ -18,7 +18,11 @@
       >
     </div>
 
-    <h2>{{ preferredTerm.text }}<span v-if="deprecated">(deprecated)</span></h2>
+    <h2>
+      {{ preferredTerm.text }}
+      <span v-if="deprecated">(deprecated)</span>
+    </h2>
+
     <hr />
 
     <div id="concept-table">
@@ -252,6 +256,28 @@ export default {
             console.log(error);
           });
       }
+    },
+    addCategory: function () {
+      if (!this.conceptProps.concept_categories[this.conceptProps.concept_categories.length - 1].id) {
+        return;
+      }
+
+      const conceptID = this.conceptProps.concept_categories[0].concept_id;
+      const newCategory = {
+        pivot: {
+          concept_id: conceptID,
+          category_id: null,
+        },
+        id: null,
+        entity_group: null,
+        type: 'concept_category',
+        uri: null,
+        value: null,
+      };
+      this.conceptProps.concept_categories.push(newCategory);
+    },
+    saveCategory: function(newCat,oldCat) {
+      console.log( 'categories', this.conceptProps.concept_categories );
     },
     toggleEditMode: function () {
       if ( this.getEditMode() && this.isDirty() ) {
