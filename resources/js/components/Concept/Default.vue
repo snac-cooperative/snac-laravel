@@ -54,6 +54,15 @@
           ></concept-source>
         </div>
       </div>
+
+      <div class="my-3" v-if="cats.length || getEditMode()">
+        <h4>Categories</h4>
+
+        <category-list
+          :cats="cats"
+          :canEditVocabulary="isVocabularyEditor"
+        ></category-list>
+      </div>
     </div>
 
 <!--    <concept-edit-->
@@ -113,10 +122,15 @@ export default {
       selected_concept: '',
       relationType: '',
       state: state,
-      // populating terms with our custom temporary variables
-      // concept: this.termProps.slice()
+      categories: [
+        { value: process.env.MIX_ETHNICITY_ID, text: 'Ethnicity' },
+        { value: process.env.MIX_OCCUPATION_ID, text: 'Occupation' },
+        { value: process.env.MIX_ACTIVITY_ID, text: 'Activity' },
+        { value: process.env.MIX_SUBJECT_ID, text: 'Subject' },
+        { value: process.env.MIX_RELIGION_ID, text: 'Religion' },
+        { value: process.env.MIX_RELATION_ID, text: 'Relation' },
+      ],
       cats: this.conceptProps.concept_categories,
-      selectedCategory: this.conceptProps.concept_categories[0].id,
       isVocabularyEditor: this.canEditVocabulary !== 'false',
       baseURL: process.env.MIX_APP_URL,
       devFeatures: process.env.MIX_INCLUDE_DEVELOPMENT_FEATURES == 'true',

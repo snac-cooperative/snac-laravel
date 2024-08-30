@@ -1,5 +1,5 @@
 <template>
-  <div class="term-item">
+  <div class="term-list">
     <div v-for="term in terms" v-bind:key="term.id">
       <p class="mb-2">
         <span v-if="!conceptEditMode()">
@@ -19,7 +19,7 @@
       @click="addTerm()"
       v-if="isVocabularyEditor"
       v-show="conceptEditMode()"
-    ><i class="fa fa-plus"></i> Add New</b-button>
+    ><i class="fa fa-plus"></i> Add Term</b-button>
   </div>
 </template>
 

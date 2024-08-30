@@ -66,6 +66,10 @@ Vue.component(
   'term-list',
   require('./components/Term/List.vue').default
 );
+Vue.component(
+  'category-list',
+  require('./components/Category/List.vue').default
+);
 Vue.component('term-item', require('./components/TermItem.vue').default);
 Vue.component('cpf-form', require('./components/CPFForm.vue').default);
 Vue.component('b-table', BTable);

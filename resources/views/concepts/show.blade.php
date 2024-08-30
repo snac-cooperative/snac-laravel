@@ -24,7 +24,7 @@
         </div>
     @endif
 
-    <div id="conceptShow" data-concept="$concept"></div>
+    <div id="concept" data-concept="$concept"></div>
 
     <div id="app">
         <concept
@@ -35,10 +35,6 @@
             can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
         >
         </concept>
-
-        @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
-            <h5>Category: {{ $concept->conceptCategories[0]['value']}}</h5>
-        @endif
 
         @if ( count($relations) )
             <hr>
