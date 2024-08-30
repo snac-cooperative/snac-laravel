@@ -10,6 +10,7 @@
           :term="term"
           @save-term="saveTerm"
           @delete-term="deleteTerm"
+          @make-term-preferred="makeTermPreferred"
           @input="flagDirty"
         ></Editable>
       </p>
@@ -55,6 +56,9 @@ export default {
     },
     deleteTerm: function (term) {
       this.$parent.deleteTerm(term);
+    },
+    makeTermPreferred: function(term) {
+      this.$parent.makeTermPreferred(term);
     },
     flagDirty: function(args) {
       this.$parent.flagDirty(args);

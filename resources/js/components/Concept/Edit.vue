@@ -330,23 +330,6 @@ export default {
           );
         });
     },
-    makeTermPreferred: function (term) {
-      console.log(`${term.text} is preferred!`, term);
-      if (
-        !confirm(
-          `Are you sure you want to make '${term.text}' the preferred term for this concept?`,
-        )
-      ) {
-        return;
-      }
-
-      const oldPreferred = this.preferredTerm;
-      oldPreferred.preferred = false;
-      term.preferred = true;
-
-      this.saveTerm(oldPreferred);
-      this.saveTerm(term);
-    },
     editTerm: function (term) {
       console.log(`Editing ${term.text} with id ${term.id}`);
 

@@ -183,12 +183,10 @@ export default {
       this.terms.push(newTerm);
     },
     saveTerm: function (term) {
-      console.log(`Saving ${term.text} with id ${term.id}`);
       const vm = this;
       if (!term.id) {
-        this.postTerm(term);
+        vm.postTerm(term);
         vm.cleanDirty(term);
-        // TODO: prevent a double-click from posting twice
       } else {
         axios
           .patch(`${this.baseURL}/api/terms/${term.id}`, term)
@@ -204,17 +202,31 @@ export default {
       }
     },
     postTerm: function (term) {
-      console.log(`Creating new term ${term.text}`);
       axios
         .post(`${this.baseURL}/concepts/${term.concept_id}/add_term`, term) // TODO: Move to an api call
         .then(function (response) {
-          console.log('Created! ', response);
           term.inEdit = false;
           // this.fetchConcept();
         })
         .catch(function (error) {
           console.log(error);
         });
+    },
+    makeTermPreferred: function (term) {
+      if (
+        !confirm(
+          `Are you sure you want to make '${term.text}' the preferred term for this concept?`,
+        )
+      ) {
+        return;
+      }
+
+      const oldPreferred = this.preferredTerm;
+      oldPreferred.preferred = false;
+      term.preferred = true;
+
+      this.saveTerm(oldPreferred);
+      this.saveTerm(term);
     },
     deleteTerm: function(term) {
       if(!confirm('Are you sure you want to delete this term?')) {

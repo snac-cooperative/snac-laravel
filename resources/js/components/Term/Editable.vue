@@ -45,6 +45,7 @@ import {
 export default {
   data() {
     return {
+      originalId: this.term.id,
       originalText: this.term.text,
       previousText: this.term.text,
     };
@@ -70,7 +71,7 @@ export default {
     },
     emitSaveTerm() {
       this.$emit('save-term', this.term);
-      this.originalText = this.term.text;
+      this.resetTerm();
     },
     emitMakeTermPreferred() {
       this.$emit('make-term-preferred', this.term);
@@ -78,9 +79,17 @@ export default {
     emitDeleteTerm() {
       this.$emit('delete-term', this.term);
     },
+    resetTerm() {
+      this.originalId = this.term.id;
+      this.originalText = this.term.text;
+    },
     isDirty() {
       if(!this.term.id) {
         return !!this.term.text;
+      }
+      if(this.term.id !== this.originalId){
+        this.resetTerm();
+        return false;
       }
       return this.term.text !== this.originalText;
     }
