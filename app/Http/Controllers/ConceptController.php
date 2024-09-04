@@ -142,7 +142,9 @@ class ConceptController extends Controller
             $isVocabularyEditor = $user->isVocabularyEditor();
         }
 
-        return view('concepts.show', ['concept' => $concept, 'isVocabularyEditor' => $isVocabularyEditor]);
+        $showRelations = count($concept->broader) || count($concept->narrower) || count($concept->related);
+
+        return view('concepts.show', compact('concept', 'isVocabularyEditor', 'showRelations'));
     }
 
     /**

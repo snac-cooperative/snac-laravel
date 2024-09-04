@@ -34,7 +34,14 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 Vue.component('concept', require('./components/Concept.vue').default);
 Vue.component('concept-list', require('./components/ConceptList.vue').default);
-Vue.component('concept-form', require('./components/ConceptForm.vue').default);
+Vue.component(
+  'concept-show',
+  require('./components/Concept/Show.vue').default,
+  );
+Vue.component(
+  'concept-edit-form',
+  require('./components/Concept/EditForm.vue').default,
+);
 Vue.component(
   'concept-category',
   require('./components/ConceptCategory.vue').default,
@@ -45,7 +52,11 @@ Vue.component(
 );
 Vue.component(
   'concept-source',
-  require('./components/ConceptSource.vue').default,
+  require('./components/Concept/Source.vue').default,
+);
+Vue.component(
+  'concept-source-edit',
+  require('./components/Concept/SourceEdit.vue').default,
 );
 Vue.component(
   'concept-search',
