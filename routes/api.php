@@ -37,3 +37,4 @@ Route::get('concepts_summary', function () {
 Route::apiResource('concept_sources', 'API\ConceptSourceController');
 
 Route::apiResource('terms', 'API\TermController');
+Route::delete('terms/{id}/destroy', 'API\TermController@destroy');
