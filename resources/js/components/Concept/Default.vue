@@ -38,7 +38,9 @@
             @input="flagDirty"
           ></Editable>
 
-          <h4 class="mt-3" v-show="alternateTerms.length || getEditMode()">Alternate Terms</h4>
+          <h4 class="mt-3" v-show="alternateTerms.length || getEditMode()">
+            Alternate Terms
+          </h4>
 
           <term-list
             :terms="alternateTerms"
@@ -69,16 +71,16 @@
       </div>
     </div>
 
-<!--    <concept-edit-->
-<!--      id="conceptEdit"-->
-<!--      v-if="isVocabularyEditor"-->
-<!--      v-show="getEditMode()"-->
-<!--      :concept-props="conceptProps"-->
-<!--      :term-props="terms"-->
-<!--      :sources-props="sources"-->
-<!--      :canEditVocabulary="isVocabularyEditor"-->
-<!--    >-->
-<!--    </concept-edit>-->
+    <!--    <concept-edit-->
+    <!--      id="conceptEdit"-->
+    <!--      v-if="isVocabularyEditor"-->
+    <!--      v-show="getEditMode()"-->
+    <!--      :concept-props="conceptProps"-->
+    <!--      :term-props="terms"-->
+    <!--      :sources-props="sources"-->
+    <!--      :canEditVocabulary="isVocabularyEditor"-->
+    <!--    >-->
+    <!--    </concept-edit>-->
   </div>
 </template>
 
@@ -86,6 +88,7 @@
 // import TermItem from './TermItem.vue';
 import state from '../../states/concept';
 import Editable from '../Term/Editable.vue';
+import { categories } from '../../config/catgegories';
 
 export default {
   components: { Editable },
@@ -126,14 +129,7 @@ export default {
       selected_concept: '',
       relationType: '',
       state: state,
-      categories: [
-        { value: process.env.MIX_ETHNICITY_ID, text: 'Ethnicity' },
-        { value: process.env.MIX_OCCUPATION_ID, text: 'Occupation' },
-        { value: process.env.MIX_ACTIVITY_ID, text: 'Activity' },
-        { value: process.env.MIX_SUBJECT_ID, text: 'Subject' },
-        { value: process.env.MIX_RELIGION_ID, text: 'Religion' },
-        { value: process.env.MIX_RELATION_ID, text: 'Relation' },
-      ],
+      categories,
       cats: this.conceptProps.concept_categories,
       isVocabularyEditor: this.canEditVocabulary !== 'false',
       baseURL: process.env.MIX_APP_URL,
@@ -232,8 +228,8 @@ export default {
       this.saveTerm(oldPreferred);
       this.saveTerm(term);
     },
-    deleteTerm: function(term) {
-      if(!confirm('Are you sure you want to delete this term?')) {
+    deleteTerm: function (term) {
+      if (!confirm('Are you sure you want to delete this term?')) {
         return;
       }
 
@@ -245,7 +241,7 @@ export default {
 
       this.cleanDirty(term);
 
-      if(term.id) {
+      if (term.id) {
         axios
           .delete(`${this.baseURL}/api/terms/${term.id}/destroy`)
           .then(function (response) {
@@ -258,7 +254,11 @@ export default {
       }
     },
     addCategory: function () {
-      if (!this.conceptProps.concept_categories[this.conceptProps.concept_categories.length - 1].id) {
+      if (
+        !this.conceptProps.concept_categories[
+          this.conceptProps.concept_categories.length - 1
+        ].id
+      ) {
         return;
       }
 
@@ -276,12 +276,16 @@ export default {
       };
       this.conceptProps.concept_categories.push(newCategory);
     },
-    saveCategory: function(newCat,oldCat) {
-      console.log( 'categories', this.conceptProps.concept_categories );
+    saveCategory: function (newCat, oldCat) {
+      console.log('categories', this.conceptProps.concept_categories);
     },
     toggleEditMode: function () {
-      if ( this.getEditMode() && this.isDirty() ) {
-        if ( !confirm('You have unsaved changes. Are you sure you want to exit Edit Mode?') ) {
+      if (this.getEditMode() && this.isDirty()) {
+        if (
+          !confirm(
+            'You have unsaved changes. Are you sure you want to exit Edit Mode?',
+          )
+        ) {
           return;
         }
       }
@@ -294,25 +298,22 @@ export default {
     flashSuccessAlert: function () {
       const alert = document.querySelector('.alert-success');
       alert.classList.remove('hidden');
-      setTimeout(
-        function() {
-          alert.classList.add('hidden');
-        },
-        3000
-      );
+      setTimeout(function () {
+        alert.classList.add('hidden');
+      }, 3000);
     },
     isDirty: function () {
       return this.state.isDirty.length > 0;
     },
-    flagDirty: function ( obj ) {
-      if ( obj.dirty ) {
+    flagDirty: function (obj) {
+      if (obj.dirty) {
         this.markDirty(obj);
       } else {
         this.cleanDirty(obj);
       }
     },
-    markDirty: function(obj) {
-      if(obj.id) {
+    markDirty: function (obj) {
+      if (obj.id) {
         for (let i = 0; i < this.state.isDirty.length; i++) {
           if (this.state.isDirty[i].id === obj.id) {
             return;
@@ -328,21 +329,27 @@ export default {
       }
       this.state.isDirty[this.state.isDirty.length] = obj;
     },
-    cleanDirty: function(obj) {
+    cleanDirty: function (obj) {
       for (let i = 0; i < this.state.isDirty.length; i++) {
         if (this.state.isDirty[i].id && this.state.isDirty[i].id === obj.id) {
           this.state.isDirty.splice(i, 1);
           return;
-        } else if (this.state.isDirty[i].text && this.state.isDirty[i].text === obj.text) {
+        } else if (
+          this.state.isDirty[i].text &&
+          this.state.isDirty[i].text === obj.text
+        ) {
           this.state.isDirty.splice(i, 1);
           return;
-        } else if (this.state.isDirty[i].value && this.state.isDirty[i].value === obj.value) {
+        } else if (
+          this.state.isDirty[i].value &&
+          this.state.isDirty[i].value === obj.value
+        ) {
           this.state.isDirty.splice(i, 1);
           return;
         }
       }
     },
-    resetDirty: function() {
+    resetDirty: function () {
       this.state.isDirty = [];
     },
   },

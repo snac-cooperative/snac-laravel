@@ -1,6 +1,5 @@
 <template>
   <div id="concept-table">
-
     <div class="mt-3">
       <b-button
         v-if="isVocabularyEditor"
@@ -240,6 +239,8 @@
 
 <script>
 // import TermItem from './TermItem.vue';
+import { categories } from '../../config/catgegories';
+
 export default {
   props: {
     conceptProps: {
@@ -280,14 +281,7 @@ export default {
       editMode: false,
       // populating terms with our custom temporary variables
       // concept: this.termProps.slice()
-      categories: [
-        { value: process.env.MIX_ETHNICITY_ID, text: 'Ethnicity' },
-        { value: process.env.MIX_OCCUPATION_ID, text: 'Occupation' },
-        { value: process.env.MIX_ACTIVITY_ID, text: 'Activity' },
-        { value: process.env.MIX_SUBJECT_ID, text: 'Subject' },
-        { value: process.env.MIX_RELIGION_ID, text: 'Religion' },
-        { value: process.env.MIX_RELATION_ID, text: 'Relation' },
-      ],
+      categories,
       cats: this.conceptProps.concept_categories,
       selectedCategory: this.conceptProps.concept_categories[0].id,
       isVocabularyEditor: this.canEditVocabulary !== 'false',
