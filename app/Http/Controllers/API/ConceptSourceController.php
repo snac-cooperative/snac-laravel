@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 use App\Models\Concept;
 use App\Models\ConceptSource;
+use Illuminate\Http\Request;
 
 class ConceptSourceController extends Controller
 {
@@ -17,7 +16,7 @@ class ConceptSourceController extends Controller
      */
     public function index()
     {
-        //
+        return ConceptSource::all();
     }
 
     /**
@@ -72,6 +71,6 @@ class ConceptSourceController extends Controller
     public function destroy($id)
     {
         $source = ConceptSource::findOrFail($id)->delete();
-        return response('Deleted'.$id, 204);
+        return response('Deleted' . $id, 204);
     }
 }
