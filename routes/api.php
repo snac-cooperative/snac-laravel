@@ -1,9 +1,8 @@
 <?php
 
+use App\Models\Term;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\Concept;
-use App\Models\Term;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +13,7 @@ use App\Models\Term;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -25,7 +24,9 @@ Route::get('concepts/reconcile', 'API\ConceptController@reconcile');
 
 Route::put('concepts/{id}/relate_concept', 'ConceptController@relateConcepts');
 Route::put('concepts/{id}/deprecate', 'API\ConceptController@deprecate');
-Route::apiResource('concepts', 'API\ConceptController');
+Route::apiResource('concepts', 'API\ConceptController')->except([
+    'update',
+]);
 
 Route::get('concepts_summary', function () {
     // Return only the preferred term
@@ -37,4 +38,3 @@ Route::get('concepts_summary', function () {
 Route::apiResource('concept_sources', 'API\ConceptSourceController');
 
 Route::apiResource('terms', 'API\TermController');
-Route::delete('terms/{id}/destroy', 'API\TermController@destroy');
