@@ -56,9 +56,17 @@
             :canEditVocabulary="isVocabularyEditor"
             :concept-id="source.concept_id"
             :concept-source-id="source.id"
+            :source-edit-mode="source.editMode"
             :source-index="index"
           ></concept-source>
         </div>
+        <b-button
+          class="mt-2"
+          variant="success"
+          @click="addSource()"
+          v-if="isVocabularyEditor"
+          v-show="getEditMode()"
+        ><i class="fa fa-plus"></i> Add Source</b-button>
       </div>
 
       <div class="my-3" v-if="cats.length || getEditMode()">
@@ -89,6 +97,7 @@
 import state from '../../states/concept';
 import Editable from '../Term/Editable.vue';
 import { categories } from '../../config/catgegories';
+import src from 'vue-multiselect/src';
 
 export default {
   components: { Editable },
@@ -137,6 +146,9 @@ export default {
     };
   },
   computed: {
+    src() {
+      return src
+    },
     alternateTerms() {
       return this.terms
         .map((term) => {
@@ -278,6 +290,10 @@ export default {
     },
     saveCategory: function (newCat, oldCat) {
       console.log('categories', this.conceptProps.concept_categories);
+    },
+    addSource: function() {
+      console.log('add');
+      this.sources.push({ concept_id: this.conceptId, editMode: true });
     },
     toggleEditMode: function () {
       if (this.getEditMode() && this.isDirty()) {

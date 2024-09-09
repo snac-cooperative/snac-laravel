@@ -124,9 +124,9 @@ export default {
             currentSource,
           )
           .then(function (response) {
-            vm.editMode = false;
             vm.$emit('saved-source', response.data, vm.index);
             console.log(response);
+            vm.toggleEditMode();
           })
           .catch(function (error) {
             console.log(error);
@@ -135,9 +135,9 @@ export default {
         axios
           .post(`${this.baseURL}/api/concept_sources`, currentSource)
           .then(function (response) {
-            vm.editMode = false;
             vm.$emit('saved-source', response.data, vm.index);
             console.log(response);
+            vm.toggleEditMode();
           })
           .catch(function (error) {
             console.log(error);
@@ -164,6 +164,7 @@ export default {
         });
     },
     toggleEditMode() {
+      this.editMode = false;
       this.$parent.toggleEditMode();
     }
   },

@@ -5,7 +5,7 @@
         variant="primary"
         @click="toggleEditMode()"
         v-if="isVocabularyEditor"
-        v-show="conceptEditMode()"
+        v-show="conceptEditMode() && !editMode"
       ><i class="fa fa-edit"></i> Edit Source</b-button>
 
       <div v-show="!editMode">
@@ -38,6 +38,10 @@ export default {
     conceptSourceId: {
       type: Number,
     },
+    sourceEditMode: {
+      type: Boolean,
+      default: false,
+    },
     canEditVocabulary: false,
     sourceIndex: null,
   },
@@ -50,7 +54,7 @@ export default {
       url: null,
       foundData: null,
       note: null,
-      editMode: false,
+      editMode: this.sourceEditMode || false,
       isVocabularyEditor: this.canEditVocabulary === true,
       index: this.sourceIndex,
       baseURL: '',
