@@ -55,6 +55,7 @@
 <script>
 import { BFormGroup, BButton, BFormInput, BFormSelect } from 'bootstrap-vue';
 import { categories } from '../../config/catgegories';
+import { ConceptService } from '../../api';
 
 export default {
   data() {
@@ -68,33 +69,22 @@ export default {
     };
   },
   methods: {
-    createConcept: function () {
+    async createConcept() {
       if (!this.canSave) {
         return;
       }
 
-      let data = {
+      const [error, concept] = await ConceptService.createConcept({
         preferred_term: this.preferredTerm,
         category_id: this.categoryId,
-      };
-      let vm = this;
-      axios
-        .post(`${this.baseURL}/api/concepts`, data)
-        .then(function (response) {
-          let result = response.data;
-          console.log(response);
-          if (!result.error && result.id) {
-            vm.conceptId = result.id;
-            vm.saved = true;
-            vm.redirectToConcept();
-          } else {
-            console.error('Error creating', result.error);
-            console.error('Exception', result.exception);
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      });
+
+      if (error) console.error(error);
+      else {
+        this.conceptId = concept.id;
+        this.saved = true;
+        this.redirectToConcept();
+      }
     },
     redirectToConcept: function () {
       window.location.href = `/concepts/${this.conceptId}`;
