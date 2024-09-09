@@ -5,9 +5,15 @@ const apiClient = axios.create({
 });
 
 export default {
-  async listTerms() {
+  async listTerms(perPage, sortBy, sortOrder) {
     try {
-      const { data } = await apiClient.get();
+      const { data } = await apiClient.get({
+        params: {
+          perPage,
+          sort_by: sortBy,
+          sort_order: sortOrder,
+        },
+      });
       return [null, data];
     } catch (error) {
       return [error];

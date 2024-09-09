@@ -18,7 +18,7 @@ class Concept extends Model
      *
      * @var array
      */
-    protected $with = ["terms"];
+    protected $with = ["terms", "preferredTerm"];
 
     public function replacementOf()
     {
@@ -109,10 +109,8 @@ class Concept extends Model
         return $this->belongsToMany("App\Models\Vocabulary", "concept_categories", "concept_id", "category_id");
     }
 
-    // TODO: Make a preferredTerm function that returns correct term?
     public function preferredTerm()
     {
-        return $this->hasOne("App\Models\Term")->where("preferred", true)->first();
+        return $this->hasOne("App\Models\Term")->where("preferred", true);
     }
-
 }

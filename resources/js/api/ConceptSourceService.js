@@ -5,9 +5,15 @@ const apiClient = axios.create({
 });
 
 export default {
-  async listConceptSources() {
+  async listConceptSources(perPage, sortBy, sortOrder) {
     try {
-      const { data } = await apiClient.get();
+      const { data } = await apiClient.get({
+        params: {
+          per_page: perPage,
+          sort_by: sortBy,
+          sort_order: sortOrder,
+        },
+      });
       return [null, data];
     } catch (error) {
       return [error];
