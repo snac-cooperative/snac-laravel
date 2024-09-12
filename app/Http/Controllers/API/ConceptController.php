@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\Concept\StoreRequest as ConceptStoreRequest;
 use App\Http\Resources\ConceptResource;
 use App\Models\Concept;
-use App\Models\ConceptCategory;
 use App\Models\Term;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -68,48 +68,46 @@ class ConceptController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\API\Concept\StoreRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ConceptStoreRequest $request)
     {
-        $request->validate([
-            'preferred_term' => 'required',
-            'category_id' => 'required_without:category',
-        ]);
-
-        if (!isset($request['category_id'])) {
-            $request['category_id'] = config('cache.category_ids')[$request['category']];
-        }
+        $category_id = $request['category_id'];
+        $terms = $request['terms'];
 
         DB::beginTransaction();
+
         try {
+            // Create concept
             $concept = new Concept;
             $concept->deprecated = false;
-            $concept->save();
-            $term = new Term;
-            $term->text = $request['preferred_term'];
-            $term->preferred = true;
-            if (!$concept->terms()->save($term)) {
-                throw new \Exception('Concept not created for term');
+            if (!$concept->save()) {
+                throw new \Exception('Unable to save concept');
             }
-            $conceptCategory = new ConceptCategory;
-            $conceptCategory->concept_id = $concept->id;
-            $conceptCategory->category_id = $request['category_id'];
-            if (!$conceptCategory->save()) {
-                throw new \Exception('Concept Category not created for Concept');
+
+            // Attach concept to the category
+            $concept->conceptCategories()->attach($category_id);
+
+            // Create terms
+            foreach ($terms as $term) {
+                $term = new Term($term);
+                if (!$concept->terms()->save($term)) {
+                    throw new \Exception('Term not created for concept');
+                }
             }
+
+            // Commit changes to database
             DB::commit();
             return response()->json([
                 "id" => $concept->id,
-                "termId" => $term->id,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             DB::rollback();
+
             return response()->json([
-                "id" => false,
                 "error" => "Error creating new Concept",
-                "exception" => $e->getMessage(),
+                "exception" => $th->getMessage(),
             ], 400);
         }
     }
