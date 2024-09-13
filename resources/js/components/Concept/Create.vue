@@ -96,6 +96,7 @@ export default {
       alternateTerms: [],
       conceptId: null,
       saved: false,
+      saving: false,
       categories,
       categoryId: null,
       baseURL: process.env.MIX_APP_URL,
@@ -108,6 +109,8 @@ export default {
       if (!this.canSave) {
         return;
       }
+
+      this.saving = true;
 
       const [error, concept] = await ConceptService.createConcept({
         preferred_term: this.preferredTerm,
@@ -168,6 +171,7 @@ export default {
     canSave() {
       return (
         !this.saved &&
+        !this.saving &&
         this.preferredTermState === true &&
         this.conceptCategoryState === true &&
         this.alternateTermsState === true
