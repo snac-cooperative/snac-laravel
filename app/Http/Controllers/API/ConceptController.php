@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\API\Concept\StoreRequest as ConceptStoreRequest;
+use App\Http\Resources\ConceptResource;
 use App\Models\Concept;
 use App\Models\Term;
-use App\Models\ConceptCategory;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,58 +15,99 @@ class ConceptController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Concept::with('conceptCategories')->get();
+        // Fetch the perPage parameter and set a maximum limit of 100
+        $perPage = $request->query('per_page', 15);
+        $perPage = min($perPage, 100);
+
+        // Validate that perPage is a positive integer
+        if (!is_numeric($perPage) || $perPage <= 0) {
+            $perPage = 15; // Fallback to default if invalid
+        }
+
+        // Fetch the sort_by and sort_order parameters with defaults
+        $sortBy = $request->query('sort_by', 'preferredTerm'); // Default to sorting by 'preferredTerm'
+        $sortOrder = $request->query('sort_order', 'asc'); // Default to ascending order
+
+        // Validate the sort_order to be either 'asc' or 'desc'
+        if (!in_array($sortOrder, ['asc', 'desc'])) {
+            $sortOrder = 'asc';
+        }
+
+        $items = Concept::with('terms', 'preferredTerm', 'conceptCategories')
+            ->select('concepts.*')
+            ->leftJoin('concept_categories', function ($join) {
+                $join->on('concepts.id', '=', 'concept_categories.concept_id');
+            })
+            ->leftJoin('vocabulary as category_vocabularies', function ($join) {
+                $join->on('concept_categories.category_id', '=', 'category_vocabularies.id');
+            })
+            ->leftJoin('terms as preferred_terms', function ($join) {
+                $join->on('concepts.id', '=', 'preferred_terms.concept_id')
+                    ->where('preferred_terms.preferred', true);
+            })
+            ->where(
+                'deprecated', '=', false
+            );
+
+        if ($sortBy === 'preferredTerm') {
+            $items->orderBy('preferred_terms.text', $sortOrder); // Order by the preferred term
+        } elseif ($sortBy === 'category') {
+            $items->orderBy('category_vocabularies.value', $sortOrder); // Order by the category name
+        } else {
+            $items->orderBy($sortBy, $sortOrder);
+        }
+
+        return ConceptResource::collection($items->paginate($perPage));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\API\Concept\StoreRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ConceptStoreRequest $request)
     {
-        $request->validate([
-            'preferred_term' => 'required',
-            'category_id' => 'required_without:category'
-        ]);
-
-        if (!isset($request['category_id'])) {
-            $request['category_id'] = config('cache.category_ids')[$request['category']];
-        }
+        $category_id = $request['category_id'];
+        $terms = $request['terms'];
 
         DB::beginTransaction();
+
         try {
+            // Create concept
             $concept = new Concept;
             $concept->deprecated = false;
-            $concept->save();
-            $term = new Term;
-            $term->text = $request['preferred_term'];
-            $term->preferred = true;
-            if(!$concept->terms()->save($term)) {
-                throw new \Exception('Concept not created for term');
+            if (!$concept->save()) {
+                throw new \Exception('Unable to save concept');
             }
-            $conceptCategory = new ConceptCategory;
-            $conceptCategory->concept_id = $concept->id;
-            $conceptCategory->category_id = $request['category_id'];
-            if(!$conceptCategory->save()) {
-                throw new \Exception('Concept Category not created for Concept');
+
+            // Attach concept to the category
+            $concept->conceptCategories()->attach($category_id);
+
+            // Create terms
+            foreach ($terms as $term) {
+                $term = new Term($term);
+                if (!$concept->terms()->save($term)) {
+                    throw new \Exception('Term not created for concept');
+                }
             }
+
+            // Commit changes to database
             DB::commit();
             return response()->json([
                 "id" => $concept->id,
-                "termId" => $term->id
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             DB::rollback();
+
             return response()->json([
-                "id" => false,
                 "error" => "Error creating new Concept",
-                "exception" => $e->getMessage()
+                "exception" => $th->getMessage(),
             ], 400);
         }
     }
@@ -110,7 +152,7 @@ class ConceptController extends Controller
             $concept->deprecated = !$concept->deprecated;
             $concept->save();
         }
-        return $concept->deprecated ? 'true' : 'false' ;
+        return $concept->deprecated ? 'true' : 'false';
     }
 
     /**
@@ -137,11 +179,11 @@ class ConceptController extends Controller
     {
         $request->validate([
             'term' => 'required',
-            'category' => 'required'
+            'category' => 'required',
         ]);
 
         if (isset($request['category'])) {
-             $category_id = config('cache.category_ids')[$request['category']] ?? null;
+            $category_id = config('cache.category_ids')[$request['category']] ?? null;
             $category = isset($category_id) ? $request['category'] : null;
         }
         $term = $_GET["term"];
@@ -150,10 +192,10 @@ class ConceptController extends Controller
             ->addSelect(DB::raw("true as match, 100 as score, '$category' as type"))
             ->leftJoin('terms', 'concepts.id', '=', 'terms.concept_id')
             ->leftJoin('concept_categories', 'concepts.id', '=', 'concept_categories.concept_id')
-                ->where([['text', 'ILIKE', $term]])
-                ->where('concept_categories.category_id', $category_id)
-                ->where('deprecated', false)
-                ->orderBy('preferred', 'desc');
+            ->where([['text', 'ILIKE', $term]])
+            ->where('concept_categories.category_id', $category_id)
+            ->where('deprecated', false)
+            ->orderBy('preferred', 'desc');
 
         return response()->json($terms->get());
     }
