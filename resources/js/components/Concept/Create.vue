@@ -34,26 +34,58 @@
         :state="conceptCategoryState"
       ></BFormSelect>
     </BFormGroup>
+
+    <template v-if="alternateTerms.length > 0">
+      <h3>Alternate Terms</h3>
+      <BInputGroup
+        class="mb-2"
+        v-for="(term, index) in alternateTerms"
+        :key="index"
+      >
+        <BFormInput
+          type="text"
+          v-model="alternateTerms[index]"
+          :id="`alternate-term-${index}`"
+          :state="alternateTermState(term)"
+        ></BFormInput>
+
+        <BInputGroupAppend>
+          <BButton
+            @click="removeAlternateTerm(index)"
+            class="btn btn-danger"
+            title="Delete"
+            ><i class="fa fa-trash"></i
+          ></BButton>
+        </BInputGroupAppend>
+
+        <BFormInvalidFeedback :id="`alternate-term-${index}`">
+          {{ alternateTermInvalid }}
+        </BFormInvalidFeedback>
+      </BInputGroup>
+    </template>
+
     <br />
     <BButton
-      v-show="!saved"
       @click="createConcept"
       :disabled="!canSave"
       variant="info"
-      title="Make Preferred"
+      title="Save"
       ><i class="fa fa-floppy-o"></i> Save</BButton
     >
-    <BButton>Add Term</BButton>
-    <div v-show="saved" class="mt-3">
-      <BButton variant="success" @click="redirectToConcept"
-        ><i class="fa fa-plus"></i> Manage Concept</BButton
-      >
-    </div>
+    <BButton @click="addAlternateTerm">Add Term</BButton>
   </div>
 </template>
 
 <script>
-import { BFormGroup, BButton, BFormInput, BFormSelect } from 'bootstrap-vue';
+import {
+  BFormGroup,
+  BButton,
+  BFormInput,
+  BFormSelect,
+  BInputGroup,
+  BInputGroupAppend,
+  BFormInvalidFeedback,
+} from 'bootstrap-vue';
 import { categories } from '../../config/catgegories';
 import { ConceptService } from '../../api';
 
@@ -61,11 +93,15 @@ export default {
   data() {
     return {
       preferredTerm: null,
+      alternateTerms: [],
       conceptId: null,
       saved: false,
+      saving: false,
       categories,
       categoryId: null,
       baseURL: process.env.MIX_APP_URL,
+      preferredTermInvalid: 'Preferred Term is required.',
+      alternateTermInvalid: 'Alternate Term cannot be empty.',
     };
   },
   methods: {
@@ -74,9 +110,12 @@ export default {
         return;
       }
 
+      this.saving = true;
+
       const [error, concept] = await ConceptService.createConcept({
         preferred_term: this.preferredTerm,
         category_id: this.categoryId,
+        alternate_terms: this.alternateTerms,
       });
 
       if (error) console.error(error);
@@ -89,6 +128,19 @@ export default {
     redirectToConcept: function () {
       window.location.href = `/concepts/${this.conceptId}`;
     },
+    addAlternateTerm() {
+      this.alternateTerms.push(null);
+    },
+    removeAlternateTerm(index) {
+      this.alternateTerms.splice(index, 1);
+    },
+    alternateTermState(term) {
+      if (term === null) {
+        return null;
+      }
+
+      return term.length > 0;
+    },
   },
   computed: {
     preferredTermState() {
@@ -97,9 +149,6 @@ export default {
       }
 
       return this.preferredTerm.length > 0;
-    },
-    preferredTermInvalid() {
-      return 'Preferred Term is required.';
     },
     conceptCategoryState() {
       if (this.categoryId === null) {
@@ -110,6 +159,9 @@ export default {
         (category) => category.value === this.categoryId,
       );
     },
+    alternateTermsState() {
+      return this.alternateTerms.every((term) => this.alternateTermState(term));
+    },
     conceptCategoryInvalid() {
       const validCategories = this.categories
         .map((category) => category.text)
@@ -119,8 +171,10 @@ export default {
     canSave() {
       return (
         !this.saved &&
+        !this.saving &&
         this.preferredTermState === true &&
-        this.conceptCategoryState === true
+        this.conceptCategoryState === true &&
+        this.alternateTermsState === true
       );
     },
   },
@@ -129,6 +183,9 @@ export default {
     BButton,
     BFormInput,
     BFormSelect,
+    BInputGroup,
+    BInputGroupAppend,
+    BFormInvalidFeedback,
   },
 };
 </script>
