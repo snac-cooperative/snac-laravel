@@ -5,13 +5,14 @@ const apiClient = axios.create({
 });
 
 export default {
-  async listConcepts(perPage, sortBy, sortOrder) {
+  async listConcepts(perPage, sortBy, sortOrder, page) {
     try {
       const { data } = await apiClient.get('', {
         params: {
           per_page: perPage,
           sort_by: sortBy,
           sort_order: sortOrder,
+          page,
         },
       });
       return [null, data];
