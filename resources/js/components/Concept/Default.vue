@@ -45,6 +45,11 @@
           <term-list
             :terms="alternateTerms"
             :canEditVocabulary="isVocabularyEditor"
+            @save-term="saveTerm"
+            @delete-term="deleteTerm"
+            @add-term="addTerm"
+            @make-term-preferred="makeTermPreferred"
+            @flat-dirty="flagDirty"
           ></term-list>
         </div>
       </div>
@@ -75,6 +80,10 @@
         <category-list
           :cats="cats"
           :canEditVocabulary="isVocabularyEditor"
+          @add-category="addCategory"
+          @save-category="saveCategory"
+          @flag-dirty="flagDirty"
+          @has-empty-category="hasEmptyCategory"
         ></category-list>
       </div>
     </div>
@@ -96,7 +105,7 @@
 // import TermItem from './TermItem.vue';
 import state from '../../states/concept';
 import Editable from '../Term/Editable.vue';
-import { categories } from '../../config/catgegories';
+import { categories } from '../../config/categories';
 import src from 'vue-multiselect/src';
 
 export default {
@@ -265,12 +274,13 @@ export default {
           });
       }
     },
+    hasEmptyCategory() {
+      return !this.conceptProps.concept_categories[
+        this.conceptProps.concept_categories.length - 1
+      ].id;
+    },
     addCategory: function () {
-      if (
-        !this.conceptProps.concept_categories[
-          this.conceptProps.concept_categories.length - 1
-        ].id
-      ) {
+      if (this.hasEmptyCategory()) {
         return;
       }
 

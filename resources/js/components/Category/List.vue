@@ -12,15 +12,17 @@
           v-else
           :category="cat"
           :is-primary="0 === index"
-          @save-category="saveCategory"
-          @change="flagDirty"
+          @save-category="emitSaveCategory"
+          @change="emitFlagDirty"
         ></Editable>
       </p>
     </div>
     <b-button
       class="mt-2"
+      :class="{ 'disabled': hasEmptyCategory() }"
+      :disabled="hasEmptyCategory()"
       variant="success"
-      @click="addCategory()"
+      @click="emitAddCategory"
       v-if="isVocabularyEditor"
       v-show="conceptEditMode()"
       ><i class="fa fa-plus"></i> Add Category</b-button
@@ -31,13 +33,13 @@
 <script>
 import Editable from './Editable.vue';
 import state from '../../states/concept';
-import { categories } from '../../config/catgegories';
+import { categories } from '../../config/categories';
 
 export default {
   data() {
     return {
       isVocabularyEditor: this.canEditVocabulary !== 'false',
-      state: state,
+      state,
       categories,
     };
   },
@@ -53,14 +55,14 @@ export default {
     conceptEditMode: function () {
       return this.state.editMode;
     },
-    saveCategory: function (newCat, oldCat) {
-      this.$parent.saveCategory(newCat, oldCat);
+    emitSaveCategory: function (newCat, oldCat) {
+      this.$emit('save-category', newCat, oldCat);
     },
-    addCategory: function () {
-      this.$parent.addCategory();
+    emitAddCategory: function () {
+      this.$emit('add-category');
     },
-    flagDirty: function (args) {
-      this.$parent.flagDirty(args);
+    emitFlagDirty: function (args) {
+      this.$emit('flag-dirty', args);
     },
     getCategories: function (selected) {
       return this.categories.filter((cat) => {
@@ -71,6 +73,9 @@ export default {
         );
       });
     },
+    hasEmptyCategory: function () {
+      return this.$parent.hasEmptyCategory();
+    }
   },
   components: {
     Editable,

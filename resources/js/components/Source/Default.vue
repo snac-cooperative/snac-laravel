@@ -23,6 +23,7 @@
       :concept-id="conceptId"
       :concept-source-id="conceptSourceId"
       :source-index="index"
+      @toggle-edit-mode="toggleEditMode"
     ></concept-source-edit>
   </div>
 </template>

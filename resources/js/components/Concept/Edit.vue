@@ -239,7 +239,7 @@
 
 <script>
 // import TermItem from './TermItem.vue';
-import { categories } from '../../config/catgegories';
+import { categories } from '../../config/categories';
 
 export default {
   props: {

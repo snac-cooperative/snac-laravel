@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Vue from 'vue/dist/vue'
+import Vue from 'vue/dist/vue';
 window.Vue = Vue
 Vue.component('term', require('./Term.vue').default);
 export default {

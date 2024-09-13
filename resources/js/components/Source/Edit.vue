@@ -165,7 +165,7 @@ export default {
     },
     toggleEditMode() {
       this.editMode = false;
-      this.$parent.toggleEditMode();
+      this.$emit('toggle-edit-mode');
     }
   },
 };
