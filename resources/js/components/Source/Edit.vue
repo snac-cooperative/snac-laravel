@@ -52,13 +52,13 @@
       </b-input-group>
     </b-row>
 
-    <b-button @click="deleteSource()" variant="danger" class="float-right"
+    <b-button @click="deleteSource" v-if="hasConceptSourceId" variant="danger" class="float-right"
       ><i class="fa fa-trash"></i> Delete</b-button
     >
     <b-button variant="primary" @click="saveConceptSource()"
       ><i class="fa fa-save"></i> Save</b-button
     >
-    <b-button @click="toggleEditMode">Cancel</b-button>
+    <b-button @click="cancelAddSource">Cancel</b-button>
   </div>
 </template>
 
@@ -77,6 +77,11 @@ export default {
   mounted() {
     this.getConceptSource();
   },
+  computed: {
+    hasConceptSourceId() {
+      return 'undefined' !== typeof this.conceptSourceId;
+    },
+  },
   data() {
     return {
       citation: null,
@@ -90,8 +95,15 @@ export default {
     };
   },
   methods: {
+    cancelAddSource: function () {
+      if (!this.hasConceptSourceId) {
+        this.$emit('delete-source', this.conceptSourceId, this.sourceIndex);
+        return;
+      }
+      this.toggleEditMode();
+    },
     getConceptSource: function () {
-      if (!this.conceptSourceId) {
+      if (!this.hasConceptSourceId) {
         return;
       }
 
@@ -105,63 +117,22 @@ export default {
         });
     },
     saveConceptSource: function () {
-      console.log(
-        `Saving ${this.conceptSourceId} ConceptId: ${this.conceptId}, Index: ${this.index}`,
-      );
-      let vm = this;
-      // Check this with Joseph
-      let currentSource = {
+      let source = {
         concept_id: this.conceptId,
         citation: this.citation,
         url: this.url,
         found_data: this.foundData,
         note: this.note,
       };
-      if (this.conceptSourceId) {
-        axios
-          .patch(
-            `${this.baseURL}/api/concept_sources/${this.conceptSourceId}`,
-            currentSource,
-          )
-          .then(function (response) {
-            vm.$emit('saved-source', response.data, vm.index);
-            console.log(response);
-            vm.toggleEditMode();
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      } else {
-        axios
-          .post(`${this.baseURL}/api/concept_sources`, currentSource)
-          .then(function (response) {
-            vm.$emit('saved-source', response.data, vm.index);
-            console.log(response);
-            vm.toggleEditMode();
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
+      this.$emit('save-source', source, this.conceptSourceId, this.sourceIndex);
+      this.toggleEditMode();
     },
     deleteSource: function () {
-      console.log(`Deleting Source with id ${this.conceptSourceId}`);
-      var vm = this;
-
-      if (!this.conceptSourceId) {
-        vm.$emit('delete-source');
+      if ( !confirm('Are you sure you want to delete this source?') ) {
         return;
       }
 
-      axios
-        .delete(`${this.baseURL}/api/concept_sources/${this.conceptSourceId}`)
-        .then(function (response) {
-          console.log('Deleted! ', response);
-          vm.$emit('delete-source');
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      this.$emit('delete-source', this.conceptSourceId, this.sourceIndex);
     },
     toggleEditMode() {
       this.editMode = false;

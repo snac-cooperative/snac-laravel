@@ -56,22 +56,34 @@
 
       <div class="my-3" v-if="sources.length || getEditMode()">
         <h4>Concept Sources</h4>
-        <div class="mt-1" :key="source.id" v-for="(source, index) in sources">
-          <concept-source
-            :canEditVocabulary="isVocabularyEditor"
-            :concept-id="source.concept_id"
-            :concept-source-id="source.id"
-            :source-edit-mode="source.editMode"
-            :source-index="index"
-          ></concept-source>
-        </div>
-        <b-button
-          class="mt-2"
-          variant="success"
-          @click="addSource()"
-          v-if="isVocabularyEditor"
-          v-show="getEditMode()"
-        ><i class="fa fa-plus"></i> Add Source</b-button>
+        <source-list
+          class="mt-1"
+          :sources="sources"
+          :canEditVocabulary="isVocabularyEditor"
+          @save-source="saveSource"
+          @delete-source="deleteSource"
+          @add-source="addSource"
+          @flat-dirty="flagDirty"
+        ></source-list>
+
+<!--        <div class="mt-1" :key="source.id" v-for="(source, index) in sources">-->
+<!--          <concept-source-->
+<!--            :canEditVocabulary="isVocabularyEditor"-->
+<!--            :concept-id="source.concept_id"-->
+<!--            :concept-source-id="source.id"-->
+<!--            :source-edit-mode="source.editMode"-->
+<!--            :source-index="index"-->
+<!--            @save-source="saveSource"-->
+<!--            @delete-source="deleteSource"-->
+<!--          ></concept-source>-->
+<!--        </div>-->
+<!--        <b-button-->
+<!--          class="mt-2"-->
+<!--          variant="success"-->
+<!--          @click="addSource()"-->
+<!--          v-if="isVocabularyEditor"-->
+<!--          v-show="getEditMode()"-->
+<!--        ><i class="fa fa-plus"></i> Add Source</b-button>-->
       </div>
 
       <div class="my-3" v-if="cats.length || getEditMode()">
@@ -169,6 +181,13 @@ export default {
     },
     preferredTerm() {
       return this.terms.find((term) => term.preferred);
+    },
+    hasEmptySource() {
+      console.log( this.sources );
+      console.log( this.sources[ this.sources.length - 1 ].id );
+      return !this.sources[
+        this.sources.length - 1
+      ].id;
     },
   },
   methods: {
@@ -302,8 +321,59 @@ export default {
       console.log('categories', this.conceptProps.concept_categories);
     },
     addSource: function() {
-      console.log('add');
-      this.sources.push({ concept_id: this.conceptId, editMode: true });
+      if ( this.hasEmptySource ) {
+        return;
+      }
+      this.sources.push({ concept_id: this.conceptId, inEdit: true });
+    },
+    saveSource: function( source, sourceId, index ) {
+      console.log(
+        `Saving ${sourceId} ConceptId: ${this.conceptId}, Index: ${index}`,
+      );
+      let vm = this;
+      if (sourceId) {
+        axios
+          .patch(
+            `${this.baseURL}/api/concept_sources/${sourceId}`,
+            source,
+          )
+          .then(function (response) {
+            this.sources[index] = response.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      } else {
+        axios
+          .post(`${this.baseURL}/api/concept_sources`, source)
+          .then(function (response) {
+            this.sources[index] = response.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+    },
+    deleteSource: function(sourceId, index) {
+      console.log(`Deleting Source with id ${sourceId}`);
+      var vm = this;
+
+      this.sources.splice(index, 1);
+
+      if (!sourceId) {
+        // vm.$emit('delete-source');
+        return;
+      }
+
+      axios
+        .delete(`${this.baseURL}/api/concept_sources/${sourceId}`)
+        .then(function (response) {
+          console.log('Deleted! ', response);
+          // vm.$emit('delete-source');
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     toggleEditMode: function () {
       if (this.getEditMode() && this.isDirty()) {
@@ -332,6 +402,7 @@ export default {
       return this.state.isDirty.length > 0;
     },
     flagDirty: function (obj) {
+      console.log(obj.dirty);
       if (obj.dirty) {
         this.markDirty(obj);
       } else {

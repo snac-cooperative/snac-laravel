@@ -442,9 +442,6 @@ export default {
         });
       this.selected_concept = '';
     },
-    deleteConceptSource: function (conceptSourceIndex) {
-      this.$delete(this.sources, conceptSourceIndex);
-    },
     addSource: function () {
       this.sources.push({ concept_id: this.conceptId, editMode: true });
     },

@@ -23,6 +23,8 @@
       :concept-id="conceptId"
       :concept-source-id="conceptSourceId"
       :source-index="index"
+      @save-source="saveSource"
+      @delete-source="deleteSource"
       @toggle-edit-mode="toggleEditMode"
     ></concept-source-edit>
   </div>
@@ -76,6 +78,12 @@ export default {
           this.foundData = data.found_data;
           this.note = data.note;
         });
+    },
+    saveSource: function (source, sourceId, sourceIndex) {
+      this.$emit('save-source', source, sourceId, sourceIndex);
+    },
+    deleteSource: function (sourceId, index) {
+      this.$emit('delete-source', sourceId, index);
     },
     toggleEditMode: function () {
       this.editMode = !this.editMode;

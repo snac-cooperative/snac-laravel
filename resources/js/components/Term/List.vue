@@ -37,7 +37,6 @@ export default {
     };
   },
   props: {
-    editing: Boolean,
     conceptId: Number,
     terms: {
       type: Array,
