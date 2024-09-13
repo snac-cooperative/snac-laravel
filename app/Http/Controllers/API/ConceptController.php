@@ -55,9 +55,9 @@ class ConceptController extends Controller
             );
 
         if ($sortBy === 'preferredTerm') {
-            $items->orderBy('preferred_terms.text'); // Order by the preferred term
+            $items->orderBy('preferred_terms.text', $sortOrder); // Order by the preferred term
         } elseif ($sortBy === 'category') {
-            $items->orderBy('category_vocabularies.value'); // Order by the category name
+            $items->orderBy('category_vocabularies.value', $sortOrder); // Order by the category name
         } else {
             $items->orderBy($sortBy, $sortOrder);
         }
