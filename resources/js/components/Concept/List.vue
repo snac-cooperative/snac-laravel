@@ -98,7 +98,7 @@ export default {
         name: 'flip-list',
       },
       sortBy: 'preferredTerm',
-      sortDesc: false,
+      sortDesc: true,
       fields: [
         { key: 'preferredTerm', sortable: true },
         { key: 'category', sortable: true },
