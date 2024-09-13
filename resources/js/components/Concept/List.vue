@@ -108,26 +108,12 @@ export default {
       currentPage: 1,
       perPage: 15,
       totalRows: 1,
-      loading: true,
+      baseURL: process.env.MIX_APP_URL,
     };
   },
   computed: {
     sortOrder() {
       return this.sortDesc ? 'asc' : 'desc';
-    },
-  },
-  watch: {
-    perPage(val) {
-      this.getConcepts();
-    },
-    sortBy(val) {
-      this.getConcepts();
-    },
-    sortOrder(val) {
-      this.getConcepts();
-    },
-    currentPage(val) {
-      this.getConcepts();
     },
   },
   methods: {
