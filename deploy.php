@@ -38,6 +38,11 @@ task('deploy:secrets', function () {
     upload('.env', get('deploy_path') . '/shared');
 });
 
+task('build', function() {
+    cd('{{release_or_current_path}}');
+    run('nvm use 12.14 && npm install && npm run production');
+});
+
 host('snaccooperative.org')
   ->set('hostname', 'snaccooperative.org')
   ->set('labels', ['env' => 'production', 'stage' => 'production'])
@@ -68,4 +73,5 @@ task('deploy', [
     'artisan:queue:restart',
     'deploy:symlink',
     'deploy:cleanup',
+    'build'
 ]);
