@@ -3,27 +3,35 @@
     <div class="alert alert-success hidden" role="alert">
       Your changes have been saved.
     </div>
-    <div class="mb-3 float-right" v-if="isVocabularyEditor">
-      <b-button
-        variant="primary"
-        @click="toggleEditMode()"
-        v-show="!getEditMode()"
-        ><i class="fa fa-edit"></i> Edit</b-button
-      >
-      <b-button
-        variant="secondary"
-        @click="toggleEditMode()"
-        v-show="getEditMode()"
-        >Done Editing</b-button
-      >
-    </div>
 
-    <h2>
-      {{ preferredTerm.text }}
-      <span v-if="deprecated">(deprecated)</span>
-    </h2>
+    <header class="sticky-top bg-white">
+      <div
+        class="mb-3 float-right"
+        v-if="isVocabularyEditor"
+      >
+        <BButton
+          variant="primary"
+          @click="toggleEditMode()"
+          v-show="!getEditMode()"
+        >
+          <i class="fa fa-edit"></i> Edit
+        </BButton>
+        <BButton
+          variant="secondary"
+          @click="toggleEditMode()"
+          v-show="getEditMode()"
+        >
+          Done Editing
+        </BButton>
+      </div>
 
-    <hr />
+      <h2>
+        {{ preferredTerm.text }}
+        <span v-if="deprecated">(deprecated)</span>
+      </h2>
+
+      <hr />
+    </header>
 
     <div id="concept-table">
       <div class="form-group">
@@ -65,25 +73,6 @@
           @add-source="addSource"
           @flat-dirty="flagDirty"
         ></source-list>
-
-<!--        <div class="mt-1" :key="source.id" v-for="(source, index) in sources">-->
-<!--          <concept-source-->
-<!--            :canEditVocabulary="isVocabularyEditor"-->
-<!--            :concept-id="source.concept_id"-->
-<!--            :concept-source-id="source.id"-->
-<!--            :source-edit-mode="source.editMode"-->
-<!--            :source-index="index"-->
-<!--            @save-source="saveSource"-->
-<!--            @delete-source="deleteSource"-->
-<!--          ></concept-source>-->
-<!--        </div>-->
-<!--        <b-button-->
-<!--          class="mt-2"-->
-<!--          variant="success"-->
-<!--          @click="addSource()"-->
-<!--          v-if="isVocabularyEditor"-->
-<!--          v-show="getEditMode()"-->
-<!--        ><i class="fa fa-plus"></i> Add Source</b-button>-->
       </div>
 
       <div class="my-3" v-if="cats.length || getEditMode()">
@@ -99,22 +88,12 @@
         ></category-list>
       </div>
     </div>
-
-    <!--    <concept-edit-->
-    <!--      id="conceptEdit"-->
-    <!--      v-if="isVocabularyEditor"-->
-    <!--      v-show="getEditMode()"-->
-    <!--      :concept-props="conceptProps"-->
-    <!--      :term-props="terms"-->
-    <!--      :sources-props="sources"-->
-    <!--      :canEditVocabulary="isVocabularyEditor"-->
-    <!--    >-->
-    <!--    </concept-edit>-->
   </div>
 </template>
 
 <script>
 // import TermItem from './TermItem.vue';
+import { BButton } from 'bootstrap-vue';
 import state from '../../states/concept';
 import Editable from '../Term/Editable.vue';
 import { categories } from '../../config/categories';
@@ -273,25 +252,29 @@ export default {
         return;
       }
 
+      const vm = this;
       let index = this.terms.findIndex((t) => t.id === term.id);
       if (index === -1) {
         index = this.terms.findIndex((t) => t.text === term.text);
       }
-      this.terms.splice(index, 1);
 
-      this.cleanDirty(term);
-
-      if (term.id) {
-        axios
-          .delete(`${this.baseURL}/api/terms/${term.id}/destroy`)
-          .then(function (response) {
-            term.inEdit = false;
-            // vm.fetchConcept();    // Do we want to reload full concept after each save? Maybe not, if that would reset other unsaved fields...
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+      if (!term.id) {
+        this.terms.splice(index, 1);
+        this.cleanDirty(term);
+        return;
       }
+
+      axios
+        .delete(`${this.baseURL}/api/terms/${term.id}/destroy`)
+        .then(function (response) {
+          term.inEdit = false;
+          vm.terms.splice(index, 1);
+          vm.cleanDirty(term);
+          // vm.fetchConcept();    // Do we want to reload full concept after each save? Maybe not, if that would reset other unsaved fields...
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     hasEmptyCategory() {
       return !this.conceptProps.concept_categories[
@@ -330,7 +313,7 @@ export default {
       console.log(
         `Saving ${sourceId} ConceptId: ${this.conceptId}, Index: ${index}`,
       );
-      let vm = this;
+      const vm = this;
       if (sourceId) {
         axios
           .patch(
@@ -338,7 +321,8 @@ export default {
             source,
           )
           .then(function (response) {
-            this.sources[index] = response.data;
+            vm.sources[index] = response.data;
+            vm.flashSuccessAlert();
           })
           .catch(function (error) {
             console.log(error);
@@ -347,7 +331,8 @@ export default {
         axios
           .post(`${this.baseURL}/api/concept_sources`, source)
           .then(function (response) {
-            this.sources[index] = response.data;
+            vm.sources[index] = response.data;
+            vm.flashSuccessAlert();
           })
           .catch(function (error) {
             console.log(error);
@@ -356,20 +341,19 @@ export default {
     },
     deleteSource: function(sourceId, index) {
       console.log(`Deleting Source with id ${sourceId}`);
-      var vm = this;
-
-      this.sources.splice(index, 1);
 
       if (!sourceId) {
-        // vm.$emit('delete-source');
+        this.sources.splice(index, 1);
         return;
       }
+
+      const vm = this;
 
       axios
         .delete(`${this.baseURL}/api/concept_sources/${sourceId}`)
         .then(function (response) {
           console.log('Deleted! ', response);
-          // vm.$emit('delete-source');
+          vm.sources.splice(index, 1);
         })
         .catch(function (error) {
           console.log(error);
@@ -469,7 +453,7 @@ b-input-group {
   top: 100px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 1200;
   opacity: 1;
 }
 .alert.hidden {
@@ -477,5 +461,10 @@ b-input-group {
   opacity: 0;
   visibility: hidden;
   z-index: -1000;
+}
+
+header.sticky-top {
+  top: 56px; /* offset for top navigation */
+  padding-top: 0.5rem;
 }
 </style>

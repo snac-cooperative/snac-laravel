@@ -50,6 +50,7 @@
         <BCol sm="10" class="mb-2">
           <BFormInput
             type="url"
+            placeholder="https://"
             v-model="source.url"
             :url="source.url"
             @input="updateSource"
