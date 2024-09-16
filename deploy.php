@@ -43,6 +43,7 @@ task('build', function() {
     if (input()->hasArgument('stage')) {
         $stage = input()->getArgument('stage');
     }
+    cd('{{release_or_current_path}}');
     run("npm ci && npm run $stage");
 });
 
