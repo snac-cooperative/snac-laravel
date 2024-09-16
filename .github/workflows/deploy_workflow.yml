@@ -51,7 +51,7 @@ jobs:
       - name: NPM Install
         uses: actions/setup-node@v3
         with:
-          node-version: 10.24.1
+          node-version: 12.14
       - name: NPM Setup
         run: |
           npm install
@@ -75,7 +75,7 @@ jobs:
       - name: NPM Install
         uses: actions/setup-node@v3
         with:
-          node-version: 10.24.1
+          node-version: 12.14
       - name: NPM Setup
         run: |
           npm install
