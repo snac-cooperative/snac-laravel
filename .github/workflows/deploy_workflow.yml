@@ -5,7 +5,6 @@ on:
     branches:
       - development
       - master
-      - jnm/laravel-deploy
 
 jobs:
   app-tests:
@@ -59,7 +58,7 @@ jobs:
     name: Deploy Project to DEVELOPMENT Server
     runs-on: self-hosted
     needs: app-tests
-    if: github.ref == 'refs/heads/jnm/laravel-deploy'
+    if: github.ref == 'refs/heads/development'
     steps:
       - uses: actions/checkout@v4
       - name: Composer install
