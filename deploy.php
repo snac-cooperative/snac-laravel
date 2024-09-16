@@ -44,7 +44,7 @@ task('build', function() {
         $stage = input()->getArgument('stage');
     }
     cd('{{release_or_current_path}}');
-    run("npm ci && npm run $stage");
+    run("npm install && npm run $stage");
 });
 
 host('snaccooperative.org')
