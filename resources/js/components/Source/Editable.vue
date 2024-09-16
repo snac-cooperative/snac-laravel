@@ -91,8 +91,8 @@
           ><i class="fa fa-save"></i> Save</BButton
         >
         <BButton
-          @click="cancelAddSource"
-          v-show="!hasConceptSourceId || isDirty()"
+          @click="cancelSaveSource"
+          v-show="hasConceptSourceId || isDirty()"
           >Cancel</BButton
         >
       </div>
@@ -155,7 +155,7 @@ export default {
       this.$emit('input', { ...this.source, dirty: this.isDirty(), previous: this.previousSource });
       this.previousSource = Object.assign( {}, this.source );
     },
-    cancelAddSource: function () {
+    cancelSaveSource: function () {
       if(this.isDirty()) {
         if(!confirm('Cancelling will cause you to lose your changes. Are you sure you want to cancel?')) {
           return;
