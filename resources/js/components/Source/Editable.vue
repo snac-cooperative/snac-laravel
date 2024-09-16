@@ -1,13 +1,15 @@
 <template>
   <div
     style="padding: 0.5rem"
-   :class="{ 'stripe': 1 === index % 2, 'alert-info': isDirty() }"
+    :class="{ stripe: 1 === index % 2, 'alert-info': isDirty() }"
   >
     <div v-if="!editMode">
-      <div style="display: flex; gap: 0.5rem; align-items: baseline;">
-        <div style="flex-basis: calc( 100% - 0.5rem - 42px );">
+      <div style="display: flex; gap: 0.5rem; align-items: baseline">
+        <div style="flex-basis: calc(100% - 0.5rem - 42px)">
           <p class="mb-0" v-if="source.citation">{{ source.citation }}</p>
-          <p class="mb-0" v-if="source.url"><a :href="source.url">{{ source.url }}</a></p>
+          <p class="mb-0" v-if="source.url">
+            <a :href="source.url">{{ source.url }}</a>
+          </p>
           <p class="mb-0" v-if="source.found_data">{{ source.found_data }}</p>
           <p class="mb-0" v-if="source.note">{{ source.note }}</p>
         </div>
@@ -16,16 +18,11 @@
           v-if="isVocabularyEditor"
           v-show="conceptEditMode() && !editMode"
         >
-          <BButton
-            size="sm"
-            variant="primary"
-            @click="toggleEditMode()"
-          ><i class="fa fa-edit"></i></BButton>
-          <BButton
-            size="sm"
-            variant="danger"
-            @click="emitDeleteSource"
-          ><i class="fa fa-trash"></i>
+          <BButton size="sm" variant="primary" @click="toggleEditMode()"
+            ><i class="fa fa-edit"></i
+          ></BButton>
+          <BButton size="sm" variant="danger" @click="emitDeleteSource"
+            ><i class="fa fa-trash"></i>
           </BButton>
         </BButtonGroup>
       </div>
@@ -88,15 +85,16 @@
           class="float-right"
           @click="emitDeleteSource"
           v-if="hasConceptSourceId"
-        ><i class="fa fa-trash"></i> Delete</BButton>
-        <BButton
-          variant="primary"
-          @click="emitSaveSource"
-        ><i class="fa fa-save"></i> Save</BButton>
+          ><i class="fa fa-trash"></i> Delete</BButton
+        >
+        <BButton variant="primary" @click="emitSaveSource"
+          ><i class="fa fa-save"></i> Save</BButton
+        >
         <BButton
           @click="cancelAddSource"
-          v-show="!hasConceptSourceId || !isDirty()"
-        >Cancel</BButton>
+          v-show="!hasConceptSourceId || isDirty()"
+          >Cancel</BButton
+        >
       </div>
     </div>
   </div>
@@ -117,6 +115,7 @@ export default {
     return {
       isVocabularyEditor: this.canEditVocabulary !== 'false',
       originalSource: Object.assign( {}, this.source ),
+      previousSource: Object.assign( {}, this.source ),
       state,
       editMode: this.source.inEdit,
       index: this.sourceIndex,
@@ -129,8 +128,13 @@ export default {
     event: 'input',
   },
   props: {
-    source: Object,
-    sourceIndex: null,
+    source: {
+      type: Object,
+    },
+    sourceIndex: {
+      type: Number,
+      default: null,
+    },
     canEditVocabulary: false,
   },
   components: {
@@ -148,19 +152,29 @@ export default {
       return this.state.editMode;
     },
     updateSource() {
-      this.$emit('input', { ...this.source, source: this.source, dirty: this.isDirty() });
+      this.$emit('input', { ...this.source, dirty: this.isDirty(), previous: this.previousSource });
+      this.previousSource = Object.assign( {}, this.source );
     },
     cancelAddSource: function () {
-      if (!this.hasConceptSourceId && !this.isDirty()) {
-        this.$emit('delete-source', this.conceptSourceId, this.sourceIndex);
+      if(this.isDirty()) {
+        if(!confirm('Cancelling will cause you to lose your changes. Are you sure you want to cancel?')) {
+          return;
+        }
+      }
+
+      this.toggleEditMode();
+
+      if(this.hasConceptSourceId) {
         return;
       }
-      this.toggleEditMode();
+
+      const sourceId = this.hasConceptSourceId ? this.conceptSourceId : null;
+      this.$emit('delete-source', sourceId, this.sourceIndex);
     },
     emitSaveSource() {
       this.$emit('save-source', this.source, this.conceptSourceId, this.sourceIndex);
-      this.toggleEditMode();
       this.resetSource();
+      this.toggleEditMode();
     },
     emitDeleteSource() {
       if ( !confirm('Are you sure you want to delete this source?') ) {
@@ -178,22 +192,16 @@ export default {
       }
       return ! this.compare(this.source, this.originalSource);
     },
-    compare( obj1, obj2 ) {
-      const keys1 = Object.keys(obj1);
-      const keys2 = Object.keys(obj2);
+    compare( primaryObj, secondaryObj ) {
+      const keys = Object.keys(primaryObj);
 
-      if (keys1.length !== keys2.length) {
-        return false;
-      }
-
-      for (let key of keys1) {
-        const val1 = obj1[key];
-        const val2 = obj2[key];
+      for (let key of keys) {
+        const val1 = primaryObj[key];
+        const val2 = secondaryObj[key];
 
         if (val1 === val2 || !val1 && !val2) {
           continue;
         }
-
         return false;
       }
 
@@ -206,7 +214,7 @@ export default {
 };
 </script>
 <style>
-.stripe {
+.stripe:not(.alert-info) {
   background-color: #eee;
 }
 </style>

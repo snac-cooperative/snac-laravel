@@ -10,19 +10,20 @@
         @input="emitFlagDirty"
       ></Editable>
     </div>
-    <b-button
+    <BButton
       class="mt-2"
-      :class="{ 'disabled': hasEmptySource() }"
-      :disabled="hasEmptySource()"
+      :class="{ 'disabled': hasEmptySource }"
+      :disabled="hasEmptySource"
       variant="success"
       @click="emitAddSource()"
       v-if="isVocabularyEditor"
       v-show="conceptEditMode()"
-    ><i class="fa fa-plus"></i> Add Source</b-button>
+    ><i class="fa fa-plus"></i> Add Source</BButton>
   </div>
 </template>
 
 <script>
+import { BButton } from 'bootstrap-vue';
 import Editable from './Editable.vue';
 import state from '../../states/concept';
 
@@ -40,6 +41,13 @@ export default {
     },
     canEditVocabulary: false,
   },
+  computed: {
+    hasEmptySource () {
+      return !!(this.sources.length && !this.sources[
+        this.sources.length - 1
+      ].id);
+    }
+  },
   methods: {
     conceptEditMode: function () {
       return this.state.editMode;
@@ -55,9 +63,6 @@ export default {
     },
     emitFlagDirty: function(args) {
       this.$emit('flag-dirty', args);
-    },
-    hasEmptySource: function () {
-      return this.$parent.hasEmptySource;
     }
   },
   components: {

@@ -71,7 +71,7 @@
           @save-source="saveSource"
           @delete-source="deleteSource"
           @add-source="addSource"
-          @flat-dirty="flagDirty"
+          @flag-dirty="flagDirty"
         ></source-list>
       </div>
 
@@ -160,13 +160,6 @@ export default {
     },
     preferredTerm() {
       return this.terms.find((term) => term.preferred);
-    },
-    hasEmptySource() {
-      console.log( this.sources );
-      console.log( this.sources[ this.sources.length - 1 ].id );
-      return !this.sources[
-        this.sources.length - 1
-      ].id;
     },
   },
   methods: {
@@ -304,10 +297,7 @@ export default {
       console.log('categories', this.conceptProps.concept_categories);
     },
     addSource: function() {
-      if ( this.hasEmptySource ) {
-        return;
-      }
-      this.sources.push({ concept_id: this.conceptId, inEdit: true });
+      this.sources.push({ id: null, concept_id: this.conceptId, inEdit: true });
     },
     saveSource: function( source, sourceId, index ) {
       console.log(
@@ -343,6 +333,7 @@ export default {
       console.log(`Deleting Source with id ${sourceId}`);
 
       if (!sourceId) {
+        this.cleanDirty(this.sources[index]);
         this.sources.splice(index, 1);
         return;
       }
@@ -352,7 +343,8 @@ export default {
       axios
         .delete(`${this.baseURL}/api/concept_sources/${sourceId}`)
         .then(function (response) {
-          console.log('Deleted! ', response);
+          console.log('Deleted!', response);
+          vm.cleanDirty(vm.sources[index]);
           vm.sources.splice(index, 1);
         })
         .catch(function (error) {
@@ -386,7 +378,6 @@ export default {
       return this.state.isDirty.length > 0;
     },
     flagDirty: function (obj) {
-      console.log(obj.dirty);
       if (obj.dirty) {
         this.markDirty(obj);
       } else {
@@ -404,6 +395,12 @@ export default {
         for (let i = 0; i < this.state.isDirty.length; i++) {
           if (this.state.isDirty[i].text === obj.previous) {
             this.state.isDirty[i].text = obj.text;
+            return;
+          } else if (this.state.isDirty[i].value === obj.previous) {
+            this.state.isDirty[i].value = obj.value;
+            return;
+          } else if (this.state.isDirty[i].obj === JSON.stringify(obj.previous)) {
+            this.state.isDirty[i].obj = JSON.stringify(obj);
             return;
           }
         }
@@ -424,6 +421,12 @@ export default {
         } else if (
           this.state.isDirty[i].value &&
           this.state.isDirty[i].value === obj.value
+        ) {
+          this.state.isDirty.splice(i, 1);
+          return;
+        } else if (
+          this.state.isDirty[i].obj &&
+          this.state.isDirty[i].obj === JSON.stringify(obj)
         ) {
           this.state.isDirty.splice(i, 1);
           return;
