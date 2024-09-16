@@ -40,7 +40,7 @@ task('deploy:secrets', function () {
 
 task('build', function() {
     cd('{{release_or_current_path}}');
-    run('npm install && npm run production');
+    run('nvm use 12.14 && npm install && npm run production');
 });
 
 host('snaccooperative.org')
