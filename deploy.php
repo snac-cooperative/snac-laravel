@@ -38,14 +38,7 @@ task('deploy:secrets', function () {
     upload('.env', get('deploy_path') . '/shared');
 });
 
-task('build', function() {
-    $stage = null;
-    if (input()->hasArgument('stage')) {
-        $stage = input()->getArgument('stage');
-    }
-    cd('{{release_or_current_path}}');
-    run("npm install && npm run $stage");
-});
+task('build', 'npm install && npm run production');
 
 host('snaccooperative.org')
   ->set('hostname', 'snaccooperative.org')
