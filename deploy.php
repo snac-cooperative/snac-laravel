@@ -39,6 +39,7 @@ task('deploy:secrets', function () {
 });
 
 task('build', function() {
+    cd('{{release_or_current_path}}');
     run('npm install && npm run production');
 });
 
