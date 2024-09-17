@@ -45,14 +45,6 @@ Vue.component(
   require('./components/Concept/Create.vue').default,
 );
 Vue.component(
-  'concept-source',
-  require('./components/Source/Default.vue').default,
-);
-Vue.component(
-  'concept-source-edit',
-  require('./components/Source/Edit.vue').default,
-);
-Vue.component(
   'concept-search',
   require('./components/ConceptSearch.vue').default,
 );
@@ -60,10 +52,6 @@ Vue.component('term-list', require('./components/Term/List.vue').default);
 Vue.component(
   'category-list',
   require('./components/Category/List.vue').default,
-);
-Vue.component(
-  'source-list',
-  require('./components/Source/List.vue').default
 );
 Vue.component('term-item', require('./components/TermItem.vue').default);
 Vue.component('cpf-form', require('./components/CPFForm.vue').default);

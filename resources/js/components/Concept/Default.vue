@@ -38,13 +38,13 @@
         <div class="col-xs-8">
           <h4>Preferred Term</h4>
           <p v-if="!getEditMode()">{{ preferredTerm.text }}</p>
-          <Editable
+          <EditableTerm
             v-else
             :term="preferredTerm"
             is-preferred="is-preferred"
             @save-term="saveTerm"
             @input="flagDirty"
-          ></Editable>
+          ></EditableTerm>
 
           <h4 class="mt-3" v-show="alternateTerms.length || getEditMode()">
             Alternate Terms
@@ -64,15 +64,35 @@
 
       <div class="my-3" v-if="sources.length || getEditMode()">
         <h4>Concept Sources</h4>
-        <source-list
-          class="mt-1"
-          :sources="sources"
-          :canEditVocabulary="isVocabularyEditor"
-          @save-source="saveSource"
-          @delete-source="deleteSource"
-          @add-source="addSource"
-          @flag-dirty="flagDirty"
-        ></source-list>
+        <div
+          v-for="(source,index) in sources"
+          v-bind:key="source.id"
+          v-bind:citation="source.citation"
+          v-bind:url="source.url"
+          v-bind:found_data="source.found_data"
+          v-bind:note="source.note"
+        >
+          <EditableSource
+            :concept-id="source.concept_id"
+            :concept-source-id="source.id"
+            :source-index="index"
+            :canEditVocabulary="isVocabularyEditor"
+            :in-edit="source.inEdit"
+            @save-source="saveSource"
+            @delete-source="deleteSource"
+            @input="flagDirty"
+          ></EditableSource>
+        </div>
+
+        <BButton
+          class="mt-2"
+          :class="{ 'disabled': hasEmptySource }"
+          :disabled="hasEmptySource"
+          variant="success"
+          @click="addSource"
+          v-if="isVocabularyEditor"
+          v-show="getEditMode()"
+        ><i class="fa fa-plus"></i> Add Source</BButton>
       </div>
 
       <div class="my-3" v-if="cats.length || getEditMode()">
@@ -92,15 +112,15 @@
 </template>
 
 <script>
-// import TermItem from './TermItem.vue';
 import { BButton } from 'bootstrap-vue';
 import state from '../../states/concept';
-import Editable from '../Term/Editable.vue';
+import EditableTerm from '../Term/Editable.vue';
+import EditableSource from '../Source/Editable.vue';
 import { categories } from '../../config/categories';
 import src from 'vue-multiselect/src';
 
 export default {
-  components: { Editable },
+  components: { EditableTerm, EditableSource },
   props: {
     conceptProps: {
       type: Object,
@@ -141,8 +161,7 @@ export default {
       categories,
       cats: this.conceptProps.concept_categories,
       isVocabularyEditor: this.canEditVocabulary !== 'false',
-      baseURL: '',
-      devFeatures: process.env.MIX_INCLUDE_DEVELOPMENT_FEATURES == 'true',
+      baseURL: process.env.MIX_APP_URL,
     };
   },
   computed: {
@@ -160,6 +179,11 @@ export default {
     },
     preferredTerm() {
       return this.terms.find((term) => term.preferred);
+    },
+    hasEmptySource () {
+      return !!(this.sources.length && !this.sources[
+        this.sources.length - 1
+      ].id);
     },
   },
   methods: {
@@ -297,7 +321,10 @@ export default {
       console.log('categories', this.conceptProps.concept_categories);
     },
     addSource: function() {
-      this.sources.push({ id: null, concept_id: this.conceptId, inEdit: true });
+      this.sources.push({ concept_id: this.conceptId, inEdit: true });
+    },
+    updateSources: function( source, index ) {
+      this.sources.splice(index, 1, source);
     },
     saveSource: function( source, sourceId, index ) {
       console.log(
@@ -311,7 +338,7 @@ export default {
             source,
           )
           .then(function (response) {
-            vm.sources[index] = response.data;
+            vm.updateSources( response.data, index );
             vm.flashSuccessAlert();
           })
           .catch(function (error) {
@@ -321,7 +348,7 @@ export default {
         axios
           .post(`${this.baseURL}/api/concept_sources`, source)
           .then(function (response) {
-            vm.sources[index] = response.data;
+            vm.updateSources( response.data, index );
             vm.flashSuccessAlert();
           })
           .catch(function (error) {

@@ -2,9 +2,11 @@
   <div class="source-list">
     <div v-for="(source,index) in sources" v-bind:key="source.id">
       <Editable
-        :source="source"
+        :concept-id="source.concept_id"
+        :concept-source-id="source.id"
         :source-index="index"
         :canEditVocabulary="isVocabularyEditor"
+        :in-edit="source.inEdit"
         @save-source="emitSaveSource"
         @delete-source="emitDeleteSource"
         @input="emitFlagDirty"

@@ -1,17 +1,17 @@
 <template>
   <div
     style="padding: 0.5rem"
-    :class="{ stripe: 1 === index % 2, 'alert-info': isDirty() }"
+    :class="{ stripe: 1 === sourceIndex % 2, 'alert-info': isDirty() }"
   >
     <div v-if="!editMode">
       <div style="display: flex; gap: 0.5rem; align-items: baseline">
         <div style="flex-basis: calc(100% - 0.5rem - 42px)">
-          <p class="mb-0" v-if="source.citation">{{ source.citation }}</p>
-          <p class="mb-0" v-if="source.url">
-            <a :href="source.url">{{ source.url }}</a>
+          <p class="mb-0" v-if="citation">{{ citation }}</p>
+          <p class="mb-0" v-if="url">
+            <a :href="url">{{ url }}</a>
           </p>
-          <p class="mb-0" v-if="source.found_data">{{ source.found_data }}</p>
-          <p class="mb-0" v-if="source.note">{{ source.note }}</p>
+          <p class="mb-0" v-if="foundData">{{ foundData }}</p>
+          <p class="mb-0" v-if="note">{{ note }}</p>
         </div>
 
         <BButtonGroup
@@ -27,6 +27,7 @@
         </BButtonGroup>
       </div>
     </div>
+
     <div v-else>
       <BInputGroup>
         <BCol sm="2" class="mb-2">
@@ -35,22 +36,20 @@
         <BCol sm="10" class="mb-2">
           <BFormInput
             type="text"
-            v-model="source.citation"
-            :citation="source.citation"
-            @input="updateSource"
+            v-model="citation"
+            @input="trackChanges"
           ></BFormInput>
         </BCol>
 
         <BCol sm="2" class="mb-2">
-          <label for="citation">URL:</label>
+          <label for="url">URL:</label>
         </BCol>
         <BCol sm="10" class="mb-2">
           <BFormInput
             type="url"
             placeholder="https://"
-            v-model="source.url"
-            :url="source.url"
-            @input="updateSource"
+            v-model="url"
+            @input="trackChanges"
           ></BFormInput>
         </BCol>
 
@@ -60,9 +59,8 @@
         <BCol sm="10" class="mb-2">
           <BFormInput
             type="text"
-            v-model="source.found_data"
-            :found_data="source.found_data"
-            @input="updateSource"
+            v-model="foundData"
+            @input="trackChanges"
           ></BFormInput>
         </BCol>
 
@@ -72,9 +70,8 @@
         <BCol sm="10">
           <BFormInput
             type="text"
-            v-model="source.note"
-            :note="source.note"
-            @input="updateSource"
+            v-model="note"
+            @input="trackChanges"
           ></BFormInput>
         </BCol>
       </BInputGroup>
@@ -84,16 +81,16 @@
           variant="danger"
           class="float-right"
           @click="emitDeleteSource"
-          v-if="hasConceptSourceId"
-          ><i class="fa fa-trash"></i> Delete</BButton
+          v-if="conceptSourceId"
+        ><i class="fa fa-trash"></i> Delete</BButton
         >
         <BButton variant="primary" @click="emitSaveSource"
-          ><i class="fa fa-save"></i> Save</BButton
+        ><i class="fa fa-save"></i> Save</BButton
         >
         <BButton
           @click="cancelSaveSource"
-          v-show="hasConceptSourceId || isDirty()"
-          >Cancel</BButton
+          v-show="conceptSourceId || isDirty()"
+        >Cancel</BButton
         >
       </div>
     </div>
@@ -101,39 +98,43 @@
 </template>
 
 <script>
-import {
-  BButton,
-  BFormInput,
-  BInputGroup,
-  BCol,
-} from 'bootstrap-vue';
-
+import { BButton, BFormInput, BInputGroup } from 'bootstrap-vue';
 import state from '../../states/concept';
 
 export default {
   data() {
     return {
       isVocabularyEditor: this.canEditVocabulary !== 'false',
-      originalSource: Object.assign( {}, this.source ),
-      previousSource: Object.assign( {}, this.source ),
+      originalSource: {},
+      previousSource: {},
       state,
-      editMode: this.source.inEdit,
-      index: this.sourceIndex,
-      conceptSourceId: this.source.id,
-      conceptId: this.source.concept_id,
+      editMode: this.inEdit,
+      citation: null,
+      url: null,
+      foundData: null,
+      note: null,
+      baseURL: process.env.MIX_APP_URL,
     };
   },
   model: {
-    prop: 'source',
     event: 'input',
   },
   props: {
-    source: {
-      type: Object,
+    conceptId: {
+      type: Number,
+      default: null,
+    },
+    conceptSourceId: {
+      type: Number,
+      default: null,
     },
     sourceIndex: {
       type: Number,
       default: null,
+    },
+    inEdit: {
+      type: Boolean,
+      default: false,
     },
     canEditVocabulary: false,
   },
@@ -142,64 +143,108 @@ export default {
     BFormInput,
     BButton,
   },
-  computed: {
-    hasConceptSourceId() {
-      return this.source.id;
-    },
+  mounted() {
+    this.getConceptSource();
   },
   methods: {
+    getConceptSource: function () {
+      if (!this.conceptSourceId) {
+        return;
+      }
+
+      fetch(`${this.baseURL}/api/concept_sources/` + this.conceptSourceId)
+        .then((data) => data.json())
+        .then((data) => {
+          this.citation = data.citation;
+          this.url = data.url;
+          this.foundData = data.found_data;
+          this.note = data.note;
+          this.conceptId = data.concept_id;
+
+          this.originalSource = this.getSource();
+          this.previousSource = this.originalSource;
+        });
+    },
     conceptEditMode: function () {
       return this.state.editMode;
     },
-    updateSource() {
-      this.$emit('input', { ...this.source, dirty: this.isDirty(), previous: this.previousSource });
-      this.previousSource = Object.assign( {}, this.source );
+    trackChanges() {
+      this.$emit('input', {
+        ...this.getSource(),
+        dirty: this.isDirty(),
+        previous: this.previousSource,
+      });
+      this.previousSource = this.getSource();
     },
     cancelSaveSource: function () {
-      if(this.isDirty()) {
-        if(!confirm('Cancelling will cause you to lose your changes. Are you sure you want to cancel?')) {
+      if (this.isDirty()) {
+        if (
+          !confirm(
+            'Cancelling will cause you to lose your changes. Are you sure you want to cancel?',
+          )
+        ) {
           return;
         }
       }
 
       this.toggleEditMode();
 
-      if(this.hasConceptSourceId) {
+      if (this.conceptSourceId) {
         return;
       }
 
-      const sourceId = this.hasConceptSourceId ? this.conceptSourceId : null;
-      this.$emit('delete-source', sourceId, this.sourceIndex);
+      this.$emit('delete-source', this.conceptSourceId, this.sourceIndex);
     },
     emitSaveSource() {
-      this.$emit('save-source', this.source, this.conceptSourceId, this.sourceIndex);
+      this.$emit(
+        'save-source',
+        this.getSource(),
+        this.conceptSourceId,
+        this.sourceIndex,
+      );
       this.resetSource();
       this.toggleEditMode();
     },
     emitDeleteSource() {
-      if ( !confirm('Are you sure you want to delete this source?') ) {
+      if (!confirm('Are you sure you want to delete this source?')) {
         return;
       }
 
       this.$emit('delete-source', this.conceptSourceId, this.sourceIndex);
     },
     resetSource() {
-      this.originalSource = Object.assign( {}, this.source );
+      this.originalSource = this.getSource();
+      this.previousSource = this.getSource();
     },
     isDirty() {
-      if ( !this.conceptEditMode()) {
+      if (!this.conceptEditMode()) {
         return false;
       }
-      return ! this.compare(this.source, this.originalSource);
+      return !this.compare(this.getSource(), this.originalSource);
     },
-    compare( primaryObj, secondaryObj ) {
+    getSource() {
+      const source = {
+        concept_id: this.conceptId,
+        citation: this.citation,
+        url: this.url,
+        found_data: this.foundData,
+        note: this.note,
+      };
+
+      if ( this.conceptSourceId ) {
+        source.id = this.conceptSourceId;
+      }
+
+      return source;
+    },
+    compare(primaryObj, secondaryObj) {
       const keys = Object.keys(primaryObj);
 
       for (let key of keys) {
         const val1 = primaryObj[key];
         const val2 = secondaryObj[key];
 
-        if (val1 === val2 || !val1 && !val2) {
+        if (val1 === val2 || (!val1 && !val2)) {
           continue;
         }
         return false;
@@ -216,5 +261,8 @@ export default {
 <style>
 .stripe:not(.alert-info) {
   background-color: #eee;
+}
+.stripe.alert-info {
+  background-color: #bdd9df;
 }
 </style>
