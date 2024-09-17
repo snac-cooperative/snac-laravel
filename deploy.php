@@ -34,7 +34,12 @@ add('rsync', [
 ]);
 
 task('deploy:secrets', function () {
-    file_put_contents(__DIR__ . '/.env', getenv('DOT_ENV'));
+    $stage = null;
+    if (input()->hasArgument('stage')) {
+        $stage = input()->getArgument('stage');
+    }
+    $env_file = ($stage == 'production') ? 'ENV_PROD' : 'ENV_DEV';
+    file_put_contents(__DIR__ . '/.env', getenv($env_file));
     upload('.env', get('deploy_path') . '/shared');
 });
 
