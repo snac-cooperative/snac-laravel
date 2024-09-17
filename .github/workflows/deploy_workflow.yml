@@ -51,10 +51,10 @@ jobs:
         uses: deployphp/action@v1
         env:
           ENV_FILE: ${{ secrets.ENV_PROD }}
+        options:
+          keep_releases: 10
         with:
           dep: deploy stage=production
-          options:
-            keep_releases: 10
           private-key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
           skip-ssh-setup: true
           verbosity: -vvv
@@ -71,10 +71,10 @@ jobs:
         uses: deployphp/action@v1
         env:
           ENV_FILE: ${{ secrets.ENV_DEV }}
+        options:
+          keep_releases: 10
         with:
           dep: deploy stage=development
-          options:
-            keep_releases: 10
           private-key: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
           skip-ssh-setup: true
           verbosity: -vvv
