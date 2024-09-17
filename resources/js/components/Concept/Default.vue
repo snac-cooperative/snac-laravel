@@ -132,7 +132,7 @@ export default {
       categories,
       cats: this.conceptProps.concept_categories,
       isVocabularyEditor: this.canEditVocabulary !== 'false',
-      baseURL: process.env.MIX_APP_URL,
+      baseURL: '',
       devFeatures: process.env.MIX_INCLUDE_DEVELOPMENT_FEATURES == 'true',
     };
   },

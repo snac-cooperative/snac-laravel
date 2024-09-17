@@ -108,7 +108,7 @@ export default {
       currentPage: 1,
       perPage: 15,
       totalRows: 1,
-      baseURL: process.env.MIX_APP_URL,
+      baseURL: '',
     };
   },
   computed: {

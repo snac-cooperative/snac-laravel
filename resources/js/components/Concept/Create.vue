@@ -99,7 +99,7 @@ export default {
       saving: false,
       categories,
       categoryId: null,
-      baseURL: process.env.MIX_APP_URL,
+      baseURL: '',
       preferredTermInvalid: 'Preferred Term is required.',
       alternateTermInvalid: 'Alternate Term cannot be empty.',
     };

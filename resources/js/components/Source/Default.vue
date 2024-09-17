@@ -53,7 +53,7 @@ export default {
       editMode: false,
       isVocabularyEditor: this.canEditVocabulary === true,
       index: this.sourceIndex,
-      baseURL: process.env.MIX_APP_URL,
+      baseURL: '',
       state: state,
     };
   },
