@@ -338,7 +338,8 @@ export default {
             source,
           )
           .then(function (response) {
-            vm.updateSources( response.data, index );
+            vm.cleanDirty(response.data);
+            vm.updateSources(response.data, index);
             vm.flashSuccessAlert();
           })
           .catch(function (error) {
@@ -348,7 +349,8 @@ export default {
         axios
           .post(`${this.baseURL}/api/concept_sources`, source)
           .then(function (response) {
-            vm.updateSources( response.data, index );
+            vm.cleanDirty(source);
+            vm.updateSources(response.data, index);
             vm.flashSuccessAlert();
           })
           .catch(function (error) {
@@ -387,6 +389,7 @@ export default {
         ) {
           return;
         }
+        this.resetDirty();
       }
 
       this.state.editMode = !this.state.editMode;
@@ -419,15 +422,13 @@ export default {
           }
         }
       } else {
+        let prev = obj.previous;
+        delete obj.previous;
+        delete obj.dirty;
+
         for (let i = 0; i < this.state.isDirty.length; i++) {
-          if (this.state.isDirty[i].text === obj.previous) {
-            this.state.isDirty[i].text = obj.text;
-            return;
-          } else if (this.state.isDirty[i].value === obj.previous) {
-            this.state.isDirty[i].value = obj.value;
-            return;
-          } else if (this.state.isDirty[i].obj === JSON.stringify(obj.previous)) {
-            this.state.isDirty[i].obj = JSON.stringify(obj);
+          if (JSON.stringify(this.state.isDirty[i]) === JSON.stringify(prev)) {
+            this.state.isDirty[i] = obj;
             return;
           }
         }
@@ -435,26 +436,14 @@ export default {
       this.state.isDirty[this.state.isDirty.length] = obj;
     },
     cleanDirty: function (obj) {
+      delete obj.previous;
+      delete obj.dirty;
+
       for (let i = 0; i < this.state.isDirty.length; i++) {
         if (this.state.isDirty[i].id && this.state.isDirty[i].id === obj.id) {
           this.state.isDirty.splice(i, 1);
           return;
-        } else if (
-          this.state.isDirty[i].text &&
-          this.state.isDirty[i].text === obj.text
-        ) {
-          this.state.isDirty.splice(i, 1);
-          return;
-        } else if (
-          this.state.isDirty[i].value &&
-          this.state.isDirty[i].value === obj.value
-        ) {
-          this.state.isDirty.splice(i, 1);
-          return;
-        } else if (
-          this.state.isDirty[i].obj &&
-          this.state.isDirty[i].obj === JSON.stringify(obj)
-        ) {
+        } else if (JSON.stringify(this.state.isDirty[i]) === JSON.stringify(obj)) {
           this.state.isDirty.splice(i, 1);
           return;
         }

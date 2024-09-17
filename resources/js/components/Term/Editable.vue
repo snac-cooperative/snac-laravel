@@ -4,7 +4,7 @@
       type="text"
       :required="true"
       v-model="term.text"
-      @input="updateTerm"
+      @input="trackChanges"
       :class="{ 'alert-info': isDirty() }"
     ></BFormInput>
 
@@ -47,7 +47,7 @@ export default {
     return {
       originalId: this.term.id,
       originalText: this.term.text,
-      previousText: this.term.text,
+      previous: this.term.text,
     };
   },
   model: {
@@ -65,9 +65,9 @@ export default {
     BButton,
   },
   methods: {
-    updateTerm(text) {
-      this.$emit('input', { ...this.term, text: text, dirty: this.isDirty(), previous: this.previousText });
-      this.previousText = text;
+    trackChanges(text) {
+      this.$emit('input', { ...this.term, dirty: this.isDirty(), previous: this.previous });
+      this.previous = text;
     },
     emitSaveTerm() {
       this.$emit('save-term', this.term);

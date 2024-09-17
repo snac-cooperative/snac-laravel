@@ -89,7 +89,6 @@
         >
         <BButton
           @click="cancelSaveSource"
-          v-show="conceptSourceId || isDirty()"
         >Cancel</BButton
         >
       </div>
@@ -149,6 +148,7 @@ export default {
   methods: {
     getConceptSource: function () {
       if (!this.conceptSourceId) {
+        this.resetSource();
         return;
       }
 
@@ -161,8 +161,7 @@ export default {
           this.note = data.note;
           this.conceptId = data.concept_id;
 
-          this.originalSource = this.getSource();
-          this.previousSource = this.originalSource;
+          this.resetSource();
         });
     },
     conceptEditMode: function () {
@@ -190,6 +189,8 @@ export default {
       this.toggleEditMode();
 
       if (this.conceptSourceId) {
+        this.resetSource(this.originalSource);
+        this.trackChanges();
         return;
       }
 
@@ -212,9 +213,18 @@ export default {
 
       this.$emit('delete-source', this.conceptSourceId, this.sourceIndex);
     },
-    resetSource() {
-      this.originalSource = this.getSource();
-      this.previousSource = this.getSource();
+    resetSource(to) {
+      if (!to) {
+        to = this.getSource();
+      }
+
+      this.citation = to.citation;
+      this.url = to.url;
+      this.foundData = to.foundData || to.found_data;
+      this.note = to.note;
+
+      this.originalSource = to;
+      this.previousSource = to;
     },
     isDirty() {
       if (!this.conceptEditMode()) {
