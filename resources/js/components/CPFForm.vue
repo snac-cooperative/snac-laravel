@@ -655,7 +655,7 @@ export default {
       propertyEditMode: true,
       categories,
       isVocabularyEditor: this.canEditVocabulary === true,
-      baseURL: process.env.MIX_APP_URL,
+      baseURL: '',
     };
   },
   computed: {
