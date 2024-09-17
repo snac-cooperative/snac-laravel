@@ -39,7 +39,7 @@ task('deploy:secrets', function () {
         $stage = input()->getArgument('stage');
     }
     $env_file = ($stage == 'production') ? 'ENV_PROD' : 'ENV_DEV';
-    file_put_contents(__DIR__ . '/.env', getenv($env_file));
+    file_put_contents(__DIR__ . '/.env', base64_decode(getenv($env_file)));
     upload('.env', get('deploy_path') . '/shared');
 });
 
