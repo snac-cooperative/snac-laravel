@@ -51,8 +51,6 @@ jobs:
         uses: deployphp/action@v1
         env:
           ENV_FILE: ${{ secrets.ENV_PROD }}
-        options:
-          keep_releases: 10
         with:
           dep: deploy stage=production
           private-key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
@@ -71,8 +69,6 @@ jobs:
         uses: deployphp/action@v1
         env:
           ENV_FILE: ${{ secrets.ENV_DEV }}
-        options:
-          keep_releases: 10
         with:
           dep: deploy stage=development
           private-key: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
