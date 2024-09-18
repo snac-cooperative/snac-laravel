@@ -134,8 +134,22 @@ class ConceptController extends Controller
     public function update(Request $request, $id)
     {
         $concept = Concept::findOrFail($id);
-        $result = $concept->update($request->all());
-        return new Response($result);
+        $attributes = $request->all();
+
+        // Sync concept categories
+        if (array_key_exists('conceptCategories', $attributes)) {
+            $category_ids = array_map(function ($category) {
+                return $category['id'];
+            }, $attributes['conceptCategories']);
+
+            $concept->conceptCategories()->sync($category_ids);
+
+            unset($attributes['conceptCategories']);
+        }
+
+        $concept->update($attributes);
+
+        return new Response($concept);
     }
 
     /**
