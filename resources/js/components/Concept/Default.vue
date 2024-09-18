@@ -369,9 +369,10 @@ export default {
     },
     saveCategory: function (categoryId, index) {
       console.log(`Saving Category with id ${categoryId}`);
-      const category = this.categories.find((cat) => parseInt(cat.value) === categoryId);
+      const categoryText = this.categories.find((cat) => parseInt(cat.value) === categoryId).text;
+      const category = { ...this.cats[index], id: categoryId, value: categoryText };
 
-      this.$set(this.cats, index, { id: categoryId, value: category.text });
+      this.$set(this.cats, index, category);
 
       this.cleanDirty({ id: categoryId });
 
