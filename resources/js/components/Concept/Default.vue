@@ -352,6 +352,7 @@ export default {
       conceptApi.updateConcept(this.conceptId, {
         conceptCategories: this.cats,
       });
+      this.flashSuccessAlert();
     },
     addCategory: function () {
       if (this.hasEmptyCategory) {
