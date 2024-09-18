@@ -8,6 +8,7 @@ use App\Http\Resources\ConceptResource;
 use App\Models\Concept;
 use App\Models\Term;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class ConceptController extends Controller
@@ -132,7 +133,9 @@ class ConceptController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $concept = Concept::findOrFail($id);
+        $result = $concept->update($request->all());
+        return new Response($result);
     }
 
     /**

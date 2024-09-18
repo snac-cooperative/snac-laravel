@@ -5,10 +5,7 @@
     </div>
 
     <header class="sticky-top bg-white">
-      <div
-        class="mb-3 float-right"
-        v-if="isVocabularyEditor"
-      >
+      <div class="mb-3 float-right" v-if="isVocabularyEditor">
         <BButton
           variant="primary"
           @click="toggleEditMode()"
@@ -65,7 +62,7 @@
       <div class="my-3" v-if="sources.length || getEditMode()">
         <h4>Concept Sources</h4>
         <div
-          v-for="(source,index) in sources"
+          v-for="(source, index) in sources"
           v-bind:key="source.id"
           v-bind:citation="source.citation"
           v-bind:url="source.url"
@@ -86,46 +83,82 @@
 
         <BButton
           class="mt-2"
-          :class="{ 'disabled': hasEmptySource }"
+          :class="{ disabled: hasEmptySource }"
           :disabled="hasEmptySource"
           variant="success"
           @click="addSource"
           v-if="isVocabularyEditor"
           v-show="getEditMode()"
-        ><i class="fa fa-plus"></i> Add Source</BButton>
+          ><i class="fa fa-plus"></i> Add Source</BButton
+        >
       </div>
 
       <div class="my-3" v-if="cats.length || getEditMode()">
         <h4>Categories</h4>
 
-        <category-list
-          :cats="cats"
-          :canEditVocabulary="isVocabularyEditor"
-          @add-category="addCategory"
-          @save-category="saveCategory"
-          @flag-dirty="flagDirty"
-          @has-empty-category="hasEmptyCategory"
-        ></category-list>
+        <div class="category-list">
+          <div
+            v-for="(cat, index) in cats"
+            v-bind:key="cat.id"
+            v-bind:index="index"
+          >
+            <p class="mb-2">
+              <span
+                v-if="!getEditMode() || !canEditVocabulary"
+                :class="{ 'font-weight-bold': index === 0 }"
+              >
+                {{ cat.value }}
+              </span>
+              <EditableCategory
+                v-else
+                :category-id="cat.id"
+                :category-value="cat.value"
+                :category-index="index"
+                :is-primary="0 === index"
+                :selected-categories="selectedCategories"
+                @save-category="saveCategory"
+                @make-category-primary="makeCategoryPrimary"
+                @delete-category="deleteCategory"
+                @change="flagDirty"
+              ></EditableCategory>
+            </p>
+          </div>
+          <BButton
+            class="mt-2"
+            :class="{ 'disabled': hasEmptyCategory }"
+            :disabled="hasEmptyCategory"
+            variant="success"
+            @click="addCategory"
+            v-if="isVocabularyEditor"
+            v-show="getEditMode()"
+            ><i class="fa fa-plus"></i> Add Category</BButton
+          >
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { BButton } from 'bootstrap-vue';
+import { BButton, BInputGroup, BInputGroupAppend } from 'bootstrap-vue';
 import state from '../../states/concept';
 import EditableTerm from '../Term/Editable.vue';
 import EditableSource from '../Source/Editable.vue';
+import EditableCategory from '../Category/Editable.vue';
 import { categories } from '../../config/categories';
+import conceptApi from '../../api/ConceptService';
 import src from 'vue-multiselect/src';
 
 export default {
-  components: { EditableTerm, EditableSource },
+  components: { BInputGroup, BInputGroupAppend, EditableTerm, EditableSource, EditableCategory },
   props: {
     conceptProps: {
       type: Object,
     },
     termProps: {
+      type: Array,
+    },
+    categoriesProps: {
       type: Array,
     },
     sourcesProps: {
@@ -151,6 +184,7 @@ export default {
           return source;
         },
       ),
+      cats: this.categoriesProps,
       // concept: this.termProps.slice()
       conceptId: this.conceptProps.id,
       termSearch: [],
@@ -159,14 +193,13 @@ export default {
       relationType: '',
       state: state,
       categories,
-      cats: this.conceptProps.concept_categories,
       isVocabularyEditor: this.canEditVocabulary !== 'false',
       baseURL: process.env.MIX_APP_URL,
     };
   },
   computed: {
     src() {
-      return src
+      return src;
     },
     alternateTerms() {
       return this.terms
@@ -180,10 +213,22 @@ export default {
     preferredTerm() {
       return this.terms.find((term) => term.preferred);
     },
-    hasEmptySource () {
-      return !!(this.sources.length && !this.sources[
-        this.sources.length - 1
-      ].id);
+    hasEmptySource() {
+      return !!(
+        this.sources.length && !this.sources[this.sources.length - 1].id
+      );
+    },
+    selectedCategories() {
+      return this.cats.map((cat) => cat.id);
+    },
+    hasEmptyCategory() {
+      console.log( 'cats', this.cats );
+      return !!(
+        this.cats.length &&
+        !this.cats[
+          this.cats.length - 1
+        ].id
+      );
     },
   },
   methods: {
@@ -293,50 +338,75 @@ export default {
           console.log(error);
         });
     },
-    hasEmptyCategory() {
-      return !this.conceptProps.concept_categories[
-        this.conceptProps.concept_categories.length - 1
-      ].id;
+    getCategories(selectedId) {
+      return this.categories.filter((cat) => {
+        return (
+          this.cats.filter((currentCat) => {
+            return currentCat.id === parseInt(cat.value);
+          }).length === 0 || selectedId === parseInt(cat.value)
+        );
+      });
+    },
+    updateCategories: function() {
+      this.conceptProps.concept_categories = this.cats;
+      conceptApi.updateConcept(this.conceptId, {
+        conceptCategories: this.cats,
+      });
     },
     addCategory: function () {
-      if (this.hasEmptyCategory()) {
+      if (this.hasEmptyCategory) {
         return;
       }
 
-      const conceptID = this.conceptProps.concept_categories[0].concept_id;
       const newCategory = {
         pivot: {
-          concept_id: conceptID,
-          category_id: null,
+          concept_id: this.conceptId,
         },
-        id: null,
-        entity_group: null,
         type: 'concept_category',
-        uri: null,
-        value: null,
       };
-      this.conceptProps.concept_categories.push(newCategory);
+      this.cats.push(newCategory);
     },
-    saveCategory: function (newCat, oldCat) {
-      console.log('categories', this.conceptProps.concept_categories);
+    saveCategory: function (categoryId, index) {
+      console.log(`Saving Category with id ${categoryId}`);
+      const category = this.categories.find((cat) => parseInt(cat.value) === categoryId);
+
+      this.$set(this.cats, index, { id: categoryId, value: category.text });
+
+      this.cleanDirty({ id: categoryId });
+
+      this.updateCategories();
     },
-    addSource: function() {
+    makeCategoryPrimary: function (categoryId, index) {
+      console.log(`Making Category with id ${categoryId} primary`);
+      const category = this.cats.find(
+        (cat) => cat.id === categoryId,
+      );
+      this.cats.splice(index, 1);
+      this.cats.unshift(category);
+
+      this.updateCategories();
+    },
+    deleteCategory: function(categoryId, index) {
+      console.log(`Deleting Category with id ${categoryId}`);
+
+      this.cats.splice(index, 1);
+
+      this.updateCategories();
+    },
+    addSource: function () {
       this.sources.push({ concept_id: this.conceptId, inEdit: true });
     },
-    updateSources: function( source, index ) {
+    updateSources: function (source, index) {
       this.sources.splice(index, 1, source);
     },
-    saveSource: function( source, sourceId, index ) {
+    saveSource: function (source, sourceId, index) {
       console.log(
         `Saving ${sourceId} ConceptId: ${this.conceptId}, Index: ${index}`,
       );
       const vm = this;
       if (sourceId) {
         axios
-          .patch(
-            `${this.baseURL}/api/concept_sources/${sourceId}`,
-            source,
-          )
+          .patch(`${this.baseURL}/api/concept_sources/${sourceId}`, source)
           .then(function (response) {
             vm.cleanDirty(response.data);
             vm.updateSources(response.data, index);
@@ -358,7 +428,7 @@ export default {
           });
       }
     },
-    deleteSource: function(sourceId, index) {
+    deleteSource: function (sourceId, index) {
       console.log(`Deleting Source with id ${sourceId}`);
 
       if (!sourceId) {
@@ -443,7 +513,9 @@ export default {
         if (this.state.isDirty[i].id && this.state.isDirty[i].id === obj.id) {
           this.state.isDirty.splice(i, 1);
           return;
-        } else if (JSON.stringify(this.state.isDirty[i]) === JSON.stringify(obj)) {
+        } else if (
+          JSON.stringify(this.state.isDirty[i]) === JSON.stringify(obj)
+        ) {
           this.state.isDirty.splice(i, 1);
           return;
         }

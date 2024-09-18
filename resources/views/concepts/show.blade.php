@@ -31,6 +31,7 @@
             id="concept"
             :concept-props="{{ $concept }}"
             :term-props="{{ $concept->terms }}"
+            :categories-props="{{ $concept->conceptCategories }}"
             :sources-props="{{ $concept->sources }}"
             can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
         >

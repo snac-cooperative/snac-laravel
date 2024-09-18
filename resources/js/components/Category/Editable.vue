@@ -1,10 +1,20 @@
 <template>
   <BInputGroup>
+    <div
+      v-if="originalId"
+      class="category-item custom-select"
+      :class="{'font-weight-bold': isPrimary}"
+    >
+      {{ selectedValue }}
+    </div>
     <BFormSelect
-      v-model="originalId"
-      @input="updateCategory"
+      v-else
+      v-model="selectedId"
+      @change="trackChanges"
       :options="getCategories"
-      :class="{ 'alert-info': isDirty }"
+      :class="{ 'alert-info': isDirty() }"
+      aria-placeholder="Select a category"
+      placeholder="Select a category"
     ></BFormSelect>
 
     <BInputGroupAppend>
@@ -12,19 +22,18 @@
         @click="emitSaveCategory"
         class="btn btn-info"
         title="Save"
-        v-show="isDirty"
+        v-show="!originalId && isDirty()"
       ><i class="fa fa-floppy-o"></i
       ></BButton>
       <BButton
         @click="emitMakeCategoryPrimary"
-        v-if="!isPrimary"
+        v-if="!isPrimary && originalId"
         class="btn btn-primary"
         title="Make Primary"
       ><i class="fa fa-check-square-o"></i
       ></BButton>
       <BButton
         @click="emitDeleteCategory"
-        v-if="!isPrimary"
         class="btn btn-danger"
         title="Delete"
       ><i class="fa fa-trash"></i
@@ -40,22 +49,42 @@ import {
   BInputGroup,
   BInputGroupAppend,
 } from 'bootstrap-vue';
+import { categories } from '../../config/categories';
 
 export default {
   data() {
     return {
-      originalId: this.category.id,
-      originalValue: this.category.value,
-      selectedId: this.category.id,
+      selectedId: this.categoryId,
+      originalId: this.categoryId,
+      selectedValue: this.categoryValue,
+      previous: null,
+      categories,
     };
   },
   model: {
-    prop: 'category',
     event: 'input',
   },
   props: {
-    category: Object,
-    isPrimary: Boolean,
+    categoryId: {
+      type: Number,
+      default: null,
+    },
+    isPrimary: {
+      type: Boolean,
+      default: false,
+    },
+    categoryValue: {
+      type: String,
+      default: null,
+    },
+    categoryIndex: {
+      type: Number,
+      default: null,
+    },
+    selectedCategories: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
     BInputGroup,
@@ -65,39 +94,54 @@ export default {
   },
   computed: {
     getCategories() {
-      return this.$parent.getCategories(this.getCategory.id);
-    },
-    isDirty() {
-      if(!this.category.value) {
-        return !!this.category.id;
+      const filtered = this.categories.filter((cat) => {
+        return (
+          this.selectedCategories.filter((currentCat) => {
+            return currentCat === parseInt(cat.value);
+          }).length === 0 || this.categoryId === parseInt(cat.value)
+        );
+      });
+
+      if(!this.selectedId){
+        filtered.unshift({ value: null, text: 'Select a category', disabled: true });
       }
-      return parseInt(this.originalId) !== this.category.id;
-    },
-    getCategory() {
-      return this.category;
-    },
-    resetCategory() {
-      this.originalId = this.getCategory.id;
-      this.originalValue = this.getCategory.value;
+
+      return filtered;
     },
   },
   methods: {
-    updateCategory(categoryId) {
-      this.selectedId = parseInt(categoryId);
-      this.$emit('change', { ...this.getCategory, category: this.selectedId, dirty: this.isDirty });
+    trackChanges(categoryId) {
+      const selectedId = parseInt(this.selectedId);
+
+      this.$emit('change', { id: selectedId, dirty: this.isDirty(), previous: this.previous });
+      this.previous = selectedId;
     },
     emitSaveCategory() {
-      console.log('newId',categoryId);
-      console.log('oldId',this.category.id);
-
-      this.$emit('save-category', this.selectedId, this.category.id);
+      const selectedId = parseInt(this.selectedId);
+      this.$emit('save-category', selectedId, this.categoryIndex);
+      this.originalId = selectedId;
+      this.selectedValue = this.categories.find((cat) => parseInt(cat.value) === this.originalId).text;
     },
     emitMakeCategoryPrimary() {
-      this.$emit('make-category-primary', this.getCategory);
+      this.$emit('make-category-primary', this.categoryId, this.categoryIndex);
     },
     emitDeleteCategory() {
-      this.$emit('delete-category', this.getCategory);
+      this.$emit('delete-category', this.categoryId, this.categoryIndex);
+    },
+    isDirty() {
+      if(!this.selectedId) {
+        return !!this.categoryId;
+      }
+      return this.originalId !== parseInt(this.selectedId);
+    },
+    resetCategory() {
+      this.selectedId = this.categoryId;
     },
   },
 };
 </script>
+<style>
+.category-item.custom-select {
+  background-image: none;
+}
+</style>
