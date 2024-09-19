@@ -95,7 +95,7 @@ export default {
         );
       });
 
-      if(!this.selectedId){
+      if(!this.selectedId && filtered.length){
         filtered.unshift({ value: null, text: 'Select a category', disabled: true });
       }
 

@@ -129,7 +129,7 @@
             variant="success"
             @click="addCategory"
             v-if="isVocabularyEditor"
-            v-show="getEditMode()"
+            v-show="getEditMode() && selectedCategories.length !== categories.length"
             ><i class="fa fa-plus"></i> Add Category</BButton
           >
         </div>
