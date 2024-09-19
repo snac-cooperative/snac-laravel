@@ -1,22 +1,33 @@
 <template>
   <div class="term-list">
-    <div v-for="term in terms" v-bind:key="term.id">
+    <div
+      v-for="(term,index) in terms"
+      v-bind:key="term.id"
+      v-bind:text="term.text"
+      v-bind:index="index"
+    >
       <p class="mb-2">
         <span v-if="!conceptEditMode()">
           {{ term.text }}
         </span>
-        <Editable
+        <EditableTerm
           v-else
-          :term="term"
+          ref="EditableTerm"
+          :term-id="term.id"
+          :term-text="term.text"
+          :term-index="term.index"
+          :concept-id="term.concept_id"
           @save-term="emitSaveTerm"
           @delete-term="emitDeleteTerm"
           @make-term-preferred="emitMakeTermPreferred"
           @input="emitFlagDirty"
-        ></Editable>
+        ></EditableTerm>
       </p>
     </div>
     <b-button
       class="mt-2"
+      :class="{ disabled: hasEmptyTerm }"
+      :disabled="hasEmptyTerm"
       variant="success"
       @click="emitAddTerm()"
       v-if="isVocabularyEditor"
@@ -26,7 +37,7 @@
 </template>
 
 <script>
-import Editable from './Editable.vue';
+import EditableTerm from './Editable.vue';
 import state from '../../states/concept';
 
 export default {
@@ -37,34 +48,47 @@ export default {
     };
   },
   props: {
-    conceptId: Number,
+    conceptId: {
+      type: Number,
+      default: null,
+    },
     terms: {
       type: Array,
     },
-    canEditVocabulary: false,
+    canEditVocabulary: {
+      type: Boolean,
+      default: false,
+    },
+    hasEmptyTerm: {
+      type: Boolean,
+      default: false,
+    }
   },
   methods: {
     conceptEditMode: function () {
       return this.state.editMode;
     },
-    emitSaveTerm: function (term) {
-      this.$emit('save-term', term);
+    emitSaveTerm: function (term, termIndex) {
+      this.$emit('save-term', term, termIndex);
     },
     emitAddTerm: function () {
-      this.$emit('add-term' );
+      this.$emit('add-term');
+      this.$nextTick(() => {
+        this.$refs.EditableTerm[this.$refs.EditableTerm.length - 1].$refs.termText.$el.focus();
+      });
     },
-    emitDeleteTerm: function (term) {
-      this.$emit('delete-term', term);
+    emitDeleteTerm: function (termId, termIndex) {
+      this.$emit('delete-term', termId, termIndex);
     },
-    emitMakeTermPreferred: function(term) {
-      this.$emit('make-term-preferred', term);
+    emitMakeTermPreferred: function(term, termIndex) {
+      this.$emit('make-term-preferred', term, termIndex);
     },
     emitFlagDirty: function(args) {
       this.$emit('flag-dirty', args);
     },
   },
   components: {
-    Editable,
+    EditableTerm,
   },
 };
 </script>

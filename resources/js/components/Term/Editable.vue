@@ -2,8 +2,9 @@
   <BInputGroup>
     <BFormInput
       type="text"
+      ref="termText"
       :required="true"
-      v-model="term.text"
+      v-model="text"
       @input="trackChanges"
       :class="{ 'alert-info': isDirty() }"
     ></BFormInput>
@@ -41,22 +42,42 @@ import {
   BInputGroup,
   BInputGroupAppend,
 } from 'bootstrap-vue';
+import termApi from '../../api/TermService';
 
 export default {
   data() {
     return {
-      originalId: this.term.id,
-      originalText: this.term.text,
-      previous: this.term.text,
+      term: null,
+      text: this.termText,
+      originalId: this.termId,
+      originalText: this.termText,
+      previous: this.termText,
     };
   },
   model: {
-    prop: 'term',
     event: 'input',
   },
   props: {
-    term: Object,
-    isPreferred: Boolean,
+    termId: {
+      type: Number,
+      default: null,
+    },
+    termText: {
+      type: String,
+      default: '',
+    },
+    conceptId: {
+      type: Number,
+      default: null,
+    },
+    isPreferred: {
+      type: Boolean,
+      default: false,
+    },
+    termIndex: {
+      type: Number,
+      default: null,
+    },
   },
   components: {
     BInputGroup,
@@ -64,34 +85,57 @@ export default {
     BFormInput,
     BButton,
   },
+  mounted() {
+    this.getConceptTerm();
+  },
   methods: {
+    async getConceptTerm () {
+      if (!this.termId) {
+        this.resetTerm();
+        return;
+      }
+
+      const [error,term] = await termApi.getTerm(this.termId);
+      if(term) {
+        this.term = term;
+        this.text = term.text;
+        this.originalText = term.text;
+        this.previous = term.text;
+      }
+    },
     trackChanges(text) {
-      this.$emit('input', { ...this.term, dirty: this.isDirty(), previous: this.previous });
+      this.$emit('input', { ...this.term, text, dirty: this.isDirty(), previous: this.previous });
       this.previous = text;
     },
     emitSaveTerm() {
-      this.$emit('save-term', this.term);
+      const term = {
+        ...this.term,
+        text: this.text,
+        preferred: this.isPreferred,
+        concept_id: this.conceptId,
+      };
+      this.$emit('save-term', term, this.termIndex);
       this.resetTerm();
     },
     emitMakeTermPreferred() {
-      this.$emit('make-term-preferred', this.term);
+      this.$emit('make-term-preferred', this.term, this.termIndex);
     },
     emitDeleteTerm() {
-      this.$emit('delete-term', this.term);
+      this.$emit('delete-term', this.termId, this.termIndex);
     },
     resetTerm() {
-      this.originalId = this.term.id;
-      this.originalText = this.term.text;
+      this.originalText = this.text;
+      this.originalId = this.termId;
     },
     isDirty() {
-      if(!this.term.id) {
-        return !!this.term.text;
+      if(!this.termId){
+        return !!this.text;
       }
-      if(this.term.id !== this.originalId){
+      if(this.termId !== this.originalId){
         this.resetTerm();
         return false;
       }
-      return this.term.text !== this.originalText;
+      return this.text !== this.originalText;
     }
   },
 };

@@ -37,7 +37,11 @@
           <p v-if="!getEditMode()">{{ preferredTerm.text }}</p>
           <EditableTerm
             v-else
-            :term="preferredTerm"
+            :key="preferredTerm.id"
+            :term-id="preferredTerm.id"
+            :term-text="preferredTerm.text"
+            :term-index="preferredTerm.index"
+            :concept-id="preferredTerm.concept_id"
             is-preferred="is-preferred"
             @save-term="saveTerm"
             @input="flagDirty"
@@ -50,6 +54,7 @@
           <term-list
             :terms="alternateTerms"
             :canEditVocabulary="isVocabularyEditor"
+            :has-empty-term="hasEmptyTerm"
             @save-term="saveTerm"
             @delete-term="deleteTerm"
             @add-term="addTerm"
@@ -146,6 +151,7 @@ import EditableSource from '../Source/Editable.vue';
 import EditableCategory from '../Category/Editable.vue';
 import { categories } from '../../config/categories';
 import conceptApi from '../../api/ConceptService';
+import termApi from '../../api/TermService';
 import src from 'vue-multiselect/src';
 
 export default {
@@ -171,8 +177,9 @@ export default {
       // Do we need to make a copy of termProps with slice() or [...this.termProps]?
       terms: this.termProps.map(
         // populating terms with our custom temporary variables
-        (term) => {
+        (term,index) => {
           term.inEdit = false;
+          term.index = index;
           return term;
         },
       ),
@@ -184,7 +191,6 @@ export default {
         },
       ),
       cats: this.categoriesProps,
-      // concept: this.termProps.slice()
       conceptId: this.conceptProps.id,
       termSearch: [],
       allTermsSearch: false,
@@ -202,10 +208,6 @@ export default {
     },
     alternateTerms() {
       return this.terms
-        .map((term) => {
-          term.inEdit = false;
-          return term;
-        })
         .filter((term) => !term.preferred)
         .sort();
     },
@@ -228,6 +230,14 @@ export default {
         ].id
       );
     },
+    hasEmptyTerm() {
+      return !!(
+        this.terms.length &&
+        !this.terms[
+          this.terms.length - 1
+        ].text
+      );
+    },
   },
   methods: {
     fetchConcept: function () {
@@ -245,7 +255,7 @@ export default {
         });
     },
     addTerm: function () {
-      if (!this.terms[this.terms.length - 1].text) {
+      if (this.hasEmptyTerm) {
         return;
       }
 
@@ -253,45 +263,43 @@ export default {
       const newTerm = {
         concept_id: conceptID,
         id: null,
-        language_id: null,
         preferred: false,
         text: null,
-        // TODO: Find out how to add new terms without resetting the terms state.
         inEdit: true,
+        index: this.terms.length,
       };
       this.terms.push(newTerm);
+      console.log('newTerms',this.terms);
     },
-    saveTerm: function (term) {
-      const vm = this;
+    async saveTerm(term, termIndex) {
+      const finalize = (term, termIndex) => {
+        term.inEdit = false;
+        if(termIndex > -1) {
+          this.terms.splice(termIndex, 1, term);
+        }
+        this.cleanDirty(term);
+        this.flashSuccessAlert();
+      };
+
       if (!term.id) {
-        vm.postTerm(term);
-        vm.cleanDirty(term);
-      } else {
-        axios
-          .patch(`${this.baseURL}/api/terms/${term.id}`, term)
-          .then(function (response) {
-            term.inEdit = false;
-            vm.cleanDirty(term);
-            vm.flashSuccessAlert();
-            // vm.fetchConcept();    // Do we want to reload full concept after each save? Maybe not, if that would reset other unsaved fields...
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        term = await this.createTerm(term);
+        finalize(term, termIndex);
+        return;
+      }
+
+      const [error,response] = await termApi.updateTerm(term.id, term);
+      if(!error) {
+        finalize(term, termIndex);
       }
     },
-    postTerm: function (term) {
-      axios
-        .post(`${this.baseURL}/concepts/${term.concept_id}/add_term`, term) // TODO: Move to an api call
-        .then(function (response) {
-          term.inEdit = false;
-          // this.fetchConcept();
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    async createTerm (term) {
+      const [error,response] = await termApi.createTerm(term);
+      if(!error){
+        return response;
+      }
+      return term;
     },
-    makeTermPreferred: function (term) {
+    makeTermPreferred: function (term, termIndex) {
       if (
         !confirm(
           `Are you sure you want to make '${term.text}' the preferred term for this concept?`,
@@ -300,41 +308,50 @@ export default {
         return;
       }
 
-      const oldPreferred = this.preferredTerm;
-      oldPreferred.preferred = false;
-      term.preferred = true;
+      const currentPreferred = this.preferredTerm;
 
-      this.saveTerm(oldPreferred);
-      this.saveTerm(term);
+      if (currentPreferred && currentPreferred.id !== term.id) {
+        currentPreferred.preferred = false;
+        this.saveTerm(currentPreferred, currentPreferred.index);
+      }
+
+      term.preferred = true;
+      this.saveTerm(term, termIndex);
     },
-    deleteTerm: function (term) {
+    async deleteTerm (termId, termText) {
       if (!confirm('Are you sure you want to delete this term?')) {
         return;
       }
 
-      const vm = this;
-      let index = this.terms.findIndex((t) => t.id === term.id);
+      let term = {
+        id: termId,
+        text: termText,
+        concept_id: this.conceptId,
+        preferred: false,
+      };
+
+      let index = this.terms.findIndex((t) => t.id === termId);
       if (index === -1) {
-        index = this.terms.findIndex((t) => t.text === term.text);
+        index = this.terms.findIndex((t) => t.text === termText);
+      }
+      if(index > -1) {
+        term = this.terms[index];
       }
 
-      if (!term.id) {
+      const finalize = (term, index) => {
         this.terms.splice(index, 1);
         this.cleanDirty(term);
+      };
+
+      if (!termId) {
+        finalize(term, index);
         return;
       }
 
-      axios
-        .delete(`${this.baseURL}/api/terms/${term.id}/destroy`)
-        .then(function (response) {
-          term.inEdit = false;
-          vm.terms.splice(index, 1);
-          vm.cleanDirty(term);
-          // vm.fetchConcept();    // Do we want to reload full concept after each save? Maybe not, if that would reset other unsaved fields...
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      const [error,response] = await termApi.deleteTerm(termId);
+      if (!error) {
+        finalize(term, index);
+      }
     },
     getCategories(selectedId) {
       return this.categories.filter((cat) => {
@@ -345,12 +362,14 @@ export default {
         );
       });
     },
-    updateCategories: function() {
+    async updateCategories() {
       this.conceptProps.concept_categories = this.cats;
-      conceptApi.updateConcept(this.conceptId, {
+      const [error,response] = await conceptApi.updateConcept(this.conceptId, {
         conceptCategories: this.cats,
       });
-      this.flashSuccessAlert();
+      if(!error) {
+        this.flashSuccessAlert();
+      }
     },
     addCategory: function () {
       if (this.hasEmptyCategory) {
