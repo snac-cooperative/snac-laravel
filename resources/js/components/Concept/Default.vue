@@ -221,7 +221,6 @@ export default {
       return this.cats.map((cat) => cat.id);
     },
     hasEmptyCategory() {
-      console.log( 'cats', this.cats );
       return !!(
         this.cats.length &&
         !this.cats[
