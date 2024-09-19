@@ -6,6 +6,7 @@
       :required="true"
       v-model="text"
       @input="trackChanges"
+      @keydown.enter="emitSaveTerm"
       :class="{ 'alert-info': isDirty() }"
     ></BFormInput>
 
@@ -19,7 +20,7 @@
       ></BButton>
       <BButton
         @click="emitMakeTermPreferred"
-        v-if="!isPreferred"
+        v-if="!isPreferred && termId"
         class="btn btn-primary"
         title="Make Preferred"
       ><i class="fa fa-check-square-o"></i
@@ -108,6 +109,9 @@ export default {
       this.previous = text;
     },
     emitSaveTerm() {
+      if(!this.isDirty()){
+        return;
+      }
       const term = {
         ...this.term,
         text: this.text,

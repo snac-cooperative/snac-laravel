@@ -3,7 +3,7 @@
     <div
       v-if="originalId"
       class="category-item custom-select"
-      :class="{'font-weight-bold': isPrimary}"
+      :class="{ 'font-weight-bold': isPrimary }"
     >
       {{ selectedValue }}
     </div>
@@ -23,13 +23,10 @@
         class="btn btn-info"
         title="Save"
         v-show="!originalId && isDirty()"
-      ><i class="fa fa-floppy-o"></i
+        ><i class="fa fa-floppy-o"></i
       ></BButton>
-      <BButton
-        @click="emitDeleteCategory"
-        class="btn btn-danger"
-        title="Delete"
-      ><i class="fa fa-trash"></i
+      <BButton @click="emitDeleteCategory" class="btn btn-danger" title="Delete"
+        ><i class="fa fa-trash"></i
       ></BButton>
     </BInputGroupAppend>
   </BInputGroup>
@@ -38,6 +35,7 @@
 <script>
 import {
   BButton,
+  BFormInput,
   BFormSelect,
   BInputGroup,
   BInputGroupAppend,
@@ -80,6 +78,7 @@ export default {
     },
   },
   components: {
+    BFormInput,
     BInputGroup,
     BInputGroupAppend,
     BFormSelect,
@@ -95,8 +94,12 @@ export default {
         );
       });
 
-      if(!this.selectedId && filtered.length){
-        filtered.unshift({ value: null, text: 'Select a category', disabled: true });
+      if (!this.selectedId && filtered.length) {
+        filtered.unshift({
+          value: null,
+          text: 'Select a category',
+          disabled: true,
+        });
       }
 
       return filtered;
@@ -106,20 +109,29 @@ export default {
     trackChanges(categoryId) {
       const selectedId = parseInt(this.selectedId);
 
-      this.$emit('change', { id: selectedId, dirty: this.isDirty(), previous: this.previous });
+      this.$emit('change', {
+        id: selectedId,
+        dirty: this.isDirty(),
+        previous: this.previous,
+      });
       this.previous = selectedId;
     },
     emitSaveCategory() {
       const selectedId = parseInt(this.selectedId);
       this.$emit('save-category', selectedId, this.categoryIndex);
       this.originalId = selectedId;
-      this.selectedValue = this.categories.find((cat) => parseInt(cat.value) === this.originalId).text;
+      this.selectedValue = this.categories.find(
+        (cat) => parseInt(cat.value) === this.originalId,
+      ).text;
     },
     emitDeleteCategory() {
+      if (!confirm('Are you sure you want to delete this category?')) {
+        return;
+      }
       this.$emit('delete-category', this.categoryId, this.categoryIndex);
     },
     isDirty() {
-      if(!this.selectedId) {
+      if (!this.selectedId) {
         return !!this.categoryId;
       }
       return this.originalId !== parseInt(this.selectedId);
