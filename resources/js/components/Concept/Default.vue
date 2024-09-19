@@ -117,7 +117,6 @@
                 :is-primary="0 === index"
                 :selected-categories="selectedCategories"
                 @save-category="saveCategory"
-                @make-category-primary="makeCategoryPrimary"
                 @delete-category="deleteCategory"
                 @change="flagDirty"
               ></EditableCategory>
@@ -375,16 +374,6 @@ export default {
       this.$set(this.cats, index, category);
 
       this.cleanDirty({ id: categoryId });
-
-      this.updateCategories();
-    },
-    makeCategoryPrimary: function (categoryId, index) {
-      console.log(`Making Category with id ${categoryId} primary`);
-      const category = this.cats.find(
-        (cat) => cat.id === categoryId,
-      );
-      this.cats.splice(index, 1);
-      this.cats.unshift(category);
 
       this.updateCategories();
     },

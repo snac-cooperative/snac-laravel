@@ -26,13 +26,6 @@
       ><i class="fa fa-floppy-o"></i
       ></BButton>
       <BButton
-        @click="emitMakeCategoryPrimary"
-        v-if="!isPrimary && originalId"
-        class="btn btn-primary"
-        title="Make Primary"
-      ><i class="fa fa-check-square-o"></i
-      ></BButton>
-      <BButton
         @click="emitDeleteCategory"
         class="btn btn-danger"
         title="Delete"
@@ -121,9 +114,6 @@ export default {
       this.$emit('save-category', selectedId, this.categoryIndex);
       this.originalId = selectedId;
       this.selectedValue = this.categories.find((cat) => parseInt(cat.value) === this.originalId).text;
-    },
-    emitMakeCategoryPrimary() {
-      this.$emit('make-category-primary', this.categoryId, this.categoryIndex);
     },
     emitDeleteCategory() {
       this.$emit('delete-category', this.categoryId, this.categoryIndex);
