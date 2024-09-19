@@ -131,7 +131,7 @@ class ConceptController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $concept = Concept::findOrFail($id);
         $attributes = $request->all();
