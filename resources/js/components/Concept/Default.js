@@ -42,7 +42,6 @@ export default {
       return src;
     },
   },
-
   methods: {
     fetchConcept() {
       fetch(`${this.baseURL}/api/concepts/` + this.terms[0].concept_id)
