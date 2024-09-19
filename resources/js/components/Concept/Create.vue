@@ -87,7 +87,7 @@ import {
   BFormInvalidFeedback,
 } from 'bootstrap-vue';
 import { categories } from '../../config/catgegories';
-import { ConceptService } from '../../api';
+import ConceptService from '../../api/ConceptService';
 
 export default {
   data() {

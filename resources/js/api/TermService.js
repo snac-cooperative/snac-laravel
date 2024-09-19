@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: `api/terms`,
+  baseURL: `/api/terms`,
 });
 
 export default {
@@ -17,7 +17,7 @@ export default {
       });
       return [null, data];
     } catch (error) {
-      return [error];
+      return [error, null];
     }
   },
 
@@ -26,7 +26,7 @@ export default {
       const { data } = await apiClient.get(`/${termId}`);
       return [null, data];
     } catch (error) {
-      return [error];
+      return [error, null];
     }
   },
 
@@ -35,7 +35,7 @@ export default {
       const { data } = await apiClient.post('', termData);
       return [null, data];
     } catch (error) {
-      return [error];
+      return [error, null];
     }
   },
 
@@ -44,7 +44,7 @@ export default {
       const { data } = await apiClient.patch(`/${termId}`, termData);
       return [null, data];
     } catch (error) {
-      return [error];
+      return [error, null];
     }
   },
 
@@ -53,7 +53,7 @@ export default {
       const { data } = await apiClient.delete(`/${termId}`);
       return [null, data];
     } catch (error) {
-      return [error];
+      return [error, null];
     }
   },
 };

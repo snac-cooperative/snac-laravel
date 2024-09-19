@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: `api/concepts`,
+  baseURL: `/api/concepts`,
 });
 
 export default {
@@ -17,7 +17,7 @@ export default {
       });
       return [null, data];
     } catch (error) {
-      return [error];
+      return [error, null];
     }
   },
 
@@ -26,7 +26,7 @@ export default {
       const { data } = await apiClient.get(`/${conceptId}`);
       return [null, data];
     } catch (error) {
-      return [error];
+      return [error, null];
     }
   },
 
@@ -35,7 +35,7 @@ export default {
       const { data } = await apiClient.post('', conceptData);
       return [null, data];
     } catch (error) {
-      return [error];
+      return [error, null];
     }
   },
 
@@ -44,7 +44,7 @@ export default {
       const { data } = await apiClient.delete(`/${conceptId}`);
       return [null, data];
     } catch (error) {
-      return [error];
+      return [error, null];
     }
   },
 };
