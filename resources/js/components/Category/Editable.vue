@@ -106,7 +106,7 @@ export default {
     },
   },
   methods: {
-    trackChanges(categoryId) {
+    trackChanges() {
       const selectedId = parseInt(this.selectedId);
 
       this.$emit('change', {

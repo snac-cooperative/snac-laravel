@@ -35,7 +35,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 Vue.component('concept', require('./components/Concept.vue').default);
 Vue.component('concept-list', require('./components/Concept/List.vue').default);
 Vue.component('concept', require('./components/Concept/Default.vue').default);
-Vue.component('concept-edit', require('./components/Concept/Edit.vue').default);
+Vue.component('concept-edit', require('./components/Concept/LegacyEdit.vue').default);
 Vue.component(
   'concept-category',
   require('./components/ConceptCategory.vue').default,
