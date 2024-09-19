@@ -87,7 +87,7 @@ import {
   BPagination,
   BTable,
 } from 'bootstrap-vue';
-import { ConceptService } from '../../api';
+import ConceptService from '../../api/ConceptService';
 import { sortBy } from 'lodash';
 
 export default {
