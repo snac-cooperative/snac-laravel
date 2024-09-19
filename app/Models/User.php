@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -30,7 +31,7 @@ class User extends Authenticatable
         'work_email',
         'work_phone',
         'affiliation',
-        'preferred_rules'
+        'preferred_rules',
     ];
 
     /**
@@ -53,13 +54,14 @@ class User extends Authenticatable
 
     protected $table = 'appuser';
 
-    public function isVocabularyEditor() {
+    public function isVocabularyEditor()
+    {
         $userId = $this->id;
         $vocabularyEditorPrivilegeLabel = 'Edit Vocabulary';
-        $roles = DB::table('appuser')->join('appuser_role_link', function($join) use ($userId) {
+        $roles = DB::table('appuser')->join('appuser_role_link', function ($join) use ($userId) {
             $join->on('appuser.id', '=', 'appuser_role_link.uid')->where('appuser.id', '=', $userId);
-        })->join('privilege_role_link','privilege_role_link.rid', '=', 'appuser_role_link.rid')->
-            join('privilege', function($join) use ($vocabularyEditorPrivilegeLabel) {
+        })->join('privilege_role_link', 'privilege_role_link.rid', '=', 'appuser_role_link.rid')->
+            join('privilege', function ($join) use ($vocabularyEditorPrivilegeLabel) {
             $join->on('privilege_role_link.pid', '=', 'privilege.id')->where('privilege.label', '=', $vocabularyEditorPrivilegeLabel);
         })->select('appuser_role_link.rid')->get();
         return $roles->count() > 0;
