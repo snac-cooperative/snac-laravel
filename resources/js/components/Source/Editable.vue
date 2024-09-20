@@ -103,7 +103,7 @@ import state from '../../states/concept';
 export default {
   data() {
     return {
-      isVocabularyEditor: this.canEditVocabulary === 'true',
+      isVocabularyEditor: this.canEditVocabulary,
       originalSource: {},
       previousSource: {},
       state,
