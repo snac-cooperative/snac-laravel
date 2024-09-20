@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
@@ -53,6 +54,30 @@ class User extends Authenticatable
     ];
 
     protected $table = 'appuser';
+
+    /**
+     * The roles that belong to the user.
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'appuser_role_link', 'uid', 'rid');
+    }
+
+    /**
+     * The permissions that belong to the user.
+     */
+    public function getPermissions()
+    {
+        return Permission::whereIn('id', function ($query) {
+            $query->select('pid')
+                ->from('privilege_role_link')
+                ->whereIn('rid', function ($query) {
+                    $query->select('rid')
+                        ->from('appuser_role_link')
+                        ->where('uid', $this->id);
+                });
+        })->get();
+    }
 
     public function isVocabularyEditor()
     {
