@@ -84,14 +84,6 @@ export default {
       return term;
     },
     makeTermPreferred(term, termIndex) {
-      if (
-        !confirm(
-          `Are you sure you want to make '${term.text}' the preferred term for this concept?`,
-        )
-      ) {
-        return;
-      }
-
       const currentPreferred = this.preferredTerm;
 
       if (currentPreferred && currentPreferred.id !== term.id) {
@@ -105,10 +97,6 @@ export default {
       this.$set(this.terms, termIndex, term);
     },
     async deleteTerm(termId, termText) {
-      if (!confirm('Are you sure you want to delete this term?')) {
-        return;
-      }
-
       let term = {
         id: termId,
         text: termText,

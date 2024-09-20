@@ -1,35 +1,52 @@
 <template>
-  <BInputGroup>
-    <div
-      v-if="originalId"
-      class="category-item custom-select"
-      :class="{ 'font-weight-bold': isPrimary }"
-    >
-      {{ selectedValue }}
-    </div>
-    <BFormSelect
-      v-else
-      v-model="selectedId"
-      @change="trackChanges"
-      :options="getCategories"
-      :class="{ 'alert-info': isDirty() }"
-      aria-placeholder="Select a category"
-      placeholder="Select a category"
-    ></BFormSelect>
+  <div>
+    <BInputGroup>
+      <div
+        v-if="originalId"
+        class="category-item custom-select"
+        :class="{ 'font-weight-bold': isPrimary }"
+      >
+        {{ selectedValue }}
+      </div>
+      <BFormSelect
+        v-else
+        v-model="selectedId"
+        @change="trackChanges"
+        :options="getCategories"
+        :class="{ 'alert-info': isDirty() }"
+        aria-placeholder="Select a category"
+        placeholder="Select a category"
+      ></BFormSelect>
 
-    <BInputGroupAppend>
-      <BButton
-        @click="emitSaveCategory"
-        class="btn btn-info"
-        title="Save"
-        v-show="!originalId && isDirty()"
-        ><i class="fa fa-floppy-o"></i
-      ></BButton>
-      <BButton @click="emitDeleteCategory" class="btn btn-danger" title="Delete"
-        ><i class="fa fa-trash"></i
-      ></BButton>
-    </BInputGroupAppend>
-  </BInputGroup>
+      <BInputGroupAppend>
+        <BButton
+          @click="emitSaveCategory"
+          class="btn btn-info"
+          title="Save"
+          v-show="!originalId && isDirty()"
+          ><i class="fa fa-floppy-o"></i
+        ></BButton>
+        <BButton @click="showDeleteModal" class="btn btn-danger" title="Delete"
+          ><i class="fa fa-trash"></i
+        ></BButton>
+      </BInputGroupAppend>
+    </BInputGroup>
+
+    <BModal
+      id="delete-confirmation-modal"
+      ref="deleteModal"
+      title="Confirm Deletion"
+      @hide="resetCategory"
+      @shown="focusConfirmDeleteButton"
+      hide-footer
+    >
+      <div class="d-block text-center">
+        <p>Are you sure you want to delete this category?</p>
+        <BButton variant="danger" ref="confirmDeleteButton" @click="confirmDelete">Yes, delete</BButton>
+        <BButton variant="secondary" @click="hideDeleteModal">Cancel</BButton>
+      </div>
+    </BModal>
+  </div>
 </template>
 
 <script>
@@ -39,6 +56,7 @@ import {
   BFormSelect,
   BInputGroup,
   BInputGroupAppend,
+  BModal,
 } from 'bootstrap-vue';
 import { categories } from '../../config/categories';
 
@@ -124,11 +142,18 @@ export default {
         (cat) => parseInt(cat.value) === this.originalId,
       ).text;
     },
-    emitDeleteCategory() {
-      if (!confirm('Are you sure you want to delete this category?')) {
-        return;
-      }
+    showDeleteModal() {
+      this.$refs.deleteModal.show();
+    },
+    focusConfirmDeleteButton() {
+      this.$refs.confirmDeleteButton.focus();
+    },
+    hideDeleteModal() {
+      this.$refs.deleteModal.hide();
+    },
+    confirmDelete() {
       this.$emit('delete-category', this.categoryId, this.categoryIndex);
+      this.hideDeleteModal();
     },
     isDirty() {
       if (!this.selectedId) {

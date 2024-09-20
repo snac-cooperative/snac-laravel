@@ -23,7 +23,7 @@
         ></EditableTerm>
         <span
           v-else
-          class="block"
+          class="d-block"
           @dblclick="enableInlineEdit(term, term.index)"
         >
           {{ term.text }}

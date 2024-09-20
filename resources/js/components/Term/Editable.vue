@@ -1,44 +1,89 @@
 <template>
-  <BInputGroup>
-    <BFormInput
-      type="text"
-      ref="termText"
-      :required="true"
-      v-model="text"
-      @input="trackChanges"
-      @keydown.enter="emitSaveTerm"
-      :class="{ 'alert-info': isDirty() }"
-    ></BFormInput>
+  <div>
+    <BInputGroup>
+      <BFormInput
+        type="text"
+        ref="termText"
+        :required="true"
+        v-model="text"
+        @input="trackChanges"
+        @keydown.enter="emitSaveTerm"
+        :class="{ 'alert-info': isDirty() }"
+      ></BFormInput>
 
-    <BInputGroupAppend>
-      <BButton
-        @click="emitSaveTerm"
-        class="btn btn-info"
-        title="Save"
-        v-show="isDirty()"
-      ><i class="fa fa-floppy-o"></i
-      ></BButton>
-      <BButton
-        @click="cancelInlineEdit"
-        v-if="inlineEdit"
-      ><i class="fa fa-ban"></i></BButton>
-      <BButton
-        variant="primary"
-        @click="emitMakeTermPreferred"
-        v-if="!isPreferred && termId"
-        class="btn"
-        title="Make Preferred"
-      ><i class="fa fa-check-square-o"></i
-      ></BButton>
-      <BButton
-        @click="emitDeleteTerm"
-        v-if="!isPreferred"
-        class="btn btn-danger"
-        title="Delete"
-      ><i class="fa fa-trash"></i
-      ></BButton>
-    </BInputGroupAppend>
-  </BInputGroup>
+      <BInputGroupAppend>
+        <BButton
+          @click="emitSaveTerm"
+          class="btn btn-info"
+          title="Save"
+          v-show="isDirty()"
+        ><i class="fa fa-floppy-o"></i
+        ></BButton>
+        <BButton
+          @click="showCancelModal"
+          v-if="inlineEdit"
+        ><i class="fa fa-ban"></i></BButton>
+        <BButton
+          variant="primary"
+          @click="showPreferredModal"
+          v-if="!isPreferred && termId"
+          class="btn"
+          title="Make Preferred"
+        ><i class="fa fa-check-square-o"></i
+        ></BButton>
+        <BButton
+          @click="showDeleteModal"
+          v-if="!isPreferred"
+          class="btn btn-danger"
+          title="Delete"
+        ><i class="fa fa-trash"></i
+        ></BButton>
+      </BInputGroupAppend>
+    </BInputGroup>
+
+    <BModal
+      id="delete-confirmation-modal"
+      ref="deleteModal"
+      title="Confirm Deletion"
+      @hide="resetTerm"
+      @shown="focusConfirmDeleteButton"
+      hide-footer
+    >
+      <div class="d-block text-center">
+        <p>Are you sure you want to delete this term?</p>
+        <BButton ref="confirmDeleteButton" variant="danger" @click="confirmDelete">Yes, delete</BButton>
+        <BButton variant="secondary" @click="hideDeleteModal">Cancel</BButton>
+      </div>
+    </BModal>
+
+    <BModal
+      id="cancel-confirmation-modal"
+      ref="cancelModal"
+      title="Confirm Cancel"
+      @shown="focusConfirmCancelButton"
+      hide-footer
+    >
+      <div class="d-block text-center">
+        <p>Cancelling will cause you to lose your changes. Are you sure you want to cancel?</p>
+        <BButton ref="confirmCancelButton" variant="danger" @click="confirmCancel">Yes, cancel</BButton>
+        <BButton variant="secondary" @click="hideCancelModal">No</BButton>
+      </div>
+    </BModal>
+
+    <BModal
+      id="preferred-confirmation-modal"
+      ref="preferredModal"
+      title="Confirm Preferred Term"
+      @shown="focusConfirmPreferredButton"
+      hide-footer
+    >
+      <div class="d-block text-center">
+        <p>Are you sure you want to make this term the preferred term for this concept?</p>
+        <BButton ref="confirmPreferredButton" variant="primary" @click="confirmPreferred">Yes, make preferred</BButton>
+        <BButton variant="secondary" @click="hidePreferredModal">Cancel</BButton>
+      </div>
+    </BModal>
+  </div>
 </template>
 
 <script>
@@ -47,10 +92,22 @@ import {
   BFormInput,
   BInputGroup,
   BInputGroupAppend,
+  BModal,
 } from 'bootstrap-vue';
+import InlineEdit from './mixins/InlineEdit';
+import ConfirmDelete from './mixins/ConfirmDelete';
+import ConfirmPreferred from './mixins/ConfirmPreferred';
 import termApi from '../../api/TermService';
 
 export default {
+  mixins: [InlineEdit, ConfirmDelete, ConfirmPreferred],
+  components: {
+    BButton,
+    BFormInput,
+    BInputGroup,
+    BInputGroupAppend,
+    BModal,
+  },
   data() {
     return {
       term: null,
@@ -89,19 +146,8 @@ export default {
       default: false,
     },
   },
-  components: {
-    BInputGroup,
-    BInputGroupAppend,
-    BFormInput,
-    BButton,
-  },
   mounted() {
     this.getConceptTerm();
-  },
-  computed: {
-    inlineEdit () {
-      return this.inEdit;
-    },
   },
   methods: {
     async getConceptTerm () {
@@ -110,7 +156,7 @@ export default {
         return;
       }
 
-      const [error,term] = await termApi.getTerm(this.termId);
+      const [error, term] = await termApi.getTerm(this.termId);
       if(term) {
         this.term = { ...term, inEdit: false };
         this.text = term.text;
@@ -135,12 +181,6 @@ export default {
       this.$emit('save-term', term, this.termIndex);
       this.resetTerm();
     },
-    emitMakeTermPreferred() {
-      this.$emit('make-term-preferred', this.term, this.termIndex);
-    },
-    emitDeleteTerm() {
-      this.$emit('delete-term', this.termId, this.termIndex);
-    },
     resetTerm() {
       this.originalText = this.text;
       this.originalId = this.termId;
@@ -149,22 +189,12 @@ export default {
       if(!this.termId){
         return !!this.text;
       }
-      if(this.termId !== this.originalId){
+      if(this.termId !== this.originalId) {
         this.resetTerm();
         return false;
       }
       return this.text !== this.originalText;
     },
-    cancelInlineEdit() {
-      if(this.isDirty()){
-        if(!confirm('Cancelling will cause you to lose your changes. Are you sure you want to cancel?')){
-          return;
-        }
-      }
-      this.$emit('cancel-inline-edit', this.term, this.termIndex);
-      this.text = this.originalText;
-      this.resetTerm();
-    }
   },
 };
 </script>
