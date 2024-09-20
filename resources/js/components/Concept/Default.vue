@@ -129,6 +129,7 @@
                 :is-primary="0 === index"
                 :selected-categories="selectedCategories"
                 @save-category="saveCategory"
+                @delete-category="deleteCategory"
                 @change="flagDirty"
               ></EditableCategory>
             </p>

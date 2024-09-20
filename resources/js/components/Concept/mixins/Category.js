@@ -63,5 +63,10 @@ export default {
 
       this.updateCategories().then();
     },
+    deleteCategory(categoryId, index) {
+      this.cats.splice(index, 1);
+
+      this.updateCategories().then();
+    },
   },
 };
