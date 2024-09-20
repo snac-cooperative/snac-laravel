@@ -1,4 +1,4 @@
-import { BButton, BInputGroup, BInputGroupAppend } from 'bootstrap-vue';
+import { BButton, BInputGroup, BInputGroupAppend, BModal } from 'bootstrap-vue';
 import EditableTerm from '../Term/Editable.vue';
 import EditableSource from '../Source/Editable.vue';
 import EditableCategory from '../Category/Editable.vue';
@@ -10,7 +10,15 @@ import MixinTerm from './mixins/Term';
 
 export default {
   mixins: [MixinCategory, MixinDirty, MixinEditMode, MixinSource, MixinTerm],
-  components: { BButton, BInputGroup, BInputGroupAppend, EditableTerm, EditableSource, EditableCategory },
+  components: {
+    BModal,
+    BButton,
+    BInputGroup,
+    BInputGroupAppend,
+    EditableTerm,
+    EditableSource,
+    EditableCategory,
+  },
   props: {
     conceptProps: {
       type: Object,

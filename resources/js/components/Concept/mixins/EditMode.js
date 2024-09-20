@@ -5,25 +5,22 @@ export default {
     return {
       state: state,
     };
-  },mounted() {
+  },
+  mounted() {
     document.addEventListener('keydown', this.handleEscapeKey);
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleEscapeKey);
   },
   methods: {
-    toggleEditMode() {
+    leaveEditMode() {
       if (this.getEditMode() && this.isDirty()) {
-        if (
-          !confirm(
-            'You have unsaved changes. Are you sure you want to exit Edit Mode?',
-          )
-        ) {
-          return;
-        }
-        this.resetDirty();
+        this.showExitModal();
+        return;
       }
-
+      this.toggleEditMode();
+    },
+    toggleEditMode() {
       this.state.editMode = !this.state.editMode;
     },
     getEditMode() {
@@ -31,8 +28,22 @@ export default {
     },
     handleEscapeKey(event) {
       if (event.key === 'Escape' && this.getEditMode()) {
-        this.toggleEditMode();
+        this.leaveEditMode();
       }
+    },
+    showExitModal() {
+      this.$refs.exitModal.show();
+    },
+    hideExitModal() {
+      this.$refs.exitModal.hide();
+    },
+    confirmExit() {
+      this.hideExitModal();
+      this.resetDirty();
+      this.toggleEditMode();
+    },
+    focusConfirmExitButton() {
+      this.$refs.confirmExitButton.focus();
     },
   },
 };

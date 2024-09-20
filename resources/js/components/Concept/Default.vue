@@ -15,11 +15,25 @@
         </BButton>
         <BButton
           variant="secondary"
-          @click="toggleEditMode()"
+          @click="leaveEditMode()"
           v-show="getEditMode()"
         >
           Done Editing
         </BButton>
+
+        <BModal
+          id="exit-confirmation-modal"
+          ref="exitModal"
+          title="Confirm Exit"
+          @shown="focusConfirmExitButton"
+          hide-footer
+        >
+          <div class="d-block text-center">
+            <p>You have unsaved changes. Are you sure you want to exit Edit Mode?</p>
+            <BButton ref="confirmExitButton" variant="danger" @click="confirmExit">Yes, exit</BButton>
+            <BButton variant="secondary" @click="hideExitModal">No</BButton>
+          </div>
+        </BModal>
       </div>
 
       <h2>
