@@ -53,6 +53,7 @@ export default {
       if(!error){
         this.cleanDirty(this.sources[index]);
         this.sources.splice(index, 1);
+        this.flashSuccessAlert();
       }
     },
   },

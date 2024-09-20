@@ -21,7 +21,7 @@
           <BButton size="sm" variant="primary" @click="toggleEditMode()"
             ><i class="fa fa-edit"></i
           ></BButton>
-          <BButton size="sm" variant="danger" @click="emitDeleteSource"
+          <BButton size="sm" variant="danger" @click="showDeleteModal"
             ><i class="fa fa-trash"></i>
           </BButton>
         </BButtonGroup>
@@ -80,7 +80,7 @@
         <BButton
           variant="danger"
           class="float-right"
-          @click="emitDeleteSource"
+          @click="showDeleteModal"
           v-if="conceptSourceId"
         ><i class="fa fa-trash"></i> Delete</BButton
         >
@@ -88,20 +88,54 @@
         ><i class="fa fa-save"></i> Save</BButton
         >
         <BButton
-          @click="cancelSaveSource"
+          @click="showCancelModal"
         >Cancel</BButton
         >
       </div>
     </div>
+
+    <BModal
+      id="delete-confirmation-modal"
+      ref="deleteModal"
+      title="Confirm Deletion"
+      @shown="focusConfirmDeleteButton"
+      hide-footer
+    >
+      <div class="d-block text-center">
+        <p>Are you sure you want to delete this source?</p>
+        <BButton ref="confirmDeleteButton" variant="danger" @click="confirmDelete">Yes, delete</BButton>
+        <BButton variant="secondary" @click="hideDeleteModal">Cancel</BButton>
+      </div>
+    </BModal>
+
+    <BModal
+      id="cancel-confirmation-modal"
+      ref="cancelModal"
+      title="Confirm Cancel"
+      @shown="focusConfirmCancelButton"
+      hide-footer
+    >
+      <div class="d-block text-center">
+        <p>Cancelling will cause you to lose your changes. Are you sure you want to cancel?</p>
+        <BButton ref="confirmCancelButton" variant="danger" @click="confirmCancel">Yes, cancel</BButton>
+        <BButton variant="secondary" @click="hideCancelModal">No</BButton>
+      </div>
+    </BModal>
   </div>
 </template>
 
 <script>
-import { BButton, BFormInput, BInputGroup } from 'bootstrap-vue';
+import { BButton, BFormInput, BInputGroup, BModal } from 'bootstrap-vue';
 import conceptSourceApi from '../../api/ConceptSourceService';
 import state from '../../states/concept';
 
 export default {
+  components: {
+    BInputGroup,
+    BFormInput,
+    BButton,
+    BModal,
+  },
   data() {
     return {
       isVocabularyEditor: this.canEditVocabulary,
@@ -137,11 +171,6 @@ export default {
     },
     canEditVocabulary: false,
   },
-  components: {
-    BInputGroup,
-    BFormInput,
-    BButton,
-  },
   mounted() {
     this.getConceptSource();
   },
@@ -174,27 +203,6 @@ export default {
       });
       this.previousSource = this.getSource();
     },
-    cancelSaveSource: function () {
-      if (this.isDirty()) {
-        if (
-          !confirm(
-            'Cancelling will cause you to lose your changes. Are you sure you want to cancel?',
-          )
-        ) {
-          return;
-        }
-      }
-
-      this.toggleEditMode();
-
-      if (this.conceptSourceId) {
-        this.resetSource(this.originalSource);
-        this.trackChanges();
-        return;
-      }
-
-      this.$emit('delete-source', this.conceptSourceId, this.sourceIndex);
-    },
     emitSaveSource() {
       this.$emit(
         'save-source',
@@ -204,13 +212,6 @@ export default {
       );
       this.resetSource();
       this.toggleEditMode();
-    },
-    emitDeleteSource() {
-      if (!confirm('Are you sure you want to delete this source?')) {
-        return;
-      }
-
-      this.$emit('delete-source', this.conceptSourceId, this.sourceIndex);
     },
     resetSource(to) {
       if (!to) {
@@ -263,6 +264,40 @@ export default {
     },
     toggleEditMode() {
       this.editMode = !this.editMode;
+    },
+    showDeleteModal() {
+      this.$refs.deleteModal.show();
+    },
+    hideDeleteModal() {
+      this.$refs.deleteModal.hide();
+    },
+    confirmDelete() {
+      this.$emit('delete-source', this.conceptSourceId, this.sourceIndex);
+      this.hideDeleteModal();
+    },
+    focusConfirmDeleteButton() {
+      this.$refs.confirmDeleteButton.focus();
+    },
+    showCancelModal() {
+      this.$refs.cancelModal.show();
+    },
+    hideCancelModal() {
+      this.$refs.cancelModal.hide();
+    },
+    confirmCancel() {
+      this.toggleEditMode();
+      this.hideCancelModal();
+
+      if (this.conceptSourceId) {
+        this.resetSource(this.originalSource);
+        this.trackChanges();
+        return;
+      }
+
+      this.$emit('delete-source', this.conceptSourceId, this.sourceIndex);
+    },
+    focusConfirmCancelButton() {
+      this.$refs.confirmCancelButton.focus();
     },
   },
 };
