@@ -44,7 +44,7 @@ export default {
         id: null,
         preferred: false,
         text: null,
-        inEdit: true,
+        inEdit: false,
         index: this.terms.length,
       };
       this.terms.push(newTerm);
@@ -92,11 +92,11 @@ export default {
 
       if (currentPreferred && currentPreferred.id !== term.id) {
         currentPreferred.preferred = false;
-        this.saveTerm(currentPreferred);
+        this.saveTerm(currentPreferred).then();
       }
 
       term.preferred = true;
-      this.saveTerm(term);
+      this.saveTerm(term).then();
 
       this.$set(this.terms, termIndex, term);
     },
@@ -135,5 +135,19 @@ export default {
         finalize(term, index);
       }
     },
+    enableInlineEdit(term, termIndex) {
+      if(!this.isVocabularyEditor){
+        return;
+      }
+
+      term.inEdit = true;
+      this.$set(this.terms, termIndex, term);
+      return true;
+    },
+    cancelInlineEdit(term, termIndex) {
+      term.inEdit = false;
+      this.$set(this.terms, termIndex, term);
+      return true;
+    }
   },
 };

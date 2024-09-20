@@ -33,7 +33,7 @@ export default {
       conceptId: this.conceptProps.id,
       selected_concept: '',
       relationType: '',
-      isVocabularyEditor: this.canEditVocabulary !== 'false',
+      isVocabularyEditor: this.canEditVocabulary === 'true',
       baseURL: process.env.MIX_APP_URL,
     };
   },

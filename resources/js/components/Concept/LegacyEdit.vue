@@ -284,7 +284,7 @@ export default {
       categories,
       cats: this.conceptProps.concept_categories,
       selectedCategory: this.conceptProps.concept_categories[0].id,
-      isVocabularyEditor: this.canEditVocabulary !== 'false',
+      isVocabularyEditor: this.canEditVocabulary === 'true',
       baseURL: '',
       devFeatures: process.env.MIX_INCLUDE_DEVELOPMENT_FEATURES == 'true',
     };

@@ -34,18 +34,23 @@
       <div class="form-group">
         <div class="col-xs-8">
           <h4>Preferred Term</h4>
-          <p v-if="!getEditMode()">{{ preferredTerm.text }}</p>
           <EditableTerm
-            v-else
+            v-if="getEditMode() || preferredTerm.inEdit"
             :key="preferredTerm.id"
             :term-id="preferredTerm.id"
             :term-text="preferredTerm.text"
             :term-index="preferredTerm.index"
             :concept-id="preferredTerm.concept_id"
+            :in-edit="preferredTerm.inEdit"
             is-preferred="is-preferred"
             @save-term="saveTerm"
+            @cancel-inline-edit="cancelInlineEdit"
             @input="flagDirty"
           ></EditableTerm>
+          <p
+            v-else
+            @dblclick="enableInlineEdit(preferredTerm, preferredTerm.index)"
+          >{{ preferredTerm.text }}</p>
 
           <h4 class="mt-3" v-show="alternateTerms.length || getEditMode()">
             Alternate Terms
@@ -59,6 +64,8 @@
             @delete-term="deleteTerm"
             @add-term="addTerm"
             @make-term-preferred="makeTermPreferred"
+            @enable-inline-edit="enableInlineEdit"
+            @cancel-inline-edit="cancelInlineEdit"
             @flat-dirty="flagDirty"
           ></term-list>
         </div>

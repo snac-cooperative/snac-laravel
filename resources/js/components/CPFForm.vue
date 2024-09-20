@@ -654,7 +654,7 @@ export default {
       relationType: '',
       propertyEditMode: true,
       categories,
-      isVocabularyEditor: this.canEditVocabulary === true,
+      isVocabularyEditor: this.canEditVocabulary === 'true',
       baseURL: '',
     };
   },

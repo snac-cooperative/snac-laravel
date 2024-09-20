@@ -1,27 +1,33 @@
 <template>
   <div class="term-list">
     <div
-      v-for="(term,index) in terms"
+      v-for="term in terms"
       v-bind:key="term.id"
       v-bind:text="term.text"
-      v-bind:index="index"
+      v-bind:index="term.index"
     >
       <p class="mb-2">
-        <span v-if="!conceptEditMode()">
-          {{ term.text }}
-        </span>
         <EditableTerm
-          v-else
+          v-if="conceptEditMode() || term.inEdit"
           ref="EditableTerm"
           :term-id="term.id"
           :term-text="term.text"
           :term-index="term.index"
           :concept-id="term.concept_id"
+          :in-edit="term.inEdit"
           @save-term="emitSaveTerm"
           @delete-term="emitDeleteTerm"
           @make-term-preferred="emitMakeTermPreferred"
+          @cancel-inline-edit="cancelInlineEdit"
           @input="emitFlagDirty"
         ></EditableTerm>
+        <span
+          v-else
+          class="block"
+          @dblclick="enableInlineEdit(term, term.index)"
+        >
+          {{ term.text }}
+        </span>
       </p>
     </div>
     <b-button
@@ -43,7 +49,7 @@ import state from '../../states/concept';
 export default {
   data() {
     return {
-      isVocabularyEditor: this.canEditVocabulary !== 'false',
+      isVocabularyEditor: this.canEditVocabulary === 'true',
       state: state,
     };
   },
@@ -86,6 +92,13 @@ export default {
     emitFlagDirty: function(args) {
       this.$emit('flag-dirty', args);
     },
+    enableInlineEdit: function(term, termIndex) {
+      console.log('test');
+      this.$emit('enable-inline-edit', term, termIndex);
+    },
+    cancelInlineEdit: function(term, termIndex) {
+      this.$emit('cancel-inline-edit', term, termIndex);
+    }
   },
   components: {
     EditableTerm,

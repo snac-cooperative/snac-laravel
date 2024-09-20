@@ -19,9 +19,14 @@
       ><i class="fa fa-floppy-o"></i
       ></BButton>
       <BButton
+        @click="cancelInlineEdit"
+        v-if="inlineEdit"
+      ><i class="fa fa-ban"></i></BButton>
+      <BButton
+        variant="primary"
         @click="emitMakeTermPreferred"
         v-if="!isPreferred && termId"
-        class="btn btn-primary"
+        class="btn"
         title="Make Preferred"
       ><i class="fa fa-check-square-o"></i
       ></BButton>
@@ -79,6 +84,10 @@ export default {
       type: Number,
       default: null,
     },
+    inEdit: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     BInputGroup,
@@ -89,6 +98,11 @@ export default {
   mounted() {
     this.getConceptTerm();
   },
+  computed: {
+    inlineEdit () {
+      return this.inEdit;
+    },
+  },
   methods: {
     async getConceptTerm () {
       if (!this.termId) {
@@ -98,7 +112,7 @@ export default {
 
       const [error,term] = await termApi.getTerm(this.termId);
       if(term) {
-        this.term = term;
+        this.term = { ...term, inEdit: false };
         this.text = term.text;
         this.originalText = term.text;
         this.previous = term.text;
@@ -140,6 +154,16 @@ export default {
         return false;
       }
       return this.text !== this.originalText;
+    },
+    cancelInlineEdit() {
+      if(this.isDirty()){
+        if(!confirm('Cancelling will cause you to lose your changes. Are you sure you want to cancel?')){
+          return;
+        }
+      }
+      this.$emit('cancel-inline-edit', this.term, this.termIndex);
+      this.text = this.originalText;
+      this.resetTerm();
     }
   },
 };
