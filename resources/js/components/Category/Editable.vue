@@ -25,9 +25,6 @@
         v-show="!originalId && isDirty()"
         ><i class="fa fa-floppy-o"></i
       ></BButton>
-      <BButton @click="emitDeleteCategory" class="btn btn-danger" title="Delete"
-        ><i class="fa fa-trash"></i
-      ></BButton>
     </BInputGroupAppend>
   </BInputGroup>
 </template>
@@ -123,12 +120,6 @@ export default {
       this.selectedValue = this.categories.find(
         (cat) => parseInt(cat.value) === this.originalId,
       ).text;
-    },
-    emitDeleteCategory() {
-      if (!confirm('Are you sure you want to delete this category?')) {
-        return;
-      }
-      this.$emit('delete-category', this.categoryId, this.categoryIndex);
     },
     isDirty() {
       if (!this.selectedId) {
