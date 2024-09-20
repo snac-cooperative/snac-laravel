@@ -7,7 +7,6 @@ import MixinDirty from './mixins/Dirty';
 import MixinEditMode from './mixins/EditMode';
 import MixinSource from './mixins/Source';
 import MixinTerm from './mixins/Term';
-import src from 'vue-multiselect/src';
 
 export default {
   mixins: [MixinCategory, MixinDirty, MixinEditMode, MixinSource, MixinTerm],
@@ -31,30 +30,10 @@ export default {
     return {
       deprecated: this.conceptProps.deprecated,
       conceptId: this.conceptProps.id,
-      selected_concept: '',
-      relationType: '',
       isVocabularyEditor: this.canEditVocabulary === 'true',
-      baseURL: process.env.MIX_APP_URL,
     };
   },
-  computed: {
-    src() {
-      return src;
-    },
-  },
   methods: {
-    fetchConcept() {
-      fetch(`${this.baseURL}/api/concepts/` + this.terms[0].concept_id)
-        .then((data) => data.json())
-        .then((data) => {
-          this.terms = data.terms.map(
-            (term) => {
-              term.inEdit = false;
-              return term;
-            },
-          );
-        });
-    },
     flashSuccessAlert() {
       const alert = document.querySelector('.alert-success');
       alert.classList.remove('hidden');
