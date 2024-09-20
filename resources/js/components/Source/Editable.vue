@@ -98,6 +98,7 @@
 
 <script>
 import { BButton, BFormInput, BInputGroup } from 'bootstrap-vue';
+import conceptSourceApi from '../../api/ConceptSourceService';
 import state from '../../states/concept';
 
 export default {
@@ -112,7 +113,6 @@ export default {
       url: null,
       foundData: null,
       note: null,
-      baseURL: process.env.MIX_APP_URL,
     };
   },
   model: {
@@ -146,23 +146,22 @@ export default {
     this.getConceptSource();
   },
   methods: {
-    getConceptSource: function () {
+    async getConceptSource() {
       if (!this.conceptSourceId) {
         this.resetSource();
         return;
       }
 
-      fetch(`${this.baseURL}/api/concept_sources/` + this.conceptSourceId)
-        .then((data) => data.json())
-        .then((data) => {
-          this.citation = data.citation;
-          this.url = data.url;
-          this.foundData = data.found_data;
-          this.note = data.note;
-          this.conceptId = data.concept_id;
+      const [error,source] = await conceptSourceApi.getConceptSource(this.conceptSourceId);
+      if (!error) {
+        this.citation = source.citation;
+        this.url = source.url;
+        this.foundData = source.found_data;
+        this.note = source.note;
+        this.conceptId = source.concept_id;
 
-          this.resetSource();
-        });
+        this.resetSource();
+      }
     },
     conceptEditMode: function () {
       return this.state.editMode;
