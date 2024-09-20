@@ -41,7 +41,7 @@ export default {
 
   async updateConceptSource(conceptSourceId, conceptSourceData) {
     try {
-      const { data } = await apiClient.post(
+      const { data } = await apiClient.patch(
         `/${conceptSourceId}`,
         conceptSourceData,
       );
