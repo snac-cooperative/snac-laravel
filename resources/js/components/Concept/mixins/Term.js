@@ -5,8 +5,10 @@ export default {
     return {
       terms: this.termProps.map(
         (term, index) => {
-          term.inEdit = false;
           term.index = index;
+          if('undefined' === typeof term.inEdit){
+            term.inEdit = false;
+          }
           return term;
         },
       ),
@@ -48,6 +50,7 @@ export default {
         index: this.terms.length,
       };
       this.terms.push(newTerm);
+      this.updateTermIndexes();
     },
     async saveTerm(term, termIndex) {
       const finalize = (term, termIndex) => {
@@ -59,6 +62,7 @@ export default {
 
         this.cleanDirty(term);
         this.flashSuccessAlert();
+        this.updateTermIndexes();
       };
 
       if (!term.id) {
@@ -123,6 +127,7 @@ export default {
       const finalize = (term, index) => {
         this.terms.splice(index, 1);
         this.cleanDirty(term);
+        this.updateTermIndexes();
       };
 
       if (!termId) {
@@ -135,6 +140,11 @@ export default {
         finalize(term, index);
       }
     },
+    updateTermIndexes() {
+      this.terms.forEach((term, index) => {
+        term.index = index;
+      });
+    },
     enableInlineEdit(term, termIndex) {
       if(!this.isVocabularyEditor){
         return;
@@ -142,12 +152,10 @@ export default {
 
       term.inEdit = true;
       this.$set(this.terms, termIndex, term);
-      return true;
     },
     cancelInlineEdit(term, termIndex) {
       term.inEdit = false;
       this.$set(this.terms, termIndex, term);
-      return true;
     }
   },
 };

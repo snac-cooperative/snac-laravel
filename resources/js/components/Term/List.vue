@@ -93,7 +93,6 @@ export default {
       this.$emit('flag-dirty', args);
     },
     enableInlineEdit: function(term, termIndex) {
-      console.log('test');
       this.$emit('enable-inline-edit', term, termIndex);
     },
     cancelInlineEdit: function(term, termIndex) {
