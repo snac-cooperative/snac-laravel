@@ -20,7 +20,7 @@
         ><i class="fa fa-floppy-o"></i
         ></BButton>
         <BButton
-          @click="showCancelModal"
+          @click="cancelInlineEdit"
           v-if="inlineEdit"
         ><i class="fa fa-ban"></i></BButton>
         <BButton

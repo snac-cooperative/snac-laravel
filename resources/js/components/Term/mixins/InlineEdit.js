@@ -23,11 +23,10 @@ export default {
     cancelInlineEdit() {
       if (this.isDirty()) {
         this.showCancelModal();
-      } else {
-        this.$emit('cancel-inline-edit', this.term, this.termIndex);
-        this.text = this.originalText;
-        this.resetTerm();
+        return;
       }
+
+      this.confirmCancel();
     },
   },
 };
