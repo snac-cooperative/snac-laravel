@@ -54,7 +54,9 @@ export default {
     },
     async saveTerm(term, termIndex) {
       const finalize = (term, termIndex) => {
-        term.inEdit = false;
+        if(term.inEdit) {
+          this.cancelInlineEdit(term, termIndex);
+        }
 
         if (termIndex > -1) {
           this.terms.splice(termIndex, 1, term);
@@ -73,7 +75,7 @@ export default {
 
       const [error, response] = await termApi.updateTerm(term.id, term);
       if (!error) {
-        finalize(term);
+        finalize(term, termIndex);
       }
     },
     async createTerm(term) {
