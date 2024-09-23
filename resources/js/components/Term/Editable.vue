@@ -8,6 +8,7 @@
         v-model="text"
         @input="trackChanges"
         @keydown.enter="emitSaveTerm"
+        @keydown.esc="cancelInlineEdit"
         :class="{ 'alert-info': isDirty() }"
       ></BFormInput>
 
@@ -148,6 +149,9 @@ export default {
   },
   mounted() {
     this.getConceptTerm();
+    if (this.inlineEdit){
+      this.$refs.termText.$el.focus();
+    }
   },
   methods: {
     async getConceptTerm () {

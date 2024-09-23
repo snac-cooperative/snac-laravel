@@ -3,7 +3,7 @@
     style="padding: 0.5rem"
     :class="{ stripe: 1 === sourceIndex % 2, 'alert-info': isDirty() }"
   >
-    <div v-if="!editMode">
+    <div v-if="!editMode || !conceptEditMode()">
       <div style="display: flex; gap: 0.5rem; align-items: baseline">
         <div style="flex-basis: calc(100% - 0.5rem - 42px)">
           <p class="mb-0" v-if="citation">{{ citation }}</p>

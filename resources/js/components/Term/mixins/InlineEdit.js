@@ -1,10 +1,20 @@
+import state from '../../../states/concept';
+
 export default {
+  data() {
+    return {
+      state,
+    };
+  },
   computed: {
     inlineEdit() {
       return this.inEdit;
     },
   },
   methods: {
+    conceptEditMode: function () {
+      return this.state.editMode;
+    },
     showCancelModal() {
       this.$refs.cancelModal.show();
     },
@@ -21,6 +31,9 @@ export default {
       this.$refs.confirmCancelButton.focus();
     },
     cancelInlineEdit() {
+      if (!this.inlineEdit || this.conceptEditMode()) {
+        return;
+      }
       if (this.isDirty()) {
         this.showCancelModal();
         return;
