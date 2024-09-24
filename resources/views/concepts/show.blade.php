@@ -8,12 +8,7 @@
     @endif
 
     <ol class="breadcrumb">
-        {{-- TODO:  Rename Occupation Terms with dynamic concept category or categories   --}}
         <li class="breadcrumb-item"><a href="/concepts">Concepts</a></li>
-
-        @if (!empty($concept->conceptCategories) and (count($concept->conceptCategories) > 0))
-            <li class="breadcrumb-item active">{{ $concept->conceptCategories[0]['value']}} Terms</li>
-        @endif
     </ol>
 
     @if (false) #permissions.EditResources
