@@ -35,7 +35,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 Vue.component('concept', require('./components/Concept.vue').default);
 Vue.component('concept-list', require('./components/Concept/List.vue').default);
 Vue.component('concept', require('./components/Concept/Default.vue').default);
-Vue.component('concept-edit', require('./components/Concept/Edit.vue').default);
+Vue.component('concept-edit', require('./components/Concept/LegacyEdit.vue').default);
 Vue.component(
   'concept-category',
   require('./components/ConceptCategory.vue').default,
@@ -45,22 +45,10 @@ Vue.component(
   require('./components/Concept/Create.vue').default,
 );
 Vue.component(
-  'concept-source',
-  require('./components/Source/Default.vue').default,
-);
-Vue.component(
-  'concept-source-edit',
-  require('./components/Source/Edit.vue').default,
-);
-Vue.component(
   'concept-search',
   require('./components/ConceptSearch.vue').default,
 );
 Vue.component('term-list', require('./components/Term/List.vue').default);
-Vue.component(
-  'category-list',
-  require('./components/Category/List.vue').default,
-);
 Vue.component('term-item', require('./components/TermItem.vue').default);
 Vue.component('cpf-form', require('./components/CPFForm.vue').default);
 Vue.component('b-table', BTable);

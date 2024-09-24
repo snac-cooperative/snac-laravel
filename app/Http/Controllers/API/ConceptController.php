@@ -8,6 +8,7 @@ use App\Http\Resources\ConceptResource;
 use App\Models\Concept;
 use App\Models\Term;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class ConceptController extends Controller
@@ -130,9 +131,25 @@ class ConceptController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
-        //
+        $concept = Concept::findOrFail($id);
+        $attributes = $request->all();
+
+        // Sync concept categories
+        if (array_key_exists('conceptCategories', $attributes)) {
+            $category_ids = array_map(function ($category) {
+                return $category['id'];
+            }, $attributes['conceptCategories']);
+
+            $concept->conceptCategories()->sync($category_ids);
+
+            unset($attributes['conceptCategories']);
+        }
+
+        $concept->update($attributes);
+
+        return new Response($concept);
     }
 
     /**

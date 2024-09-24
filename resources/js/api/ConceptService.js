@@ -39,6 +39,15 @@ export default {
     }
   },
 
+  async updateConcept(conceptId, conceptData) {
+    try {
+      const { data } = await apiClient.patch(`/${conceptId}`, conceptData);
+      return [null, data];
+    } catch (error) {
+      return [error];
+    }
+  },
+
   async deleteConcept(conceptId) {
     try {
       const { data } = await apiClient.delete(`/${conceptId}`);

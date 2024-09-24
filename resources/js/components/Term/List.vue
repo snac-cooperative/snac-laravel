@@ -1,24 +1,41 @@
 <template>
   <div class="term-list">
-    <div v-for="term in terms" v-bind:key="term.id">
+    <div
+      v-for="term in terms"
+      v-bind:key="term.id"
+      v-bind:text="term.text"
+      v-bind:index="term.index"
+    >
       <p class="mb-2">
-        <span v-if="!conceptEditMode()">
+        <EditableTerm
+          v-if="conceptEditMode() || term.inEdit"
+          ref="EditableTerm"
+          :term-id="term.id"
+          :term-text="term.text"
+          :term-index="term.index"
+          :concept-id="term.concept_id"
+          :in-edit="term.inEdit"
+          @save-term="emitSaveTerm"
+          @delete-term="emitDeleteTerm"
+          @make-term-preferred="emitMakeTermPreferred"
+          @cancel-inline-edit="cancelInlineEdit"
+          @input="emitFlagDirty"
+        ></EditableTerm>
+        <span
+          v-else
+          class="d-block"
+          @dblclick="enableInlineEdit(term, term.index)"
+        >
           {{ term.text }}
         </span>
-        <Editable
-          v-else
-          :term="term"
-          @save-term="saveTerm"
-          @delete-term="deleteTerm"
-          @make-term-preferred="makeTermPreferred"
-          @input="flagDirty"
-        ></Editable>
       </p>
     </div>
     <b-button
       class="mt-2"
+      :class="{ disabled: hasEmptyTerm }"
+      :disabled="hasEmptyTerm"
       variant="success"
-      @click="addTerm()"
+      @click="emitAddTerm()"
       v-if="isVocabularyEditor"
       v-show="conceptEditMode()"
     ><i class="fa fa-plus"></i> Add Term</b-button>
@@ -26,46 +43,64 @@
 </template>
 
 <script>
-import Editable from './Editable.vue';
+import EditableTerm from './Editable.vue';
 import state from '../../states/concept';
 
 export default {
   data() {
     return {
-      isVocabularyEditor: this.canEditVocabulary !== 'false',
+      isVocabularyEditor: this.canEditVocabulary,
       state: state,
     };
   },
   props: {
-    editing: Boolean,
-    conceptId: Number,
+    conceptId: {
+      type: Number,
+      default: null,
+    },
     terms: {
       type: Array,
     },
-    canEditVocabulary: false,
+    canEditVocabulary: {
+      type: Boolean,
+      default: false,
+    },
+    hasEmptyTerm: {
+      type: Boolean,
+      default: false,
+    }
   },
   methods: {
     conceptEditMode: function () {
       return this.state.editMode;
     },
-    saveTerm: function (term) {
-      this.$parent.saveTerm(term);
+    emitSaveTerm: function (term, termIndex) {
+      this.$emit('save-term', term, termIndex);
     },
-    addTerm: function () {
-      this.$parent.addTerm();
+    emitAddTerm: function () {
+      this.$emit('add-term');
+      this.$nextTick(() => {
+        this.$refs.EditableTerm[this.$refs.EditableTerm.length - 1].$refs.termText.$el.focus();
+      });
     },
-    deleteTerm: function (term) {
-      this.$parent.deleteTerm(term);
+    emitDeleteTerm: function (termId, termIndex) {
+      this.$emit('delete-term', termId, termIndex);
     },
-    makeTermPreferred: function(term) {
-      this.$parent.makeTermPreferred(term);
+    emitMakeTermPreferred: function(term, termIndex) {
+      this.$emit('make-term-preferred', term, termIndex);
     },
-    flagDirty: function(args) {
-      this.$parent.flagDirty(args);
+    emitFlagDirty: function(args) {
+      this.$emit('flag-dirty', args);
     },
+    enableInlineEdit: function(term, termIndex) {
+      this.$emit('enable-inline-edit', term, termIndex);
+    },
+    cancelInlineEdit: function(term, termIndex) {
+      this.$emit('cancel-inline-edit', term, termIndex);
+    }
   },
   components: {
-    Editable,
+    EditableTerm,
   },
 };
 </script>

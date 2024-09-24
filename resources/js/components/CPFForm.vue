@@ -626,7 +626,7 @@
 </template>
 
 <script>
-import { categories } from '../config/catgegories';
+import { categories } from '../config/categories';
 
 export default {
   props: {
@@ -654,7 +654,7 @@ export default {
       relationType: '',
       propertyEditMode: true,
       categories,
-      isVocabularyEditor: this.canEditVocabulary === true,
+      isVocabularyEditor: this.canEditVocabulary === 'true',
       baseURL: '',
     };
   },

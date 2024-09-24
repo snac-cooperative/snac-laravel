@@ -86,7 +86,7 @@ import {
   BInputGroupAppend,
   BFormInvalidFeedback,
 } from 'bootstrap-vue';
-import { categories } from '../../config/catgegories';
+import { categories } from '../../config/categories';
 import ConceptService from '../../api/ConceptService';
 
 export default {

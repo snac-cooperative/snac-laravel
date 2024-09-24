@@ -1,63 +1,102 @@
 <template>
-  <BInputGroup>
-    <BFormSelect
-      v-model="originalId"
-      @input="updateCategory"
-      :options="getCategories"
-      :class="{ 'alert-info': isDirty }"
-    ></BFormSelect>
+  <div>
+    <BInputGroup>
+      <div
+        v-if="originalId"
+        class="category-item custom-select"
+        :class="{ 'font-weight-bold': isPrimary }"
+      >
+        {{ selectedValue }}
+      </div>
+      <BFormSelect
+        v-else
+        v-model="selectedId"
+        @change="trackChanges"
+        :options="getCategories"
+        :class="{ 'alert-info': isDirty() }"
+        aria-placeholder="Select a category"
+        placeholder="Select a category"
+      ></BFormSelect>
 
-    <BInputGroupAppend>
-      <BButton
-        @click="emitSaveCategory"
-        class="btn btn-info"
-        title="Save"
-        v-show="isDirty"
-      ><i class="fa fa-floppy-o"></i
-      ></BButton>
-      <BButton
-        @click="emitMakeCategoryPrimary"
-        v-if="!isPrimary"
-        class="btn btn-primary"
-        title="Make Primary"
-      ><i class="fa fa-check-square-o"></i
-      ></BButton>
-      <BButton
-        @click="emitDeleteCategory"
-        v-if="!isPrimary"
-        class="btn btn-danger"
-        title="Delete"
-      ><i class="fa fa-trash"></i
-      ></BButton>
-    </BInputGroupAppend>
-  </BInputGroup>
+      <BInputGroupAppend>
+        <BButton
+          @click="emitSaveCategory"
+          class="btn btn-info"
+          title="Save"
+          v-show="!originalId && isDirty()"
+          ><i class="fa fa-floppy-o"></i
+        ></BButton>
+        <BButton @click="showDeleteModal" class="btn btn-danger" title="Delete"
+          ><i class="fa fa-trash"></i
+        ></BButton>
+      </BInputGroupAppend>
+    </BInputGroup>
+
+    <BModal
+      id="delete-confirmation-modal"
+      ref="deleteModal"
+      title="Confirm Deletion"
+      @hide="resetCategory"
+      @shown="focusConfirmDeleteButton"
+      hide-footer
+    >
+      <div class="d-block text-center">
+        <p>Are you sure you want to delete this category?</p>
+        <BButton variant="danger" ref="confirmDeleteButton" @click="confirmDelete">Yes, delete</BButton>
+        <BButton variant="secondary" @click="hideDeleteModal">Cancel</BButton>
+      </div>
+    </BModal>
+  </div>
 </template>
 
 <script>
 import {
   BButton,
+  BFormInput,
   BFormSelect,
   BInputGroup,
   BInputGroupAppend,
+  BModal,
 } from 'bootstrap-vue';
+import { categories } from '../../config/categories';
 
 export default {
   data() {
     return {
-      originalId: this.category.id,
-      originalValue: this.category.value,
-      selectedId: this.category.id,
+      selectedId: this.categoryId,
+      originalId: this.categoryId,
+      selectedValue: this.categoryValue,
+      previous: null,
+      categories,
     };
   },
   model: {
-    prop: 'category',
     event: 'input',
   },
   props: {
-    category: Object,
-    isPrimary: Boolean,
+    categoryId: {
+      type: Number,
+      default: null,
+    },
+    isPrimary: {
+      type: Boolean,
+      default: false,
+    },
+    categoryValue: {
+      type: String,
+      default: null,
+    },
+    categoryIndex: {
+      type: Number,
+      default: null,
+    },
+    selectedCategories: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
+    BFormInput,
     BInputGroup,
     BInputGroupAppend,
     BFormSelect,
@@ -65,39 +104,71 @@ export default {
   },
   computed: {
     getCategories() {
-      return this.$parent.getCategories(this.getCategory.id);
-    },
-    isDirty() {
-      if(!this.category.value) {
-        return !!this.category.id;
+      const filtered = this.categories.filter((cat) => {
+        return (
+          this.selectedCategories.filter((currentCat) => {
+            return currentCat === parseInt(cat.value);
+          }).length === 0 || this.categoryId === parseInt(cat.value)
+        );
+      });
+
+      if (!this.selectedId && filtered.length) {
+        filtered.unshift({
+          value: null,
+          text: 'Select a category',
+          disabled: true,
+        });
       }
-      return parseInt(this.originalId) !== this.category.id;
-    },
-    getCategory() {
-      return this.category;
-    },
-    resetCategory() {
-      this.originalId = this.getCategory.id;
-      this.originalValue = this.getCategory.value;
+
+      return filtered;
     },
   },
   methods: {
-    updateCategory(categoryId) {
-      this.selectedId = parseInt(categoryId);
-      this.$emit('change', { ...this.getCategory, category: this.selectedId, dirty: this.isDirty });
+    trackChanges() {
+      const selectedId = parseInt(this.selectedId);
+
+      this.$emit('change', {
+        id: selectedId,
+        dirty: this.isDirty(),
+        previous: this.previous,
+      });
+      this.previous = selectedId;
     },
     emitSaveCategory() {
-      console.log('newId',categoryId);
-      console.log('oldId',this.category.id);
-
-      this.$emit('save-category', this.selectedId, this.category.id);
+      const selectedId = parseInt(this.selectedId);
+      this.$emit('save-category', selectedId, this.categoryIndex);
+      this.originalId = selectedId;
+      this.selectedValue = this.categories.find(
+        (cat) => parseInt(cat.value) === this.originalId,
+      ).text;
     },
-    emitMakeCategoryPrimary() {
-      this.$emit('make-category-primary', this.getCategory);
+    showDeleteModal() {
+      this.$refs.deleteModal.show();
     },
-    emitDeleteCategory() {
-      this.$emit('delete-category', this.getCategory);
+    focusConfirmDeleteButton() {
+      this.$refs.confirmDeleteButton.focus();
+    },
+    hideDeleteModal() {
+      this.$refs.deleteModal.hide();
+    },
+    confirmDelete() {
+      this.$emit('delete-category', this.categoryId, this.categoryIndex);
+      this.hideDeleteModal();
+    },
+    isDirty() {
+      if (!this.selectedId) {
+        return !!this.categoryId;
+      }
+      return this.originalId !== parseInt(this.selectedId);
+    },
+    resetCategory() {
+      this.selectedId = this.categoryId;
     },
   },
 };
 </script>
+<style>
+.category-item.custom-select {
+  background-image: none;
+}
+</style>

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { categories } from '../config/catgegories';
+import { categories } from '../config/categories';
 
 export default {
   props: {

@@ -239,7 +239,7 @@
 
 <script>
 // import TermItem from './TermItem.vue';
-import { categories } from '../../config/catgegories';
+import { categories } from '../../config/categories';
 
 export default {
   props: {
@@ -284,7 +284,7 @@ export default {
       categories,
       cats: this.conceptProps.concept_categories,
       selectedCategory: this.conceptProps.concept_categories[0].id,
-      isVocabularyEditor: this.canEditVocabulary !== 'false',
+      isVocabularyEditor: this.canEditVocabulary === 'true',
       baseURL: '',
       devFeatures: process.env.MIX_INCLUDE_DEVELOPMENT_FEATURES == 'true',
     };
@@ -441,9 +441,6 @@ export default {
           console.log(error);
         });
       this.selected_concept = '';
-    },
-    deleteConceptSource: function (conceptSourceIndex) {
-      this.$delete(this.sources, conceptSourceIndex);
     },
     addSource: function () {
       this.sources.push({ concept_id: this.conceptId, editMode: true });
