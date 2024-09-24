@@ -81,14 +81,9 @@ class User extends Authenticatable
 
     public function isVocabularyEditor()
     {
-        $userId = $this->id;
-        $vocabularyEditorPrivilegeLabel = 'Edit Vocabulary';
-        $roles = DB::table('appuser')->join('appuser_role_link', function ($join) use ($userId) {
-            $join->on('appuser.id', '=', 'appuser_role_link.uid')->where('appuser.id', '=', $userId);
-        })->join('privilege_role_link', 'privilege_role_link.rid', '=', 'appuser_role_link.rid')->
-            join('privilege', function ($join) use ($vocabularyEditorPrivilegeLabel) {
-            $join->on('privilege_role_link.pid', '=', 'privilege.id')->where('privilege.label', '=', $vocabularyEditorPrivilegeLabel);
-        })->select('appuser_role_link.rid')->get();
-        return $roles->count() > 0;
+        $permissions = $this->getPermissions();
+        $vocabEditor = Permission::where('label', 'Edit Vocabulary')->first();
+
+        return $permissions->contains($vocabEditor);
     }
 }
