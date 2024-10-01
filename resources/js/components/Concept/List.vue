@@ -135,7 +135,7 @@ export default {
             id: concept.id,
             link: `${this.baseURL}/concepts/${concept.id}`,
             preferredTerm: concept.preferred_term.text,
-            category: concept.concept_categories[0].value,
+            category: concept.concept_categories[0]?.value,
           };
         });
         this.loading = false;
