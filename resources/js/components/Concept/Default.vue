@@ -131,7 +131,6 @@
             <p class="mb-2">
               <span
                 v-if="!getEditMode() || !canEditVocabulary"
-                :class="{ 'font-weight-bold': index === 0 }"
               >
                 {{ cat.value }}
               </span>
@@ -140,7 +139,6 @@
                 :category-id="cat.id"
                 :category-value="cat.value"
                 :category-index="index"
-                :is-primary="0 === index"
                 :selected-categories="selectedCategories"
                 @save-category="saveCategory"
                 @delete-category="deleteCategory"

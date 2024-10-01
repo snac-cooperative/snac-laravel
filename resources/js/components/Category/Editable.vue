@@ -4,7 +4,6 @@
       <div
         v-if="originalId"
         class="category-item custom-select"
-        :class="{ 'font-weight-bold': isPrimary }"
       >
         {{ selectedValue }}
       </div>
@@ -77,10 +76,6 @@ export default {
     categoryId: {
       type: Number,
       default: null,
-    },
-    isPrimary: {
-      type: Boolean,
-      default: false,
     },
     categoryValue: {
       type: String,
