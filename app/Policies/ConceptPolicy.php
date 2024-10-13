@@ -12,7 +12,6 @@ class ConceptPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
         return true;
     }
 
@@ -21,7 +20,6 @@ class ConceptPolicy
      */
     public function view(User $user, Concept $concept): bool
     {
-        //
         return true;
     }
 
@@ -30,8 +28,7 @@ class ConceptPolicy
      */
     public function create(User $user): bool
     {
-        //
-        return false;
+        return $user->isVocabularyEditor();
     }
 
     /**
@@ -39,8 +36,7 @@ class ConceptPolicy
      */
     public function update(User $user, Concept $concept): bool
     {
-        //
-        return false;
+        return $user->isVocabularyEditor();
     }
 
     /**
@@ -48,8 +44,7 @@ class ConceptPolicy
      */
     public function delete(User $user, Concept $concept): bool
     {
-        //
-        return false;
+        return $user->isVocabularyEditor();
     }
 
     /**
@@ -57,8 +52,7 @@ class ConceptPolicy
      */
     public function restore(User $user, Concept $concept): bool
     {
-        //
-        return false;
+        return $user->isVocabularyEditor();
     }
 
     /**
@@ -66,6 +60,6 @@ class ConceptPolicy
      */
     public function forceDelete(User $user, Concept $concept): bool
     {
-        return false;
+        return $user->isVocabularyEditor();
     }
 }
