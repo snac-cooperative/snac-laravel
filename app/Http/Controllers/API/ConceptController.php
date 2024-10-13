@@ -21,7 +21,7 @@ class ConceptController extends Controller
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile']);
-        $this->authorizeResource(Concept::class, 'concepts');
+        $this->authorizeResource(Concept::class);
     }
 
     /**
@@ -210,11 +210,9 @@ class ConceptController extends Controller
             'category' => 'required',
         ]);
 
-        if (isset($request['category'])) {
-            $category_id = config('cache.category_ids')[$request['category']] ?? null;
-            $category = isset($category_id) ? $request['category'] : null;
-        }
-        $term = $_GET["term"];
+        $category_id = config('cache.category_ids')[$request->input('category')] ?? null;
+        $category = $category_id ? $request->input('category') : null;
+        $term = $request->input('term');
 
         $terms = DB::table('concepts')->select('concepts.id as id', 'text as name')
             ->addSelect(DB::raw("true as match, 100 as score, '$category' as type"))

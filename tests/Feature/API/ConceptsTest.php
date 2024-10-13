@@ -3,6 +3,7 @@
 namespace Tests\Feature\API;
 
 use App\Models\Concept;
+use App\Models\Role;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -23,7 +24,7 @@ class ConceptsTest extends TestCase
 
     public function test_any_can_get_concept(): void
     {
-        $concept = Concept::factory()->create();
+        $concept = Concept::first();
         $response = $this->getJson("/api/concepts/{$concept->id}");
         $response->assertStatus(200);
     }
@@ -49,7 +50,10 @@ class ConceptsTest extends TestCase
 
     public function test_authorized_user_can_update_concept(): void
     {
-        $user = User::factory()->create(['role' => 'editor']);
+        $reviewerRole = Role::whereHas('permissions', function ($query) {
+            $query->where('name', 'Edit Vocabulary');
+        })->first();
+        $user = User::factory()->hasAttached($reviewerRole)->create();
         Sanctum::actingAs($user);
 
         $concept = Concept::factory()->create();
