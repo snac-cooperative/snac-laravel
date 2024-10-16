@@ -130,9 +130,9 @@ class ConceptController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Concept $concept)
     {
-        return Concept::findOrFail($id);
+        return $concept;
     }
 
     /**
