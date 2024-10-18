@@ -113,7 +113,7 @@ class ConceptController extends Controller
             DB::commit();
             return response()->json([
                 "id" => $concept->id,
-            ]);
+            ], 201);
         } catch (\Throwable $th) {
             DB::rollback();
 
@@ -139,12 +139,11 @@ class ConceptController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, Concept $concept)
     {
-        $concept = Concept::findOrFail($id);
         $attributes = $request->all();
 
         // Sync concept categories
@@ -164,14 +163,48 @@ class ConceptController extends Controller
     }
 
     /**
+     * Relate Concepts
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Concept  $concept
+     * @return \Illuminate\Http\Response
+     */
+    public function relateConcepts(Request $request, Concept $concept)
+    {
+        if ($request->user()->cannot('update', $concept)) {
+            abort(403);
+        }
+    
+        $relation_type = $request->input('relation_type');
+        $related_id = $request->input('related_id');
+
+        switch ($relation_type) {
+            case "broader":
+                $concept->addBroader($related_id);
+                break;
+            case "narrower":
+                $concept->addNarrower($related_id);
+                break;
+            case "related":
+                $concept->addRelated($related_id);
+                break;
+        }
+
+        return $concept;
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function deprecate(Request $request, $id)
+    public function deprecate(Request $request, Concept $concept)
     {
-        $concept = Concept::findOrFail($id);
+        if ($request->user()->cannot('update', $concept)) {
+            abort(403);
+        }
+    
         $to = $request->input('to');
         if ($to) {
             $replaceConcept = Concept::findOrFail($to);
@@ -180,7 +213,8 @@ class ConceptController extends Controller
             $concept->deprecated = !$concept->deprecated;
             $concept->save();
         }
-        return $concept->deprecated ? 'true' : 'false';
+
+        return response()->json($concept, 200);
     }
 
     /**
@@ -189,9 +223,11 @@ class ConceptController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Concept $concept)
     {
-        //
+        $concept->conceptCategories()->detach();
+        $concept->terms()->delete();
+        $concept->delete();
     }
 
     /**
