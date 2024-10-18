@@ -72,6 +72,18 @@ class User extends Authenticatable
     }
 
     /**
+     * Assign a role to the user.
+     *
+     * @param string $roleName
+     * @return void
+     */
+    public function assignRole(string $roleName)
+    {
+        $role = Role::where('label', $roleName)->firstOrFail();
+        $this->roles()->attach($role);
+    }
+
+    /**
      * The permissions that belong to the user.
      */
     public function getPermissions()
