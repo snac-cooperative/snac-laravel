@@ -127,7 +127,7 @@ class ConceptController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
     public function show(Concept $concept)
@@ -196,7 +196,8 @@ class ConceptController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
     public function deprecate(Request $request, Concept $concept)
@@ -220,7 +221,7 @@ class ConceptController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
     public function destroy(Concept $concept)
