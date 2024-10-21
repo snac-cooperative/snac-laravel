@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TermResource;
+use Illuminate\Support\Facades\Gate;
 use App\Models\Term;
 use Illuminate\Http\Request;
 
@@ -58,6 +59,7 @@ class TermController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Term::class);
         return Term::create($request->all());
     }
 
@@ -82,6 +84,7 @@ class TermController extends Controller
     public function update(Request $request, $id)
     {
         $term = Term::findOrFail($id);
+        $this->authorize('update', $term);
         $term->update($request->all());
         return $term;
     }
@@ -94,7 +97,8 @@ class TermController extends Controller
      */
     public function destroy($id)
     {
-        $term = Term::findOrFail($id)->delete();
+        $this->authorize('delete', $term);
+        $term->delete();
         return response('Deleted', 204);
 
     }
