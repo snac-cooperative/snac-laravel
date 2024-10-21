@@ -18,7 +18,7 @@ class ConceptSourcePolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, ConceptSource $source): bool
+    public function view(?User $user, ConceptSource $conceptSource): bool
     {
         return true;
     }
@@ -34,7 +34,7 @@ class ConceptSourcePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ConceptSource $source): bool
+    public function update(User $user, ConceptSource $conceptSource): bool
     {
         return $user->isVocabularyEditor();
     }
@@ -42,7 +42,7 @@ class ConceptSourcePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ConceptSource $source): bool
+    public function delete(User $user, ConceptSource $conceptSource): bool
     {
         return $user->isVocabularyEditor();
     }
@@ -50,7 +50,7 @@ class ConceptSourcePolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, ConceptSource $source): bool
+    public function restore(User $user, ConceptSource $conceptSource): bool
     {
         return $user->isVocabularyEditor();
     }
@@ -58,7 +58,7 @@ class ConceptSourcePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, ConceptSource $source): bool
+    public function forceDelete(User $user, ConceptSource $conceptSource): bool
     {
         return $user->isVocabularyEditor();
     }

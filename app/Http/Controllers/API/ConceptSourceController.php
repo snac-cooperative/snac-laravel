@@ -73,36 +73,36 @@ class ConceptSourceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  ConceptSource  $source
+     * @param  ConceptSource  $conceptSource
      * @return \Illuminate\Http\Response
      */
-    public function show(ConceptSource $source)
+    public function show(ConceptSource $conceptSource)
     {
-        return $source;
+        return $conceptSource;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  ConceptSource  $source
+     * @param  ConceptSource  $conceptSource
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ConceptSource $source)
+    public function update(Request $request, ConceptSource $conceptSource)
     {
-        $source->update($request->all());
-        return $source;
+        $conceptSource->update($request->all());
+        return $conceptSource;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  ConceptSource  $source
+     * @param  ConceptSource  $conceptSource
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ConceptSource $source)
+    public function destroy(ConceptSource $conceptSource)
     {
-        $source->delete();
-        return response('Deleted ' . $source->id, 204);
+        $conceptSource->delete();
+        return response('Deleted ' . $conceptSource->id, 204);
     }
 }
