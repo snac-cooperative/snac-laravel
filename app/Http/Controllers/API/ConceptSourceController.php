@@ -73,24 +73,23 @@ class ConceptSourceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  ConceptSource  $source
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(ConceptSource $source)
     {
-        return ConceptSource::findOrFail($id);
+        return $source;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  ConceptSource  $source
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, ConceptSource $source)
     {
-        $source = ConceptSource::findOrFail($id);
         $source->update($request->all());
         return $source;
     }
@@ -98,12 +97,12 @@ class ConceptSourceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  ConceptSource  $source
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(ConceptSource $source)
     {
-        $source = ConceptSource::findOrFail($id)->delete();
-        return response('Deleted ' . $id, 204);
+        $source->delete();
+        return response('Deleted ' . $source->id, 204);
     }
 }
