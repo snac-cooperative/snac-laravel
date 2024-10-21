@@ -18,6 +18,7 @@ class ConceptSourceController extends Controller
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->authorizeResource(ConceptSource::class);
     }
 
     /**
@@ -103,6 +104,6 @@ class ConceptSourceController extends Controller
     public function destroy($id)
     {
         $source = ConceptSource::findOrFail($id)->delete();
-        return response('Deleted' . $id, 204);
+        return response('Deleted ' . $id, 204);
     }
 }
