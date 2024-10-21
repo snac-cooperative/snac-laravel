@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TermResource;
-use Illuminate\Support\Facades\Gate;
 use App\Models\Term;
 use Illuminate\Http\Request;
 
@@ -18,6 +17,7 @@ class TermController extends Controller
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->authorizeResource(Term::class);
     }
 
     /**
@@ -59,7 +59,6 @@ class TermController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Term::class);
         return Term::create($request->all());
     }
 
@@ -83,7 +82,6 @@ class TermController extends Controller
      */
     public function update(Request $request, Term $term)
     {
-        $this->authorize('update', $term);
         $term->update($request->all());
         return $term;
     }
@@ -96,7 +94,6 @@ class TermController extends Controller
      */
     public function destroy(Term $term)
     {
-        $this->authorize('delete', $term);
         $term->delete();
         
         return response('Deleted ' . $term->id, 204);
