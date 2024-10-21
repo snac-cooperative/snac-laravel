@@ -229,6 +229,8 @@ class ConceptController extends Controller
         $concept->conceptCategories()->detach();
         $concept->terms()->delete();
         $concept->delete();
+
+        return response('Deleted ' . $concept->id, 204);
     }
 
     /**

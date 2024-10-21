@@ -130,7 +130,7 @@ class ConceptsTest extends TestCase
         $concept = Concept::factory()->create();
         $response = $this->deleteJson("/api/concepts/{$concept->id}");
 
-        $response->assertStatus(200);
+        $response->assertStatus(204);
     }
 
     public function test_unauthorized_user_cannot_create_concept(): void
