@@ -98,7 +98,7 @@ class TermController extends Controller
     {
         $this->authorize('delete', $term);
         $term->delete();
-        return response('Deleted', 204);
-
+        
+        return response('Deleted ' . $term->id, 204);
     }
 }
