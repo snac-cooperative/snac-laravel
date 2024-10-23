@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\DB;
 class ConceptController extends Controller
 {
     /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile']);
+        $this->authorizeResource(Concept::class);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -102,7 +113,7 @@ class ConceptController extends Controller
             DB::commit();
             return response()->json([
                 "id" => $concept->id,
-            ]);
+            ], 201);
         } catch (\Throwable $th) {
             DB::rollback();
 
@@ -116,24 +127,23 @@ class ConceptController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Concept $concept)
     {
-        return Concept::findOrFail($id);
+        return $concept;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, Concept $concept)
     {
-        $concept = Concept::findOrFail($id);
         $attributes = $request->all();
 
         // Sync concept categories
@@ -153,14 +163,49 @@ class ConceptController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Relate Concepts
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
-    public function deprecate(Request $request, $id)
+    public function relateConcepts(Request $request, Concept $concept)
     {
-        $concept = Concept::findOrFail($id);
+        if ($request->user()->cannot('update', $concept)) {
+            abort(403);
+        }
+    
+        $relation_type = $request->input('relation_type');
+        $related_id = $request->input('related_id');
+
+        switch ($relation_type) {
+            case "broader":
+                $concept->addBroader($related_id);
+                break;
+            case "narrower":
+                $concept->addNarrower($related_id);
+                break;
+            case "related":
+                $concept->addRelated($related_id);
+                break;
+        }
+
+        return $concept;
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Concept  $concept
+     * @return \Illuminate\Http\Response
+     */
+    public function deprecate(Request $request, Concept $concept)
+    {
+        if ($request->user()->cannot('update', $concept)) {
+            abort(403);
+        }
+    
         $to = $request->input('to');
         if ($to) {
             $replaceConcept = Concept::findOrFail($to);
@@ -169,18 +214,23 @@ class ConceptController extends Controller
             $concept->deprecated = !$concept->deprecated;
             $concept->save();
         }
-        return $concept->deprecated ? 'true' : 'false';
+
+        return response()->json($concept, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Concept  $concept
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Concept $concept)
     {
-        //
+        $concept->conceptCategories()->detach();
+        $concept->terms()->delete();
+        $concept->delete();
+
+        return response('Deleted ' . $concept->id, 204);
     }
 
     /**
@@ -199,11 +249,9 @@ class ConceptController extends Controller
             'category' => 'required',
         ]);
 
-        if (isset($request['category'])) {
-            $category_id = config('cache.category_ids')[$request['category']] ?? null;
-            $category = isset($category_id) ? $request['category'] : null;
-        }
-        $term = $_GET["term"];
+        $category_id = config('cache.category_ids')[$request->input('category')] ?? null;
+        $category = $category_id ? $request->input('category') : null;
+        $term = $request->input('term');
 
         $terms = DB::table('concepts')->select('concepts.id as id', 'text as name')
             ->addSelect(DB::raw("true as match, 100 as score, '$category' as type"))

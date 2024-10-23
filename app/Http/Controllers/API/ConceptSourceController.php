@@ -11,6 +11,17 @@ use Illuminate\Http\Request;
 class ConceptSourceController extends Controller
 {
     /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->authorizeResource(ConceptSource::class);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -62,37 +73,36 @@ class ConceptSourceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  ConceptSource  $conceptSource
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(ConceptSource $conceptSource)
     {
-        return ConceptSource::findOrFail($id);
+        return $conceptSource;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  ConceptSource  $conceptSource
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, ConceptSource $conceptSource)
     {
-        $source = ConceptSource::findOrFail($id);
-        $source->update($request->all());
-        return $source;
+        $conceptSource->update($request->all());
+        return $conceptSource;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  ConceptSource  $conceptSource
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(ConceptSource $conceptSource)
     {
-        $source = ConceptSource::findOrFail($id)->delete();
-        return response('Deleted' . $id, 204);
+        $conceptSource->delete();
+        return response('Deleted ' . $conceptSource->id, 204);
     }
 }

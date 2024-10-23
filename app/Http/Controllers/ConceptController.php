@@ -223,33 +223,4 @@ class ConceptController extends Controller
 
         return $terms->get();
     }
-
-    /**
-     * Relate Concepts
-     *
-     * @param  \App\Concept  $concept
-     * @return \Illuminate\Http\Response
-     */
-    public function relateConcepts($concept_id)
-    {
-        $relation_type = $_GET["relation_type"];
-        $related_id = $_GET["related_id"];
-
-        $concept = Concept::findOrFail($concept_id);
-
-        switch ($relation_type) {
-            case "broader":
-                $concept->addBroader($related_id);
-                break;
-            case "narrower":
-                $concept->addNarrower($related_id);
-                break;
-            case "related":
-                $concept->addRelated($related_id);
-                break;
-        }
-
-        return $concept;
-    }
-
 }
