@@ -197,7 +197,7 @@ class ConceptsTest extends TestCase
         $relatedConcept = Concept::factory()->create();
         $response = $this->putJson("/api/concepts/{$concept->id}/relate_concept", [
             'relation_type' => 'broader',
-            'related_id' => $relatedConcept,
+            'related_id' => $relatedConcept->id,
         ]);
 
         $response->assertStatus(403);
