@@ -29,8 +29,15 @@
           hide-footer
         >
           <div class="d-block text-center">
-            <p>You have unsaved changes. Are you sure you want to exit Edit Mode?</p>
-            <BButton ref="confirmExitButton" variant="danger" @click="confirmExit">Yes, exit</BButton>
+            <p>
+              You have unsaved changes. Are you sure you want to exit Edit Mode?
+            </p>
+            <BButton
+              ref="confirmExitButton"
+              variant="danger"
+              @click="confirmExit"
+              >Yes, exit</BButton
+            >
             <BButton variant="secondary" @click="hideExitModal">No</BButton>
           </div>
         </BModal>
@@ -64,7 +71,9 @@
           <p
             v-else
             @dblclick="enableInlineEdit(preferredTerm, preferredTerm.index)"
-          >{{ preferredTerm.text }}</p>
+          >
+            {{ preferredTerm.text }}
+          </p>
 
           <h4 class="mt-3" v-show="alternateTerms.length || getEditMode()">
             Alternate Terms
@@ -129,9 +138,7 @@
             v-bind:index="index"
           >
             <p class="mb-2">
-              <span
-                v-if="!getEditMode() || !canEditVocabulary"
-              >
+              <span v-if="!getEditMode() || !canEditVocabulary">
                 {{ cat.value }}
               </span>
               <EditableCategory
@@ -148,12 +155,14 @@
           </div>
           <BButton
             class="mt-2"
-            :class="{ 'disabled': hasEmptyCategory }"
+            :class="{ disabled: hasEmptyCategory }"
             :disabled="hasEmptyCategory"
             variant="success"
             @click="addCategory"
             v-if="isVocabularyEditor"
-            v-show="getEditMode() && selectedCategories.length !== categories.length"
+            v-show="
+              getEditMode() && selectedCategories.length !== categories.length
+            "
             ><i class="fa fa-plus"></i> Add Category</BButton
           >
         </div>
@@ -161,13 +170,9 @@
 
       <div class="my-3">
         <h4>Relationships</h4>
-        
+
         <div v-if="getEditMode()">
-          <BButton
-            variant="success"
-            @click="showAddRelationship"
-            class="mb-3"
-          >
+          <BButton variant="success" @click="showAddRelationship" class="mb-3">
             <i class="fa fa-plus"></i> Add Relationship
           </BButton>
         </div>
@@ -194,48 +199,51 @@
               @input="searchConcepts"
               placeholder="Type to search..."
             ></b-form-input>
-            
+
             <div v-if="isSearching" class="text-center my-2">
               <b-spinner small></b-spinner> Searching...
             </div>
 
             <div class="search-results mt-2">
-              <div 
-                v-for="concept in searchResults" 
+              <div
+                v-for="concept in searchResults"
                 :key="concept.id"
                 class="search-result p-2"
-                :class="{ 'selected': selectedConcept && selectedConcept.id === concept.id }"
+                :class="{
+                  selected:
+                    selectedConcept && selectedConcept.id === concept.id,
+                }"
                 @click="selectConcept(concept)"
               >
-                {{ concept.preferredTerm.text }}
+                {{ concept.preferred_term.text }}
               </div>
             </div>
           </div>
         </BModal>
 
         <!-- Display existing relationships -->
-        <div v-if="concept.broader && concept.broader.length">
+        <div v-if="relationships.broader && relationships.broader.length">
           <h5>Broader</h5>
           <ul>
-            <li v-for="relation in concept.broader" :key="relation.id">
+            <li v-for="relation in relationships.broader" :key="relation.id">
               {{ relation.preferredTerm.text }}
             </li>
           </ul>
         </div>
 
-        <div v-if="concept.narrower && concept.narrower.length">
+        <div v-if="relationships.narrower && relationships.narrower.length">
           <h5>Narrower</h5>
           <ul>
-            <li v-for="relation in concept.narrower" :key="relation.id">
+            <li v-for="relation in relationships.narrower" :key="relation.id">
               {{ relation.preferredTerm.text }}
             </li>
           </ul>
         </div>
 
-        <div v-if="concept.related && concept.related.length">
+        <div v-if="relationships.related && relationships.related.length">
           <h5>Related</h5>
           <ul>
-            <li v-for="relation in concept.related" :key="relation.id">
+            <li v-for="relation in relationships.related" :key="relation.id">
               {{ relation.preferredTerm.text }}
             </li>
           </ul>

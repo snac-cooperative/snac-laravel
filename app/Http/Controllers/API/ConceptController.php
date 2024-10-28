@@ -20,7 +20,7 @@ class ConceptController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile']);
+        $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile', 'search']);
         $this->authorizeResource(Concept::class);
     }
 
@@ -245,7 +245,7 @@ class ConceptController extends Controller
             'term' => 'required|string|min:2',
             'all_terms' => 'boolean',
             'category' => 'nullable|string',
-            'per_page' => 'nullable|integer|min:1|max:100'
+            'per_page' => 'nullable|integer|min:1|max:100',
         ]);
 
         $query = Concept::with(['terms', 'conceptCategories'])
@@ -267,7 +267,7 @@ class ConceptController extends Controller
         $query->distinct();
 
         $perPage = $request->input('per_page', 15);
-        
+
         return ConceptResource::collection(
             $query->paginate($perPage)
         );

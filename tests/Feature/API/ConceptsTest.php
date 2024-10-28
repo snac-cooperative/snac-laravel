@@ -28,34 +28,34 @@ class ConceptsTest extends TestCase
         $concept1 = Concept::factory()->create(['deprecated' => false]);
         $concept2 = Concept::factory()->create(['deprecated' => false]);
         $deprecatedConcept = Concept::factory()->create(['deprecated' => true]);
-        
+
         // Create terms for the concepts
         $term1 = Term::create([
             'concept_id' => $concept1->id,
-            'text' => 'test search term',
-            'preferred' => true
+            'text' => 'test search term 1',
+            'preferred' => true,
         ]);
-        
+
         $term2 = Term::create([
             'concept_id' => $concept2->id,
-            'text' => 'another test term',
-            'preferred' => false
+            'text' => 'test search term 2',
+            'preferred' => false,
         ]);
-        
+
         $term3 = Term::create([
             'concept_id' => $deprecatedConcept->id,
-            'text' => 'test deprecated term',
-            'preferred' => true
+            'text' => 'test search term deprecated',
+            'preferred' => true,
         ]);
 
         // Test basic search
-        $response = $this->getJson('/api/concepts/search?term=test');
+        $response = $this->getJson('/api/concepts/search?term=test%20search%20term');
         $response->assertStatus(200)
             ->assertJsonCount(1, 'data') // Only preferred terms by default
             ->assertJsonPath('data.0.id', $concept1->id);
 
         // Test search with all_terms=true
-        $response = $this->getJson('/api/concepts/search?term=test&all_terms=true');
+        $response = $this->getJson('/api/concepts/search?term=test%20search%20term&all_terms=1');
         $response->assertStatus(200)
             ->assertJsonCount(2, 'data') // Both preferred and non-preferred terms
             ->assertJsonMissing(['id' => $deprecatedConcept->id]); // Deprecated concepts should not appear

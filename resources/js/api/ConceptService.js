@@ -59,11 +59,11 @@ export default {
 
   async searchConcepts(searchTerm, perPage = 10) {
     try {
-      const { data } = await apiClient.get('', {
+      const { data } = await apiClient.get('/search', {
         params: {
           term: searchTerm,
-          per_page: perPage
-        }
+          per_page: perPage,
+        },
       });
       return [null, data];
     } catch (error) {
@@ -75,7 +75,7 @@ export default {
     try {
       const { data } = await apiClient.put(`/${conceptId}/relate_concept`, {
         relation_type: relationshipData.type,
-        related_id: relationshipData.relatedId
+        related_id: relationshipData.relatedId,
       });
       return [null, data];
     } catch (error) {
