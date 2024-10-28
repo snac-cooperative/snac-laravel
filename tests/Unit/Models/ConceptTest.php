@@ -4,11 +4,11 @@ namespace Tests\Unit\Models;
 
 use Tests\TestCase;
 use App\Models\Concept;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ConceptTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function test_concept_can_have_broader_relationships()
     {

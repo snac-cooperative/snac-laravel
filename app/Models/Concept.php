@@ -52,13 +52,6 @@ class Concept extends Model
             ->wherePivot("relationship_type", "broader");
     }
 
-    // This version requires insert of the two relationships (both ways, narrower and broader)
-    //public function narrower() {
-    //return $this->belongsToMany("App\Models\Concept", "concept_relationships", "concept_id", "related_concept_id")
-    //->withPivot("relationship_type")
-    //->wherePivot("relationship_type", "narrower");
-    //}
-
     // This version requires insert only one relationships, the other relationship is inferred from concept_id or related_concept_id
     // coming from other direction
     public function narrower()
@@ -70,7 +63,7 @@ class Concept extends Model
 
     public function related()
     {
-        return $this->belongsToMany("App\Models\Concept", "concept_relationships", "related_concept_id", "concept_id")
+        return $this->belongsToMany("App\Models\Concept", "concept_relationships", "concept_id", "related_concept_id")
             ->withPivot("relationship_type")
             ->wherePivot("relationship_type", "related");
     }
@@ -82,18 +75,18 @@ class Concept extends Model
 
     public function addRelated($conceptId)
     {
-        return $this->related()->attach([$conceptId => ["relationship_type" => "related"]]);
-    }
+        // Add both directions of the relationship
+        $this->belongsToMany("App\Models\Concept", "concept_relationships", "concept_id", "related_concept_id")
+            ->attach([$conceptId => ["relationship_type" => "related"]]);
 
-    // This version requires insert of the two relationships (both ways, narrower and broader)
-    // public function addNarrower($concept) {
-    //     // TODO : check it works for new narrower enum
-    //     return $this->narrower()->attach([$concept => ["relationship_type" => "narrower"]]);
-    // }
+        $this->belongsToMany("App\Models\Concept", "concept_relationships", "related_concept_id", "concept_id")
+            ->attach([$conceptId => ["relationship_type" => "related"]]);
+
+        return true;
+    }
 
     public function addNarrower($conceptId)
     {
-        // TODO : check it works for new narrower enum
         return $this->narrower()->attach([$conceptId => ["relationship_type" => "broader"]]);
     }
 
