@@ -268,4 +268,113 @@ class ConceptsTest extends TestCase
 
         $response->assertStatus(403);
     }
+
+    public function test_authorized_user_can_remove_concept_relationships(): void
+    {
+        $reviewerRole = Role::whereHas('permissions', function ($query) {
+            $query->where('label', 'Edit Vocabulary');
+        })->first();
+        $user = User::factory()->hasAttached($reviewerRole)->create();
+        Sanctum::actingAs($user);
+
+        // Create test concepts
+        $concept = Concept::factory()->create();
+        $broaderConcept = Concept::factory()->create();
+        $narrowerConcept = Concept::factory()->create();
+        $relatedConcept = Concept::factory()->create();
+
+        // Create relationships first
+        $concept->addBroader($broaderConcept->id);
+        $concept->addNarrower($narrowerConcept->id);
+        $concept->addRelated($relatedConcept->id);
+
+        // Test removing broader relationship
+        $response = $this->deleteJson("/api/concepts/{$concept->id}/relate_concept", [
+            'relation_type' => 'broader',
+            'related_id' => $broaderConcept->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertFalse($concept->fresh()->broader->contains($broaderConcept));
+
+        // Test removing narrower relationship
+        $response = $this->deleteJson("/api/concepts/{$concept->id}/relate_concept", [
+            'relation_type' => 'narrower',
+            'related_id' => $narrowerConcept->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertFalse($concept->fresh()->narrower->contains($narrowerConcept));
+
+        // Test removing related relationship
+        $response = $this->deleteJson("/api/concepts/{$concept->id}/relate_concept", [
+            'relation_type' => 'related',
+            'related_id' => $relatedConcept->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertFalse($concept->fresh()->related->contains($relatedConcept));
+    }
+
+    public function test_unauthorized_user_cannot_remove_concept_relationships(): void
+    {
+        $nonReviewerRole = Role::whereDoesntHave('permissions', function ($query) {
+            $query->where('label', 'Edit Vocabulary');
+        })->first();
+        $user = User::factory()->hasAttached($nonReviewerRole)->create();
+        Sanctum::actingAs($user);
+
+        // Create test concepts
+        $concept = Concept::factory()->create();
+        $relatedConcept = Concept::factory()->create();
+
+        // Create a relationship first
+        $concept->addRelated($relatedConcept->id);
+
+        // Attempt to remove the relationship
+        $response = $this->deleteJson("/api/concepts/{$concept->id}/relate_concept", [
+            'relation_type' => 'related',
+            'related_id' => $relatedConcept->id,
+        ]);
+
+        $response->assertStatus(403);
+        $this->assertTrue($concept->fresh()->related->contains($relatedConcept));
+    }
+
+    public function test_removing_nonexistent_relationship_returns_success(): void
+    {
+        $reviewerRole = Role::whereHas('permissions', function ($query) {
+            $query->where('label', 'Edit Vocabulary');
+        })->first();
+        $user = User::factory()->hasAttached($reviewerRole)->create();
+        Sanctum::actingAs($user);
+
+        $concept = Concept::factory()->create();
+        $nonRelatedConcept = Concept::factory()->create();
+
+        // Attempt to remove a relationship that doesn't exist
+        $response = $this->deleteJson("/api/concepts/{$concept->id}/relate_concept", [
+            'relation_type' => 'related',
+            'related_id' => $nonRelatedConcept->id,
+        ]);
+
+        $response->assertStatus(200);
+    }
+
+    public function test_removing_relationship_with_invalid_type_returns_error(): void
+    {
+        $reviewerRole = Role::whereHas('permissions', function ($query) {
+            $query->where('label', 'Edit Vocabulary');
+        })->first();
+        $user = User::factory()->hasAttached($reviewerRole)->create();
+        Sanctum::actingAs($user);
+
+        $concept = Concept::factory()->create();
+        $relatedConcept = Concept::factory()->create();
+
+        // Attempt to remove a relationship with invalid type
+        $response = $this->deleteJson("/api/concepts/{$concept->id}/relate_concept", [
+            'relation_type' => 'invalid_type',
+            'related_id' => $relatedConcept->id,
+        ]);
+
+        $response->assertStatus(422);
+    }
 }
