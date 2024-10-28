@@ -43,20 +43,18 @@ export default {
       }
       
       this.isSearching = true;
-      try {
-        const response = await axios.get(`/api/concepts`, {
-          params: {
-            term: this.searchTerm,
-            per_page: 10
-          }
-        });
-        this.searchResults = response.data.data.filter(c => 
-          c.id !== this.conceptId && !c.deprecated
-        );
-      } catch (error) {
+      const [error, response] = await ConceptService.searchConcepts(this.searchTerm);
+      
+      if (error) {
         console.error('Search failed:', error);
         this.searchResults = [];
+      } else {
+        // Filter out current concept and deprecated concepts
+        this.searchResults = response.data.filter(c => 
+          c.id !== this.conceptId && !c.deprecated
+        );
       }
+      
       this.isSearching = false;
     },
 
