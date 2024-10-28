@@ -222,31 +222,27 @@
         </BModal>
 
         <!-- Display existing relationships -->
-        <div v-if="relationships.broader && relationships.broader.length">
-          <h5>Broader</h5>
-          <ul>
-            <li v-for="relation in relationships.broader" :key="relation.id">
-              {{ relation.preferred_term.text }}
-            </li>
-          </ul>
-        </div>
+        <div v-if="hasAnyRelationships" class="relations mx-0" style="display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); column-gap: 2rem;">
+          <div v-if="relationships.broader && relationships.broader.length">
+            <h3>Broader</h3>
+            <div v-for="relation in relationships.broader" :key="relation.id">
+              <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
+            </div>
+          </div>
 
-        <div v-if="relationships.narrower && relationships.narrower.length">
-          <h5>Narrower</h5>
-          <ul>
-            <li v-for="relation in relationships.narrower" :key="relation.id">
-              {{ relation.preferred_term.text }}
-            </li>
-          </ul>
-        </div>
+          <div v-if="relationships.narrower && relationships.narrower.length">
+            <h3>Narrower</h3>
+            <div v-for="relation in relationships.narrower" :key="relation.id">
+              <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
+            </div>
+          </div>
 
-        <div v-if="relationships.related && relationships.related.length">
-          <h5>Related</h5>
-          <ul>
-            <li v-for="relation in relationships.related" :key="relation.id">
-              {{ relation.preferred_term.text }}
-            </li>
-          </ul>
+          <div v-if="relationships.related && relationships.related.length">
+            <h3>Related</h3>
+            <div v-for="relation in relationships.related" :key="relation.id">
+              <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -303,5 +299,25 @@ header.sticky-top {
 .search-result.selected {
   background-color: #e9ecef;
   border-color: #007bff;
+}
+
+.relations {
+  margin-top: 1rem;
+}
+
+.relations h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.relations a {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #2c5282;
+  text-decoration: none;
+}
+
+.relations a:hover {
+  text-decoration: underline;
 }
 </style>

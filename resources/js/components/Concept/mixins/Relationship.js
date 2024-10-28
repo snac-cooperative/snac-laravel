@@ -25,6 +25,13 @@ export default {
         related: this.conceptProps?.related || [],
       };
     },
+    hasAnyRelationships() {
+      return (
+        (this.relationships.broader && this.relationships.broader.length > 0) ||
+        (this.relationships.narrower && this.relationships.narrower.length > 0) ||
+        (this.relationships.related && this.relationships.related.length > 0)
+      );
+    }
   },
 
   methods: {
