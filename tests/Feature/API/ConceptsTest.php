@@ -56,7 +56,7 @@ class ConceptsTest extends TestCase
             'alternate_terms' => [
                 'term1',
                 'term2',
-                'term3'
+                'term3',
             ],
         ]);
 
@@ -74,12 +74,12 @@ class ConceptsTest extends TestCase
         $concept = Concept::factory()->create();
         $conceptCategories = Vocabulary::where('type', 'concept_category')->get()->random(2)->toArray();
         $response = $this->patchJson("/api/concepts/{$concept->id}", [
-            'conceptCategories' => $conceptCategories
+            'conceptCategories' => $conceptCategories,
         ]);
 
         $updatedCategories = Concept::find($concept->id)->conceptCategories->toArray();
         $keysToRemove = ["pivot"];
-        $cleanedCategories = array_map(function($item) use ($keysToRemove) {
+        $cleanedCategories = array_map(function ($item) use ($keysToRemove) {
             return array_diff_key($item, array_flip($keysToRemove));
         }, $updatedCategories);
         $this->assertEqualsCanonicalizing($conceptCategories, $cleanedCategories);
@@ -99,7 +99,7 @@ class ConceptsTest extends TestCase
         $relatedConcept = Concept::factory()->create();
         $response = $this->putJson("/api/concepts/{$concept->id}/relate_concept", [
             'relation_type' => 'broader',
-            'related_id' => $relatedConcept,
+            'related_id' => $relatedConcept->id,
         ]);
 
         $response->assertStatus(200);
