@@ -174,7 +174,7 @@ class ConceptController extends Controller
         if ($request->user()->cannot('update', $concept)) {
             abort(403);
         }
-    
+
         $relation_type = $request->input('relation_type');
         $related_id = $request->input('related_id');
 
@@ -205,7 +205,7 @@ class ConceptController extends Controller
         if ($request->user()->cannot('update', $concept)) {
             abort(403);
         }
-    
+
         $to = $request->input('to');
         if ($to) {
             $replaceConcept = Concept::findOrFail($to);
