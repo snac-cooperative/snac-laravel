@@ -56,4 +56,16 @@ export default {
       return [error, null];
     }
   },
+
+  async relateConcept(conceptId, relationshipData) {
+    try {
+      const { data } = await apiClient.put(`/${conceptId}/relate_concept`, {
+        relation_type: relationshipData.type,
+        related_id: relationshipData.relatedId
+      });
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
 };
