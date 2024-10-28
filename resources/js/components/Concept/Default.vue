@@ -158,6 +158,89 @@
           >
         </div>
       </div>
+
+      <div class="my-3">
+        <h4>Relationships</h4>
+        
+        <div v-if="getEditMode()">
+          <BButton
+            variant="success"
+            @click="showAddRelationship"
+            class="mb-3"
+          >
+            <i class="fa fa-plus"></i> Add Relationship
+          </BButton>
+        </div>
+
+        <!-- Relationship Modal -->
+        <BModal
+          v-model="showRelationshipModal"
+          title="Add Relationship"
+          @ok="saveRelationship"
+          :ok-disabled="!selectedConcept || !relationshipType"
+        >
+          <div class="form-group">
+            <label>Relationship Type</label>
+            <b-form-select
+              v-model="relationshipType"
+              :options="relationshipTypes"
+            ></b-form-select>
+          </div>
+
+          <div class="form-group">
+            <label>Search Concepts</label>
+            <b-form-input
+              v-model="searchTerm"
+              @input="searchConcepts"
+              placeholder="Type to search..."
+            ></b-form-input>
+            
+            <div v-if="isSearching" class="text-center my-2">
+              <b-spinner small></b-spinner> Searching...
+            </div>
+
+            <div class="search-results mt-2">
+              <div 
+                v-for="concept in searchResults" 
+                :key="concept.id"
+                class="search-result p-2"
+                :class="{ 'selected': selectedConcept && selectedConcept.id === concept.id }"
+                @click="selectConcept(concept)"
+              >
+                {{ concept.preferredTerm.text }}
+              </div>
+            </div>
+          </div>
+        </BModal>
+
+        <!-- Display existing relationships -->
+        <div v-if="concept.broader && concept.broader.length">
+          <h5>Broader</h5>
+          <ul>
+            <li v-for="relation in concept.broader" :key="relation.id">
+              {{ relation.preferredTerm.text }}
+            </li>
+          </ul>
+        </div>
+
+        <div v-if="concept.narrower && concept.narrower.length">
+          <h5>Narrower</h5>
+          <ul>
+            <li v-for="relation in concept.narrower" :key="relation.id">
+              {{ relation.preferredTerm.text }}
+            </li>
+          </ul>
+        </div>
+
+        <div v-if="concept.related && concept.related.length">
+          <h5>Related</h5>
+          <ul>
+            <li v-for="relation in concept.related" :key="relation.id">
+              {{ relation.preferredTerm.text }}
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -196,5 +279,21 @@ b-input-group {
 header.sticky-top {
   top: 56px; /* offset for top navigation */
   padding-top: 0.5rem;
+}
+
+.search-result {
+  cursor: pointer;
+  border: 1px solid #ddd;
+  margin-bottom: 4px;
+  border-radius: 4px;
+}
+
+.search-result:hover {
+  background-color: #f8f9fa;
+}
+
+.search-result.selected {
+  background-color: #e9ecef;
+  border-color: #007bff;
 }
 </style>
