@@ -31,21 +31,5 @@
             can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
         >
         </concept>
-
-        @if ( count($relations) )
-            <hr>
-            <h2>Relations</h2>
-
-            <div class="relations mx-0" style="display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); column-gap: 2rem;">
-                @foreach($relations as $title => $terms)
-                    <div>
-                        <h3>{{ $title }}</h3>
-                        @foreach($terms as $term)
-                            <term-item :term="{{ $term }}"></term-item>
-                        @endforeach
-                    </div>
-                @endforeach
-            </div>
-        @endif
     </div>
 @endsection

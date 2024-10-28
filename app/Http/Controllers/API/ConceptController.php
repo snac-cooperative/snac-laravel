@@ -190,7 +190,7 @@ class ConceptController extends Controller
                 break;
         }
 
-        return $concept;
+        return $concept->loadMissing(['broader', 'narrower', 'related']);
     }
 
     /**

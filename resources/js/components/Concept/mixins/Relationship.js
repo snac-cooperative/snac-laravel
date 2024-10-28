@@ -13,25 +13,24 @@ export default {
         { value: 'narrower', text: 'Narrower' },
         { value: 'related', text: 'Related' },
       ],
+      relationships: {
+        broader: this.conceptProps?.broader || [],
+        narrower: this.conceptProps?.narrower || [],
+        related: this.conceptProps?.related || [],
+      },
       isSearching: false,
     };
   },
 
   computed: {
-    relationships() {
-      return {
-        broader: this.conceptProps?.broader || [],
-        narrower: this.conceptProps?.narrower || [],
-        related: this.conceptProps?.related || [],
-      };
-    },
     hasAnyRelationships() {
       return (
         (this.relationships.broader && this.relationships.broader.length > 0) ||
-        (this.relationships.narrower && this.relationships.narrower.length > 0) ||
+        (this.relationships.narrower &&
+          this.relationships.narrower.length > 0) ||
         (this.relationships.related && this.relationships.related.length > 0)
       );
-    }
+    },
   },
 
   methods: {
@@ -89,9 +88,9 @@ export default {
         return;
       }
 
-      this.concept.broader = data.broader;
-
-      console.log(data);
+      this.relationships.broader = data.broader;
+      this.relationships.narrower = data.narrower;
+      this.relationships.related = data.related;
 
       this.showRelationshipModal = false;
       this.flashSuccessAlert();
