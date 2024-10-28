@@ -226,7 +226,7 @@
           <h5>Broader</h5>
           <ul>
             <li v-for="relation in relationships.broader" :key="relation.id">
-              {{ relation.preferredTerm.text }}
+              {{ relation.preferred_term.text }}
             </li>
           </ul>
         </div>
@@ -235,7 +235,7 @@
           <h5>Narrower</h5>
           <ul>
             <li v-for="relation in relationships.narrower" :key="relation.id">
-              {{ relation.preferredTerm.text }}
+              {{ relation.preferred_term.text }}
             </li>
           </ul>
         </div>
@@ -244,7 +244,7 @@
           <h5>Related</h5>
           <ul>
             <li v-for="relation in relationships.related" :key="relation.id">
-              {{ relation.preferredTerm.text }}
+              {{ relation.preferred_term.text }}
             </li>
           </ul>
         </div>

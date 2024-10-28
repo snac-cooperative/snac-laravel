@@ -11,20 +11,20 @@ export default {
       relationshipTypes: [
         { value: 'broader', text: 'Broader' },
         { value: 'narrower', text: 'Narrower' },
-        { value: 'related', text: 'Related' }
+        { value: 'related', text: 'Related' },
       ],
-      isSearching: false
+      isSearching: false,
     };
   },
 
   computed: {
     relationships() {
       return {
-        broader: this.concept?.broader || [],
-        narrower: this.concept?.narrower || [],
-        related: this.concept?.related || []
+        broader: this.conceptProps?.broader || [],
+        narrower: this.conceptProps?.narrower || [],
+        related: this.conceptProps?.related || [],
       };
-    }
+    },
   },
 
   methods: {
@@ -41,20 +41,22 @@ export default {
         this.searchResults = [];
         return;
       }
-      
+
       this.isSearching = true;
-      const [error, response] = await ConceptService.searchConcepts(this.searchTerm);
-      
+      const [error, response] = await ConceptService.searchConcepts(
+        this.searchTerm,
+      );
+
       if (error) {
         console.error('Search failed:', error);
         this.searchResults = [];
       } else {
         // Filter out current concept and deprecated concepts
-        this.searchResults = response.data.filter(c => 
-          c.id !== this.conceptId && !c.deprecated
+        this.searchResults = response.data.filter(
+          (c) => c.id !== this.conceptId && !c.deprecated,
         );
       }
-      
+
       this.isSearching = false;
     },
 
@@ -67,18 +69,25 @@ export default {
 
       const relationshipData = {
         type: this.relationshipType,
-        relatedId: this.selectedConcept.id
+        relatedId: this.selectedConcept.id,
       };
 
-      const [error, data] = await ConceptService.relateConcept(this.conceptId, relationshipData);
-      
+      const [error, data] = await ConceptService.relateConcept(
+        this.conceptId,
+        relationshipData,
+      );
+
       if (error) {
         console.error('Failed to create relationship:', error);
         return;
       }
 
+      this.concept.broader = data.broader;
+
+      console.log(data);
+
       this.showRelationshipModal = false;
       this.flashSuccessAlert();
-    }
-  }
+    },
+  },
 };
