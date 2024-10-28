@@ -95,5 +95,32 @@ export default {
       this.showRelationshipModal = false;
       this.flashSuccessAlert();
     },
+
+    async removeRelationship(type, relatedId) {
+      if (!confirm('Are you sure you want to remove this relationship?')) {
+        return;
+      }
+
+      const relationshipData = {
+        type: type,
+        relatedId: relatedId,
+      };
+
+      const [error, data] = await ConceptService.removeRelationship(
+        this.conceptId,
+        relationshipData,
+      );
+
+      if (error) {
+        console.error('Failed to remove relationship:', error);
+        return;
+      }
+
+      this.relationships.broader = data.broader;
+      this.relationships.narrower = data.narrower;
+      this.relationships.related = data.related;
+
+      this.flashSuccessAlert();
+    },
   },
 };

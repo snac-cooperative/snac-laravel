@@ -226,21 +226,51 @@
           <div v-if="relationships.broader && relationships.broader.length">
             <h3>Broader</h3>
             <div v-for="relation in relationships.broader" :key="relation.id">
-              <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
+              <div class="d-flex justify-content-between align-items-center">
+                <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
+                <BButton 
+                  v-if="getEditMode()"
+                  variant="danger" 
+                  size="sm"
+                  @click="removeRelationship('broader', relation.id)"
+                >
+                  <i class="fa fa-times"></i>
+                </BButton>
+              </div>
             </div>
           </div>
 
           <div v-if="relationships.narrower && relationships.narrower.length">
             <h3>Narrower</h3>
             <div v-for="relation in relationships.narrower" :key="relation.id">
-              <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
+              <div class="d-flex justify-content-between align-items-center">
+                <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
+                <BButton 
+                  v-if="getEditMode()"
+                  variant="danger" 
+                  size="sm"
+                  @click="removeRelationship('narrower', relation.id)"
+                >
+                  <i class="fa fa-times"></i>
+                </BButton>
+              </div>
             </div>
           </div>
 
           <div v-if="relationships.related && relationships.related.length">
             <h3>Related</h3>
             <div v-for="relation in relationships.related" :key="relation.id">
-              <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
+              <div class="d-flex justify-content-between align-items-center">
+                <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
+                <BButton 
+                  v-if="getEditMode()"
+                  variant="danger" 
+                  size="sm"
+                  @click="removeRelationship('related', relation.id)"
+                >
+                  <i class="fa fa-times"></i>
+                </BButton>
+              </div>
             </div>
           </div>
         </div>
@@ -319,5 +349,14 @@ header.sticky-top {
 
 .relations a:hover {
   text-decoration: underline;
+}
+
+.relations .d-flex {
+  margin-bottom: 0.5rem;
+}
+
+.relations .btn-sm {
+  padding: 0.25rem 0.5rem;
+  margin-left: 0.5rem;
 }
 </style>
