@@ -234,6 +234,46 @@ class ConceptController extends Controller
     }
 
     /**
+     * Search concepts by term.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function search(Request $request)
+    {
+        $request->validate([
+            'term' => 'required|string|min:2',
+            'all_terms' => 'boolean',
+            'category' => 'nullable|string',
+            'per_page' => 'nullable|integer|min:1|max:100'
+        ]);
+
+        $query = Concept::with(['terms', 'conceptCategories'])
+            ->select('concepts.*')
+            ->join('terms', 'concepts.id', '=', 'terms.concept_id')
+            ->leftJoin('concept_categories', 'concepts.id', '=', 'concept_categories.concept_id')
+            ->leftJoin('vocabulary', 'concept_categories.category_id', '=', 'vocabulary.id')
+            ->where('terms.text', 'ILIKE', '%' . $request->term . '%')
+            ->where('concepts.deprecated', false);
+
+        if (!$request->boolean('all_terms', false)) {
+            $query->where('terms.preferred', true);
+        }
+
+        if ($request->filled('category')) {
+            $query->where('vocabulary.value', 'ILIKE', $request->category);
+        }
+
+        $query->distinct();
+
+        $perPage = $request->input('per_page', 15);
+        
+        return ConceptResource::collection(
+            $query->paginate($perPage)
+        );
+    }
+
+    /**
      * Reconcile Concept for OpenRefine
      *
      * Return an json reconciliation result for OpenRefine concept reconciliation
