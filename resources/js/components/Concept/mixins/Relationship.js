@@ -17,6 +17,16 @@ export default {
     };
   },
 
+  computed: {
+    relationships() {
+      return {
+        broader: this.concept?.broader || [],
+        narrower: this.concept?.narrower || [],
+        related: this.concept?.related || []
+      };
+    }
+  },
+
   methods: {
     showAddRelationship() {
       this.showRelationshipModal = true;
@@ -27,18 +37,25 @@ export default {
     },
 
     async searchConcepts() {
-      if (this.searchTerm.length < 2) return;
+      if (this.searchTerm.length < 2) {
+        this.searchResults = [];
+        return;
+      }
       
       this.isSearching = true;
       try {
         const response = await axios.get(`/api/concepts`, {
           params: {
-            search: this.searchTerm
+            term: this.searchTerm,
+            per_page: 10
           }
         });
-        this.searchResults = response.data.data.filter(c => c.id !== this.conceptId);
+        this.searchResults = response.data.data.filter(c => 
+          c.id !== this.conceptId && !c.deprecated
+        );
       } catch (error) {
         console.error('Search failed:', error);
+        this.searchResults = [];
       }
       this.isSearching = false;
     },
