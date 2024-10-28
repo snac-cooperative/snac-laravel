@@ -4,6 +4,7 @@ namespace Tests\Feature\API;
 
 use App\Models\Concept;
 use App\Models\Role;
+use App\Models\Term;
 use App\Models\User;
 use App\Models\Vocabulary;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -23,8 +24,45 @@ class ConceptsTest extends TestCase
 
     public function test_any_can_search_concepts(): void
     {
-        $response = $this->getJson('/api/concepts?search=example');
-        $response->assertStatus(200);
+        // Create test concepts with terms
+        $concept1 = Concept::factory()->create(['deprecated' => false]);
+        $concept2 = Concept::factory()->create(['deprecated' => false]);
+        $deprecatedConcept = Concept::factory()->create(['deprecated' => true]);
+        
+        // Create terms for the concepts
+        $term1 = Term::create([
+            'concept_id' => $concept1->id,
+            'text' => 'test search term',
+            'preferred' => true
+        ]);
+        
+        $term2 = Term::create([
+            'concept_id' => $concept2->id,
+            'text' => 'another test term',
+            'preferred' => false
+        ]);
+        
+        $term3 = Term::create([
+            'concept_id' => $deprecatedConcept->id,
+            'text' => 'test deprecated term',
+            'preferred' => true
+        ]);
+
+        // Test basic search
+        $response = $this->getJson('/api/concepts/search?term=test');
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data') // Only preferred terms by default
+            ->assertJsonPath('data.0.id', $concept1->id);
+
+        // Test search with all_terms=true
+        $response = $this->getJson('/api/concepts/search?term=test&all_terms=true');
+        $response->assertStatus(200)
+            ->assertJsonCount(2, 'data') // Both preferred and non-preferred terms
+            ->assertJsonMissing(['id' => $deprecatedConcept->id]); // Deprecated concepts should not appear
+
+        // Test validation
+        $response = $this->getJson('/api/concepts/search?term=a');
+        $response->assertStatus(422); // Should fail validation for min:2
     }
 
     public function test_any_can_get_concept(): void
