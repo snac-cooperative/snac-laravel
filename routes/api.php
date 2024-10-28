@@ -24,6 +24,7 @@ Route::get('concepts/reconcile/{id}', 'API\ConceptController@reconcile');
 Route::get('concepts/reconcile', 'API\ConceptController@reconcile');
 
 Route::put('concepts/{concept}/relate_concept', 'API\ConceptController@relateConcepts');
+Route::delete('concepts/{concept}/relate_concept', 'API\ConceptController@removeRelationship');
 Route::put('concepts/{concept}/deprecate', 'API\ConceptController@deprecate');
 Route::apiResource('concepts', 'API\ConceptController');
 

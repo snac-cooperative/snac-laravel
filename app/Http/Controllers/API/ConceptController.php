@@ -194,6 +194,41 @@ class ConceptController extends Controller
     }
 
     /**
+     * Remove a relationship between concepts.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Concept  $concept
+     * @return \Illuminate\Http\Response
+     */
+    public function removeRelationship(Request $request, Concept $concept)
+    {
+        if ($request->user()->cannot('update', $concept)) {
+            abort(403);
+        }
+
+        $relation_type = $request->input('relation_type');
+        $related_id = $request->input('related_id');
+
+        switch ($relation_type) {
+            case "broader":
+                $concept->broader()->detach($related_id);
+                break;
+            case "narrower":
+                $concept->narrower()->detach($related_id);
+                break;
+            case "related":
+                // Remove both directions for related relationships
+                $concept->related()->detach($related_id);
+                $concept->belongsToMany("App\Models\Concept", "concept_relationships", "related_concept_id", "concept_id")
+                    ->wherePivot("relationship_type", "related")
+                    ->detach($related_id);
+                break;
+        }
+
+        return $concept->loadMissing(['broader', 'narrower', 'related']);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \Illuminate\Http\Request  $request
