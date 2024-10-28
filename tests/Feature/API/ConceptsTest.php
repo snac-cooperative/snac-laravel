@@ -96,13 +96,33 @@ class ConceptsTest extends TestCase
         Sanctum::actingAs($user);
 
         $concept = Concept::factory()->create();
+        $broaderConcept = Concept::factory()->create();
+        $narrowerConcept = Concept::factory()->create();
         $relatedConcept = Concept::factory()->create();
+
+        // Test broader relationship
         $response = $this->putJson("/api/concepts/{$concept->id}/relate_concept", [
             'relation_type' => 'broader',
+            'related_id' => $broaderConcept->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertTrue($concept->broader->contains($broaderConcept));
+
+        // Test narrower relationship
+        $response = $this->putJson("/api/concepts/{$concept->id}/relate_concept", [
+            'relation_type' => 'narrower',
+            'related_id' => $narrowerConcept->id,
+        ]);
+        $response->assertStatus(200);
+        $this->assertTrue($concept->narrower->contains($narrowerConcept));
+
+        // Test related relationship
+        $response = $this->putJson("/api/concepts/{$concept->id}/relate_concept", [
+            'relation_type' => 'related',
             'related_id' => $relatedConcept->id,
         ]);
-
         $response->assertStatus(200);
+        $this->assertTrue($concept->related->contains($relatedConcept));
     }
 
     public function test_authorized_user_can_deprecate_concept(): void
