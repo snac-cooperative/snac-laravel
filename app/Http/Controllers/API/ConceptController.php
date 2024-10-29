@@ -175,6 +175,11 @@ class ConceptController extends Controller
             abort(403);
         }
 
+        $request->validate([
+            'relation_type' => 'required|in:broader,narrower,related',
+            'related_id' => 'required|exists:concepts,id',
+        ]);
+
         $relation_type = $request->input('relation_type');
         $related_id = $request->input('related_id');
 

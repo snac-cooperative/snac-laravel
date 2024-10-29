@@ -163,6 +163,45 @@ class ConceptsTest extends TestCase
         $this->assertTrue($concept->related->contains($relatedConcept));
     }
 
+    public function test_relate_concepts_validates_relation_type(): void
+    {
+        $reviewerRole = Role::whereHas('permissions', function ($query) {
+            $query->where('label', 'Edit Vocabulary');
+        })->first();
+        $user = User::factory()->hasAttached($reviewerRole)->create();
+        Sanctum::actingAs($user);
+
+        $concept = Concept::factory()->create();
+        $relatedConcept = Concept::factory()->create();
+
+        $response = $this->putJson("/api/concepts/{$concept->id}/relate_concept", [
+            'relation_type' => 'invalid_type',
+            'related_id' => $relatedConcept->id,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['relation_type']);
+    }
+
+    public function test_relate_concepts_validates_related_id(): void
+    {
+        $reviewerRole = Role::whereHas('permissions', function ($query) {
+            $query->where('label', 'Edit Vocabulary');
+        })->first();
+        $user = User::factory()->hasAttached($reviewerRole)->create();
+        Sanctum::actingAs($user);
+
+        $concept = Concept::factory()->create();
+
+        $response = $this->putJson("/api/concepts/{$concept->id}/relate_concept", [
+            'relation_type' => 'broader',
+            'related_id' => 99999999999999, // Non-existent ID
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['related_id']);
+    }
+
     public function test_authorized_user_can_deprecate_concept(): void
     {
         $reviewerRole = Role::whereHas('permissions', function ($query) {
