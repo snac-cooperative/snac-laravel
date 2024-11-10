@@ -56,4 +56,44 @@ export default {
       return [error, null];
     }
   },
+
+  async searchConcepts(searchTerm, perPage = 10) {
+    try {
+      const { data } = await apiClient.get('/search', {
+        params: {
+          term: searchTerm,
+          per_page: perPage,
+        },
+      });
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
+
+  async relateConcept(conceptId, relationshipData) {
+    try {
+      const { data } = await apiClient.put(`/${conceptId}/relate_concept`, {
+        relation_type: relationshipData.type,
+        related_id: relationshipData.relatedId,
+      });
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
+
+  async removeRelationship(conceptId, relationshipData) {
+    try {
+      const { data } = await apiClient.delete(`/${conceptId}/relate_concept`, {
+        data: {  // Using data property for DELETE request body
+          relation_type: relationshipData.type,
+          related_id: relationshipData.relatedId,
+        }
+      });
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
 };

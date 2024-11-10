@@ -1,0 +1,126 @@
+import ConceptService from '../../../api/ConceptService';
+
+export default {
+  data() {
+    return {
+      showRelationshipModal: false,
+      searchTerm: '',
+      searchResults: [],
+      selectedConcept: null,
+      relationshipType: null,
+      relationshipTypes: [
+        { value: 'broader', text: 'Broader' },
+        { value: 'narrower', text: 'Narrower' },
+        { value: 'related', text: 'Related' },
+      ],
+      relationships: {
+        broader: this.conceptProps?.broader || [],
+        narrower: this.conceptProps?.narrower || [],
+        related: this.conceptProps?.related || [],
+      },
+      isSearching: false,
+    };
+  },
+
+  computed: {
+    hasAnyRelationships() {
+      return (
+        (this.relationships.broader && this.relationships.broader.length > 0) ||
+        (this.relationships.narrower &&
+          this.relationships.narrower.length > 0) ||
+        (this.relationships.related && this.relationships.related.length > 0)
+      );
+    },
+  },
+
+  methods: {
+    showAddRelationship() {
+      this.showRelationshipModal = true;
+      this.searchTerm = '';
+      this.searchResults = [];
+      this.selectedConcept = null;
+      this.relationshipType = null;
+    },
+
+    async searchConcepts() {
+      if (this.searchTerm.length < 2) {
+        this.searchResults = [];
+        return;
+      }
+
+      this.isSearching = true;
+      const [error, response] = await ConceptService.searchConcepts(
+        this.searchTerm,
+      );
+
+      if (error) {
+        console.error('Search failed:', error);
+        this.searchResults = [];
+      } else {
+        // Filter out current concept and deprecated concepts
+        this.searchResults = response.data.filter(
+          (c) => c.id !== this.conceptId && !c.deprecated,
+        );
+      }
+
+      this.isSearching = false;
+    },
+
+    selectConcept(concept) {
+      this.selectedConcept = concept;
+    },
+
+    async saveRelationship() {
+      if (!this.selectedConcept || !this.relationshipType) return;
+
+      const relationshipData = {
+        type: this.relationshipType,
+        relatedId: this.selectedConcept.id,
+      };
+
+      const [error, data] = await ConceptService.relateConcept(
+        this.conceptId,
+        relationshipData,
+      );
+
+      if (error) {
+        console.error('Failed to create relationship:', error);
+        return;
+      }
+
+      this.relationships.broader = data.broader;
+      this.relationships.narrower = data.narrower;
+      this.relationships.related = data.related;
+
+      this.showRelationshipModal = false;
+      this.flashSuccessAlert();
+    },
+
+    async removeRelationship(type, relatedId) {
+      if (!confirm('Are you sure you want to remove this relationship?')) {
+        return;
+      }
+
+      const relationshipData = {
+        type: type,
+        relatedId: relatedId,
+      };
+
+      const [error, data] = await ConceptService.removeRelationship(
+        this.conceptId,
+        relationshipData,
+      );
+
+      if (error) {
+        console.error('Failed to remove relationship:', error);
+        return;
+      }
+
+      this.relationships.broader = data.broader;
+      this.relationships.narrower = data.narrower;
+      this.relationships.related = data.related;
+
+      this.flashSuccessAlert();
+    },
+  },
+};

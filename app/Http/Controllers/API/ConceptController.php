@@ -20,7 +20,7 @@ class ConceptController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile']);
+        $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile', 'search']);
         $this->authorizeResource(Concept::class);
     }
 
@@ -174,7 +174,12 @@ class ConceptController extends Controller
         if ($request->user()->cannot('update', $concept)) {
             abort(403);
         }
-    
+
+        $request->validate([
+            'relation_type' => 'required|in:broader,narrower,related',
+            'related_id' => 'required|exists:concepts,id',
+        ]);
+
         $relation_type = $request->input('relation_type');
         $related_id = $request->input('related_id');
 
@@ -190,7 +195,47 @@ class ConceptController extends Controller
                 break;
         }
 
-        return $concept;
+        return $concept->loadMissing(['broader', 'narrower', 'related']);
+    }
+
+    /**
+     * Remove a relationship between concepts.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Concept  $concept
+     * @return \Illuminate\Http\Response
+     */
+    public function removeRelationship(Request $request, Concept $concept)
+    {
+        if ($request->user()->cannot('update', $concept)) {
+            abort(403);
+        }
+
+        $request->validate([
+            'relation_type' => 'required|in:broader,narrower,related',
+            'related_id' => 'required|exists:concepts,id',
+        ]);
+
+        $relation_type = $request->input('relation_type');
+        $related_id = $request->input('related_id');
+
+        switch ($relation_type) {
+            case "broader":
+                $concept->broader()->detach($related_id);
+                break;
+            case "narrower":
+                $concept->narrower()->detach($related_id);
+                break;
+            case "related":
+                // Remove both directions for related relationships
+                $concept->related()->detach($related_id);
+                $concept->belongsToMany("App\Models\Concept", "concept_relationships", "related_concept_id", "concept_id")
+                    ->wherePivot("relationship_type", "related")
+                    ->detach($related_id);
+                break;
+        }
+
+        return $concept->loadMissing(['broader', 'narrower', 'related']);
     }
 
     /**
@@ -205,7 +250,7 @@ class ConceptController extends Controller
         if ($request->user()->cannot('update', $concept)) {
             abort(403);
         }
-    
+
         $to = $request->input('to');
         if ($to) {
             $replaceConcept = Concept::findOrFail($to);
@@ -231,6 +276,46 @@ class ConceptController extends Controller
         $concept->delete();
 
         return response('Deleted ' . $concept->id, 204);
+    }
+
+    /**
+     * Search concepts by term.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function search(Request $request)
+    {
+        $request->validate([
+            'term' => 'required|string|min:2',
+            'all_terms' => 'boolean',
+            'category' => 'nullable|string',
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
+
+        $query = Concept::with(['terms', 'conceptCategories'])
+            ->select('concepts.*')
+            ->join('terms', 'concepts.id', '=', 'terms.concept_id')
+            ->leftJoin('concept_categories', 'concepts.id', '=', 'concept_categories.concept_id')
+            ->leftJoin('vocabulary', 'concept_categories.category_id', '=', 'vocabulary.id')
+            ->where('terms.text', 'ILIKE', '%' . $request->term . '%')
+            ->where('concepts.deprecated', false);
+
+        if (!$request->boolean('all_terms', false)) {
+            $query->where('terms.preferred', true);
+        }
+
+        if ($request->filled('category')) {
+            $query->where('vocabulary.value', 'ILIKE', $request->category);
+        }
+
+        $query->distinct();
+
+        $perPage = $request->input('per_page', 15);
+
+        return ConceptResource::collection(
+            $query->paginate($perPage)
+        );
     }
 
     /**

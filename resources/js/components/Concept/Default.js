@@ -7,9 +7,10 @@ import MixinDirty from './mixins/Dirty';
 import MixinEditMode from './mixins/EditMode';
 import MixinSource from './mixins/Source';
 import MixinTerm from './mixins/Term';
+import MixinRelationship from './mixins/Relationship';
 
 export default {
-  mixins: [MixinCategory, MixinDirty, MixinEditMode, MixinSource, MixinTerm],
+  mixins: [MixinCategory, MixinDirty, MixinEditMode, MixinSource, MixinTerm, MixinRelationship],
   components: {
     BModal,
     BButton,
