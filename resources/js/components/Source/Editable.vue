@@ -82,15 +82,12 @@
           class="float-right"
           @click="showDeleteModal"
           v-if="conceptSourceId"
-        ><i class="fa fa-trash"></i> Delete</BButton
+          ><i class="fa fa-trash"></i> Delete</BButton
         >
         <BButton variant="primary" @click="emitSaveSource"
-        ><i class="fa fa-save"></i> Save</BButton
+          ><i class="fa fa-save"></i> Save</BButton
         >
-        <BButton
-          @click="showCancelModal"
-        >Cancel</BButton
-        >
+        <BButton @click="showCancelModal">Cancel</BButton>
       </div>
     </div>
 
@@ -103,7 +100,12 @@
     >
       <div class="d-block text-center">
         <p>Are you sure you want to delete this source?</p>
-        <BButton ref="confirmDeleteButton" variant="danger" @click="confirmDelete">Yes, delete</BButton>
+        <BButton
+          ref="confirmDeleteButton"
+          variant="danger"
+          @click="confirmDelete"
+          >Yes, delete</BButton
+        >
         <BButton variant="secondary" @click="hideDeleteModal">Cancel</BButton>
       </div>
     </BModal>
@@ -116,8 +118,16 @@
       hide-footer
     >
       <div class="d-block text-center">
-        <p>Cancelling will cause you to lose your changes. Are you sure you want to cancel?</p>
-        <BButton ref="confirmCancelButton" variant="danger" @click="confirmCancel">Yes, cancel</BButton>
+        <p>
+          Cancelling will cause you to lose your changes. Are you sure you want
+          to cancel?
+        </p>
+        <BButton
+          ref="confirmCancelButton"
+          variant="danger"
+          @click="confirmCancel"
+          >Yes, cancel</BButton
+        >
         <BButton variant="secondary" @click="hideCancelModal">No</BButton>
       </div>
     </BModal>
@@ -181,7 +191,9 @@ export default {
         return;
       }
 
-      const [error,source] = await conceptSourceApi.getConceptSource(this.conceptSourceId);
+      const [error, source] = await conceptSourceApi.getConceptSource(
+        this.conceptSourceId,
+      );
       if (!error) {
         this.citation = source.citation;
         this.url = source.url;
@@ -241,7 +253,7 @@ export default {
         note: this.note,
       };
 
-      if ( this.conceptSourceId ) {
+      if (this.conceptSourceId) {
         source.id = this.conceptSourceId;
       }
 

@@ -4,13 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ConceptCategory extends Model {
+class ConceptCategory extends Model
+{
 
-    public function concept() {
+    public function concept()
+    {
         return $this->belongsTo("App\Models\Concept");
     }
 
-    public function vocabulary() {
+    public function vocabulary()
+    {
         return $this->belongsTo("App\Models\Vocabulary");
     }
 

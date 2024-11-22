@@ -1,14 +1,16 @@
 <template>
-  <tr><td>{{text}}</td></tr>
+  <tr>
+    <td>{{ text }}</td>
+  </tr>
 </template>
 
 <script>
 export default {
   props: ['text', 'id'],
   methods: {
-    mounted(){
+    mounted() {
       console.log('Component mounted!');
-    }
-  }
-}
+    },
+  },
+};
 </script>

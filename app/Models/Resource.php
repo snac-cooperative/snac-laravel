@@ -12,6 +12,4 @@ class Resource extends Model
      * @var string
      */
     protected $table = "resource_cache";
-
-
 }

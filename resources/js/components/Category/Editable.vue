@@ -1,10 +1,7 @@
 <template>
   <div>
     <BInputGroup>
-      <div
-        v-if="originalId"
-        class="category-item custom-select"
-      >
+      <div v-if="originalId" class="category-item custom-select">
         {{ selectedValue }}
       </div>
       <BFormSelect
@@ -41,7 +38,12 @@
     >
       <div class="d-block text-center">
         <p>Are you sure you want to delete this category?</p>
-        <BButton variant="danger" ref="confirmDeleteButton" @click="confirmDelete">Yes, delete</BButton>
+        <BButton
+          variant="danger"
+          ref="confirmDeleteButton"
+          @click="confirmDelete"
+          >Yes, delete</BButton
+        >
         <BButton variant="secondary" @click="hideDeleteModal">Cancel</BButton>
       </div>
     </BModal>

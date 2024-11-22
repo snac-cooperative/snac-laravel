@@ -62,9 +62,7 @@ class ConceptController extends Controller
                 $join->on('concepts.id', '=', 'preferred_terms.concept_id')
                     ->where('preferred_terms.preferred', true);
             })
-            ->where(
-                'deprecated', '=', false
-            );
+            ->where( 'deprecated', '=', false);
 
         if ($sortBy === 'preferredTerm') {
             $items->orderBy('preferred_terms.text', $sortOrder); // Order by the preferred term

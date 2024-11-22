@@ -18,26 +18,25 @@
           class="btn btn-info"
           title="Save"
           v-show="isDirty()"
-        ><i class="fa fa-floppy-o"></i
+          ><i class="fa fa-floppy-o"></i
         ></BButton>
-        <BButton
-          @click="cancelInlineEdit"
-          v-if="inlineEdit"
-        ><i class="fa fa-ban"></i></BButton>
+        <BButton @click="cancelInlineEdit" v-if="inlineEdit"
+          ><i class="fa fa-ban"></i
+        ></BButton>
         <BButton
           variant="primary"
           @click="showPreferredModal"
           v-if="!isPreferred && termId"
           class="btn"
           title="Make Preferred"
-        ><i class="fa fa-check-square-o"></i
+          ><i class="fa fa-check-square-o"></i
         ></BButton>
         <BButton
           @click="showDeleteModal"
           v-if="!isPreferred"
           class="btn btn-danger"
           title="Delete"
-        ><i class="fa fa-trash"></i
+          ><i class="fa fa-trash"></i
         ></BButton>
       </BInputGroupAppend>
     </BInputGroup>
@@ -52,7 +51,12 @@
     >
       <div class="d-block text-center">
         <p>Are you sure you want to delete this term?</p>
-        <BButton ref="confirmDeleteButton" variant="danger" @click="confirmDelete">Yes, delete</BButton>
+        <BButton
+          ref="confirmDeleteButton"
+          variant="danger"
+          @click="confirmDelete"
+          >Yes, delete</BButton
+        >
         <BButton variant="secondary" @click="hideDeleteModal">Cancel</BButton>
       </div>
     </BModal>
@@ -65,8 +69,16 @@
       hide-footer
     >
       <div class="d-block text-center">
-        <p>Cancelling will cause you to lose your changes. Are you sure you want to cancel?</p>
-        <BButton ref="confirmCancelButton" variant="danger" @click="confirmCancel">Yes, cancel</BButton>
+        <p>
+          Cancelling will cause you to lose your changes. Are you sure you want
+          to cancel?
+        </p>
+        <BButton
+          ref="confirmCancelButton"
+          variant="danger"
+          @click="confirmCancel"
+          >Yes, cancel</BButton
+        >
         <BButton variant="secondary" @click="hideCancelModal">No</BButton>
       </div>
     </BModal>
@@ -79,9 +91,19 @@
       hide-footer
     >
       <div class="d-block text-center">
-        <p>Are you sure you want to make this term the preferred term for this concept?</p>
-        <BButton ref="confirmPreferredButton" variant="primary" @click="confirmPreferred">Yes, make preferred</BButton>
-        <BButton variant="secondary" @click="hidePreferredModal">Cancel</BButton>
+        <p>
+          Are you sure you want to make this term the preferred term for this
+          concept?
+        </p>
+        <BButton
+          ref="confirmPreferredButton"
+          variant="primary"
+          @click="confirmPreferred"
+          >Yes, make preferred</BButton
+        >
+        <BButton variant="secondary" @click="hidePreferredModal"
+          >Cancel</BButton
+        >
       </div>
     </BModal>
   </div>
@@ -149,19 +171,19 @@ export default {
   },
   mounted() {
     this.getConceptTerm();
-    if (this.inlineEdit){
+    if (this.inlineEdit) {
       this.$refs.termText.$el.focus();
     }
   },
   methods: {
-    async getConceptTerm () {
+    async getConceptTerm() {
       if (!this.termId) {
         this.resetTerm();
         return;
       }
 
       const [error, term] = await termApi.getTerm(this.termId);
-      if(term) {
+      if (term) {
         this.term = { ...term, inEdit: false };
         this.text = term.text;
         this.originalText = term.text;
@@ -169,11 +191,16 @@ export default {
       }
     },
     trackChanges(text) {
-      this.$emit('input', { ...this.term, text, dirty: this.isDirty(), previous: this.previous });
+      this.$emit('input', {
+        ...this.term,
+        text,
+        dirty: this.isDirty(),
+        previous: this.previous,
+      });
       this.previous = text;
     },
     emitSaveTerm() {
-      if(!this.isDirty()){
+      if (!this.isDirty()) {
         return;
       }
       const term = {
@@ -190,10 +217,10 @@ export default {
       this.originalId = this.termId;
     },
     isDirty() {
-      if(!this.termId){
+      if (!this.termId) {
         return !!this.text;
       }
-      if(this.termId !== this.originalId) {
+      if (this.termId !== this.originalId) {
         this.resetTerm();
         return false;
       }

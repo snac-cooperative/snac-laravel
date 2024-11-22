@@ -23,7 +23,8 @@ class VocabSeeder extends Seeder
      *
      * @return void
      */
-    public function run() {
+    public function run()
+    {
         // Load ConceptCategories
         $religion = Vocabulary::where('type', 'concept_category')->where('value', 'Religion')->first();
         $ethnicity = Vocabulary::where('type', 'concept_category')->where('value', 'Ethnicity')->first();
@@ -56,7 +57,7 @@ class VocabSeeder extends Seeder
             $cleaned_vocab_term = $data[3];
 
             $count++;
-            echo "#" . $count . ", " . $vocab_term_id . ": " . $cleaned_vocab_term ."\n";
+            echo "#" . $count . ", " . $vocab_term_id . ": " . $cleaned_vocab_term . "\n";
             if ($count == 1)
                 continue;             // skip headers
 
@@ -70,9 +71,8 @@ class VocabSeeder extends Seeder
 
                 // overwrite old vocab ids
                 DB::table('identity_concepts')
-                    ->where('concept_id',$vocab_term_id)
+                    ->where('concept_id', $vocab_term_id)
                     ->update(['concept_id' => $concept->id]);
-
             } else {
                 $concept = Concept::create(['id' => $vocab_term_id, 'deprecated' => false]);
                 $preferredTerm = ['text' => $cleaned_vocab_term, 'preferred' => true];
@@ -83,7 +83,7 @@ class VocabSeeder extends Seeder
                 $concept->conceptCategories()->save($category);
 
                 $cache[$cleaned_vocab_term] = $concept;
-             }
+            }
         }
         fclose($handle);
     }

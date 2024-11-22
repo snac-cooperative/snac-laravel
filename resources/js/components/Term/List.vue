@@ -38,7 +38,8 @@
       @click="emitAddTerm()"
       v-if="isVocabularyEditor"
       v-show="conceptEditMode()"
-    ><i class="fa fa-plus"></i> Add Term</b-button>
+      ><i class="fa fa-plus"></i> Add Term</b-button
+    >
   </div>
 </template>
 
@@ -68,7 +69,7 @@ export default {
     hasEmptyTerm: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   methods: {
     conceptEditMode: function () {
@@ -80,30 +81,30 @@ export default {
     emitAddTerm: function () {
       this.$emit('add-term');
       this.$nextTick(() => {
-        this.$refs.EditableTerm[this.$refs.EditableTerm.length - 1].$refs.termText.$el.focus();
+        this.$refs.EditableTerm[
+          this.$refs.EditableTerm.length - 1
+        ].$refs.termText.$el.focus();
       });
     },
     emitDeleteTerm: function (termId, termIndex) {
       this.$emit('delete-term', termId, termIndex);
     },
-    emitMakeTermPreferred: function(term, termIndex) {
+    emitMakeTermPreferred: function (term, termIndex) {
       this.$emit('make-term-preferred', term, termIndex);
     },
-    emitFlagDirty: function(args) {
+    emitFlagDirty: function (args) {
       this.$emit('flag-dirty', args);
     },
-    enableInlineEdit: function(term, termIndex) {
+    enableInlineEdit: function (term, termIndex) {
       this.$emit('enable-inline-edit', term, termIndex);
     },
-    cancelInlineEdit: function(term, termIndex) {
+    cancelInlineEdit: function (term, termIndex) {
       this.$emit('cancel-inline-edit', term, termIndex);
-    }
+    },
   },
   components: {
     EditableTerm,
   },
 };
 </script>
-<style>
-
-</style>
+<style></style>

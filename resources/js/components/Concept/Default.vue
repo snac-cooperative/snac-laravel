@@ -222,15 +222,26 @@
         </BModal>
 
         <!-- Display existing relationships -->
-        <div v-if="hasAnyRelationships" class="relations mx-0" style="display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); column-gap: 2rem;">
+        <div
+          v-if="hasAnyRelationships"
+          class="relations mx-0"
+          style="
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(0, 1fr);
+            column-gap: 2rem;
+          "
+        >
           <div v-if="relationships.broader && relationships.broader.length">
             <h3>Broader</h3>
             <div v-for="relation in relationships.broader" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
-                <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
-                <BButton 
+                <a :href="`/concepts/${relation.id}`">{{
+                  relation.preferred_term.text
+                }}</a>
+                <BButton
                   v-if="getEditMode()"
-                  variant="danger" 
+                  variant="danger"
                   size="sm"
                   @click="removeRelationship('broader', relation.id)"
                 >
@@ -244,10 +255,12 @@
             <h3>Narrower</h3>
             <div v-for="relation in relationships.narrower" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
-                <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
-                <BButton 
+                <a :href="`/concepts/${relation.id}`">{{
+                  relation.preferred_term.text
+                }}</a>
+                <BButton
                   v-if="getEditMode()"
-                  variant="danger" 
+                  variant="danger"
                   size="sm"
                   @click="removeRelationship('narrower', relation.id)"
                 >
@@ -261,10 +274,12 @@
             <h3>Related</h3>
             <div v-for="relation in relationships.related" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
-                <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
-                <BButton 
+                <a :href="`/concepts/${relation.id}`">{{
+                  relation.preferred_term.text
+                }}</a>
+                <BButton
                   v-if="getEditMode()"
-                  variant="danger" 
+                  variant="danger"
                   size="sm"
                   @click="removeRelationship('related', relation.id)"
                 >

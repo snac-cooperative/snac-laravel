@@ -68,7 +68,6 @@ Route::controller(ConceptController::class)->group(function () {
     });
 
     Route::get('concepts/{concept}', 'show');
-
 });
 
 // Route::post('concepts',             'ConceptController@store')->middleware('can:edit-vocabulary'); // TODO: switch to can:edit-vocabulary after demo testing

@@ -16,7 +16,8 @@ class ConceptSeeder extends Seeder
      *
      * @return void
      */
-    public function run() {
+    public function run()
+    {
         $json_data = File::get("database/data/loc_dgt.json");
         $loc_concepts_json = json_decode($json_data, true);
 
@@ -54,13 +55,13 @@ class ConceptSeeder extends Seeder
             $LOCConcept->sources()->save($source);
 
             if (isset($concept["scopeNote"])) {
-                $property = new App\Models\ConceptProperty([ "type" => "scopeNote", "value" => $concept["scopeNote"]]);
+                $property = new App\Models\ConceptProperty(["type" => "scopeNote", "value" => $concept["scopeNote"]]);
                 $LOCConcept->conceptProperties()->save($property);
             }
 
             // add category
             $conceptTypes = $concept["conceptType"];
-            if(!is_array($concept["conceptType"])) {
+            if (!is_array($concept["conceptType"])) {
                 $conceptTypes = [$concept["conceptType"]];
             }
             foreach ($conceptTypes as $conceptType) {
@@ -72,7 +73,7 @@ class ConceptSeeder extends Seeder
             // create alternative terms
             if (isset($concept["alternativeTerm"])) {
                 $alternativeTerms = $concept["alternativeTerm"];
-                if(!is_array($concept["alternativeTerm"])) {
+                if (!is_array($concept["alternativeTerm"])) {
                     $alternativeTerms = [$concept["alternativeTerm"]];
                 }
                 foreach ($alternativeTerms as $alternativeTerm) {
@@ -86,17 +87,17 @@ class ConceptSeeder extends Seeder
         foreach ($loc_concepts_json["record"] as $conceptJSON) {
             // Find concept
             $concept = Term::firstWhere("text", $conceptJSON["preferredTerm"])
-                            ->concept;
+                ->concept;
             if (isset($conceptJSON["relatedConcept"])) {
                 $relatedConcepts = $conceptJSON["relatedConcept"];
-                if(!isset($conceptJSON["relatedConcept"][0])) {
+                if (!isset($conceptJSON["relatedConcept"][0])) {
                     $relatedConcepts = [$conceptJSON["relatedConcept"]];
                 }
 
                 foreach ($relatedConcepts as $relatedConceptJSON) {
                     // Save relation
                     $relatedConcept = Term::firstWhere("text", $relatedConceptJSON["relatedConceptTerm"])
-                                        ->concept;
+                        ->concept;
 
                     if ($relatedConceptJSON["relatedConceptType"] == "broader") {
                         $concept->addBroader($relatedConcept->id);
@@ -108,8 +109,6 @@ class ConceptSeeder extends Seeder
                     // $concept->broader()->attach([$relatedConcept->id => ["relationship_type" => $relatedConceptJSON["relatedConceptType"]]]);
                 }
             }
-
         }
-
     }
 }

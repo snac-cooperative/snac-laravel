@@ -17,7 +17,8 @@ class ConceptSource extends Model
         "note"
     ];
 
-    public function concept() {
+    public function concept()
+    {
         return $this->belongsTo("\App\Models\Concept");
     }
 }

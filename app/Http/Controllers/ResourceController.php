@@ -18,5 +18,4 @@ class ResourceController extends Controller
         $repository = new Repository;
         return view('resources.resource', ['repository' => $repository]);
     }
-
 }

@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Vocabulary extends Model {
+class Vocabulary extends Model
+{
 
     /**
-    * The table associated with the model.
-    *
-    * @var string
-    */
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = "vocabulary";
 
     protected $fillable = [
@@ -22,8 +23,8 @@ class Vocabulary extends Model {
         "entity_group",
     ];
 
-    public function concept() {
+    public function concept()
+    {
         return $this->belongsTo("App\Models\Concept");
     }
-
 }

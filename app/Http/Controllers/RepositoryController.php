@@ -18,9 +18,6 @@ class RepositoryController extends Controller
     public function create(Request $request)
     {
         $repository = $request->session()->get('repository') ?? new Repository;
-        // $repository = new Repository;
-        // require('/Users/josephglass/.composer/vendor/autoload.php');
-        // \Psy\Shell::debug(get_defined_vars(), $this);
         return view('repositories.create_step_1', compact('repository', $repository));
     }
 
@@ -40,8 +37,6 @@ class RepositoryController extends Controller
             // 'available' => 'required',
             // 'description' => 'required',
         ]);
-            // require('/Users/josephglass/.composer/vendor/autoload.php');
-            // \Psy\Shell::debug(get_defined_vars(), $this);
         if (empty($request->session()->get('repository'))) {
             $repository = new Repository();
             $repository->fill($validatedData);

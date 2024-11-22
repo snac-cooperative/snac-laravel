@@ -17,8 +17,8 @@ class IdentityConcept extends Model
 
     public $timestamps = false;  //consider adding them
 
-    public function concept() {
+    public function concept()
+    {
         return $this->belongsTo("App\Models\Concept");
     }
-
 }

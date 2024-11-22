@@ -87,7 +87,7 @@ class RepoInfo extends Migration
     // entry_recorded_by
 
 // DATA MODEL QUESTIONS
-    // Are we going to go with our standard CPF Name tables, place tables, etc? 
+    // Are we going to go with our standard CPF Name tables, place tables, etc?
 
 // ADDRESS QUESTIONS
     // street_address_1

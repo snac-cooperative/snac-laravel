@@ -15,6 +15,7 @@ ddev start
 ```
 
 #### IMPORTANT
+
 This application shares its database with the snac-server application and snac-server must be running and have an imported database before this application will work.
 
 ### Installing dependencies

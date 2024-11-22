@@ -95,7 +95,7 @@ class TermController extends Controller
     public function destroy(Term $term)
     {
         $term->delete();
-        
+
         return response('Deleted ' . $term->id, 204);
     }
 }

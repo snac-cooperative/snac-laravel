@@ -18,5 +18,4 @@ class EntityController extends Controller
         $repository = new Repository;
         return view('entities.entity_step_1', ['repository' => $repository]);
     }
-
 }
