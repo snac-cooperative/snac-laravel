@@ -7,12 +7,12 @@
 // })
 </script> --}}
 
-@section ('title')
-Create a Holding Repository
+@section('title')
+    Create a Holding Repository
 @endsection
-@section ('content')
+@section('content')
 
-{{-- <ol class="breadcrumb">
+    {{-- <ol class="breadcrumb">
     <li><a href="{{env('SNAC_URL')}}/vocab_administrator/dashboard">Vocabulary</a></li>
     <li>New</li>
 </ol>
@@ -27,9 +27,9 @@ Create a Holding Repository
 </div> --}}
 
 
-<h1>New Holding Repository</h1>
+    <h1>New Holding Repository</h1>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active"><a href="{{env('MIX_APP_URL')}}/repositories">Repository</a></li>
+        <li class="breadcrumb-item active"><a href="{{ env('MIX_APP_URL') }}/repositories">Repository</a></li>
         <li class="breadcrumb-item">Address</li>
         <li class="breadcrumb-item">Contact</li>
     </ol>
@@ -38,9 +38,10 @@ Create a Holding Repository
     <form action="/repositories/create" method="post" style="max-width: 70%;">
         {{ csrf_field() }}
         <div class="form-group">
-            <label for="title" >Repository Name</label>
+            <label for="title">Repository Name</label>
             {{-- <i class="fa fa-question-circle-o" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="Full name, unabbreviated" ></i> --}}
-            <i v-b-toggle.collapse-1 class="fa fa-question-circle-o" aria-hidden="true" data-toggle="sample-text" data-placement="right" title="Full name, unabbreviated" ></i>
+            <i v-b-toggle.collapse-1 class="fa fa-question-circle-o" aria-hidden="true" data-toggle="sample-text"
+                data-placement="right" title="Full name, unabbreviated"></i>
 
             <!-- Element to collapse -->
             <b-collapse id="collapse-1">
@@ -49,7 +50,8 @@ Create a Holding Repository
                     <p>e.g. Military Women’s Memorial Foundation Collection</p>
                 </b-card>
             </b-collapse>
-            <input type="text" value="{{ $repository->repository_name_unauthorized or '' }}" class="form-control" id="taskTitle"  name="name" placeholder="e.g. Military Women’s Memorial Foundation Collection">
+            <input type="text" value="{{ $repository->repository_name_unauthorized or '' }}" class="form-control"
+                id="taskTitle" name="name" placeholder="e.g. Military Women’s Memorial Foundation Collection">
         </div>
         <div class="form-group">
             <label for="title">
@@ -59,28 +61,36 @@ Create a Holding Repository
             <b-collapse id="collapse-2">
                 <b-card style="background-color: #f5f5f5">
                     <p>Brief description of holdings and scope of collections</p>
-                    <p>e.g. The Military Women’s Memorial Collections department mission is to collect, preserve, document, analyze, and make available the history of women’s service in and with the US Armed Forces. The Military Women’s Memorial Foundation Collection houses more than 8,000 donations, including photographs, documents, textiles, artifacts, and audiovisual material representing all eras and services of American women’s military history. Resources also include more than 1,500 oral history narratives and a research library of more than 1,500 books by and about military women.</p>
+                    <p>e.g. The Military Women’s Memorial Collections department mission is to collect, preserve, document,
+                        analyze, and make available the history of women’s service in and with the US Armed Forces. The
+                        Military Women’s Memorial Foundation Collection houses more than 8,000 donations, including
+                        photographs, documents, textiles, artifacts, and audiovisual material representing all eras and
+                        services of American women’s military history. Resources also include more than 1,500 oral history
+                        narratives and a research library of more than 1,500 books by and about military women.</p>
                 </b-card>
             </b-collapse>
-            <textarea type="text" value="" class="form-control" id="taskTitle"  name="name" placeholder="Brief description of holdings and scope of collections"> </textarea>
+            <textarea type="text" value="" class="form-control" id="taskTitle" name="name"
+                placeholder="Brief description of holdings and scope of collections"> </textarea>
         </div>
 
         <h4>Access Policy</h4>
         <div class="form-group" id="address-question">
             {{-- TODO: Reword question --}}
-            <label>Is your Access Policy Online?</label><br/>
+            <label>Is your Access Policy Online?</label><br />
             <label class="radio-inline">
                 <input type="radio" name="access-policy" onclick="$('#access-input').hide();$('#access-url').slideDown()">
                 Yes
             </label>
             <label class="radio-inline">
-                <input type="radio" name="access-policy" onclick="$('#access-url').hide();$('#access-input').slideDown()"> No
+                <input type="radio" name="access-policy" onclick="$('#access-url').hide();$('#access-input').slideDown()">
+                No
             </label>
         </div>
 
         <div id="access-url" class="form-group" style="display: none">
             <label for="description">Access Policy URL</label>
-            <input type="text" value="{{ $repository->street_address_1 or '' }}" class="form-control" id="street_address_1"  name="street_address_1">
+            <input type="text" value="{{ $repository->street_address_1 or '' }}" class="form-control"
+                id="street_address_1" name="street_address_1">
         </div>
         <div id="access-input" class="form-group" style="display:none">
             <label for="description">Access Policy</label>
@@ -94,12 +104,14 @@ Create a Holding Repository
                         <li>Researchers must make an appointment?</li>
                         <li>Is an appointment required?</li>
                     </ul>
-                    <p>Example: The collection and library are accessible to researchers upon appointment, and material is available for loan to museums and other qualified organizations.</p>
+                    <p>Example: The collection and library are accessible to researchers upon appointment, and material is
+                        available for loan to museums and other qualified organizations.</p>
                     <p>Example: The collection is open only to members of the Society and their guests.</p>
                 </b-card>
             </b-collapse>
 
-            <textarea name="" value="{{ $repository->street_address_1 or '' }}" class="form-control" id="street_address_1"  placeholder=" "></textarea>
+            <textarea name="" value="{{ $repository->street_address_1 or '' }}" class="form-control" id="street_address_1"
+                placeholder=" "></textarea>
 
         </div>
 
@@ -125,28 +137,44 @@ Create a Holding Repository
             <i v-b-toggle.collapse-repo-type class="fa fa-question-circle-o" aria-hidden="false"></i>
             <b-collapse id="collapse-repo-type">
                 <b-card style="background-color: #f5f5f5">
-                    <p><b>College and university archives</b> are archives that preserve materials relating to a specific academic institution. Such archives may also contain a "special collections" division (see definition below).</p>
+                    <p><b>College and university archives</b> are archives that preserve materials relating to a specific
+                        academic institution. Such archives may also contain a "special collections" division (see
+                        definition below).</p>
                     <p>Examples: Stanford University Archives, Mount Holyoke College Archives.</p>
-                    <p><b>Community archives</b> are the archives of a group of people that share common interests, and/or social, cultural, or historical heritage, usually created by members of the group being documented and maintained outside of traditional archives.</p>
+                    <p><b>Community archives</b> are the archives of a group of people that share common interests, and/or
+                        social, cultural, or historical heritage, usually created by members of the group being documented
+                        and maintained outside of traditional archives.</p>
                     <p>Examples: Invisible Histories Project, Detroit Sound Conservancy</p>
-                    <p><b>Corporate archives</b> are archival departments within a company, organization, or corporation that manage and preserve the records of that entity’s activities.</p>
+                    <p><b>Corporate archives</b> are archival departments within a company, organization, or corporation
+                        that manage and preserve the records of that entity’s activities.</p>
                     <p>Examples: Ford Motor Company Archives, Kraft Foods Archives, Metropolitan Opera archives.</p>
-                    <p><b>Digital archives</b> are repositories established solely around digitized and born-digital material, frequently without a physical space. </p>
+                    <p><b>Digital archives</b> are repositories established solely around digitized and born-digital
+                        material, frequently without a physical space. </p>
                     <p>Examples: Jewish Women’s Archive, Theodore Roosevelt Center, Internet Archive</p>
                     <p><b>Genealogical societies</b> are repositories that collect material for family history research.</p>
                     <p>Examples: New England Historic Genealogical Society, Genealogical Society of Utah</p>
-                    <p><b>Government archives</b> are repositories that collect materials relating to local, state, national, or international government entities.</p>
-                    <p>Examples: The National Archives and Records Administration (NARA), the Franklin D. Roosevelt Presidential Library and Museum, the New York State Archives, City of Boston Archives.</p>
-                    <p><b>Historical societies</b> are organizations that seek to preserve and promote interest in the history of a region, a historical period, non-government organizations, or a subject. </p>
-                    <p>Examples: The Wisconsin Historical Society, the National Railway Historical Society, the San Fernando Valley Historical Society.</p>
-                    <p><b>Museums</b> are places where works of art, scientific specimens, or other objects of permanent value are kept and displayed.</p>
+                    <p><b>Government archives</b> are repositories that collect materials relating to local, state,
+                        national, or international government entities.</p>
+                    <p>Examples: The National Archives and Records Administration (NARA), the Franklin D. Roosevelt
+                        Presidential Library and Museum, the New York State Archives, City of Boston Archives.</p>
+                    <p><b>Historical societies</b> are organizations that seek to preserve and promote interest in the
+                        history of a region, a historical period, non-government organizations, or a subject. </p>
+                    <p>Examples: The Wisconsin Historical Society, the National Railway Historical Society, the San Fernando
+                        Valley Historical Society.</p>
+                    <p><b>Museums</b> are places where works of art, scientific specimens, or other objects of permanent
+                        value are kept and displayed.</p>
                     <p>Examples: The Metropolitan Museum of Art, Smithsonian National Air and Space Museum.</p>
-                    <p><b>Private collections</b> are archives under private ownership. The owner may also be the collector and/or creator.</p>
-                    <p>Examples: Walker Library of the History of Human Imagination (Jay Walker, Connecticut); Harlan Crow Library (Harlan Crow, Texas)</p>
-                    <p><b>Religious archives</b> are archives relating to the traditions or institutions of a religious group or individual place(s) of worship.</p>
+                    <p><b>Private collections</b> are archives under private ownership. The owner may also be the collector
+                        and/or creator.</p>
+                    <p>Examples: Walker Library of the History of Human Imagination (Jay Walker, Connecticut); Harlan Crow
+                        Library (Harlan Crow, Texas)</p>
+                    <p><b>Religious archives</b> are archives relating to the traditions or institutions of a religious
+                        group or individual place(s) of worship.</p>
                     <p>Examples: United Methodist Church Archives, American Jewish Archives.</p>
-                    <p><b>Special collections</b> are repositories containing materials from individuals, families, and organizations deemed to have significant historical value.</p>
-                    <p>Examples: Special Collections Research Center at the University of Chicago, American Philosophical Society Library, Boston Public Library. </p>
+                    <p><b>Special collections</b> are repositories containing materials from individuals, families, and
+                        organizations deemed to have significant historical value.</p>
+                    <p>Examples: Special Collections Research Center at the University of Chicago, American Philosophical
+                        Society Library, Boston Public Library. </p>
                 </b-card>
             </b-collapse>
 
@@ -190,10 +218,12 @@ Create a Holding Repository
         <h4>Address and Contact</h4>
 
         <div class="form-group" id="address-question">
-            <label for="description">Does this Repository have a physical address?</label><br/>
+            <label for="description">Does this Repository have a physical address?</label><br />
             {{-- TODO: don't  --}}
-            <label class="radio-inline"> <input type='radio' name="address-exists" onclick="$('#address-fields').slideDown()">Yes</label>
-            <label class="radio-inline"> <input type='radio' name="address-exists" onclick="$('#address-fields').slideUp()"> No</label>
+            <label class="radio-inline"> <input type='radio' name="address-exists"
+                    onclick="$('#address-fields').slideDown()">Yes</label>
+            <label class="radio-inline"> <input type='radio' name="address-exists"
+                    onclick="$('#address-fields').slideUp()"> No</label>
             {{-- <label onclick="$('#address-question').hide();$('#address-fields').show()" class="radio-inline"><input type="radio" name="available" value="1" {{ (isset($repository->available) && $repository->available == '1') ? "checked" : "" }}> Yes</label> --}}
             {{-- <label onclick="$('#address-question').hide()" class="radio-inline"><input type="radio" name="available" value="0" {{ (isset($repository->available) && $repository->available == '0') ? "checked" : "" }}> No</label> --}}
         </div>
@@ -203,7 +233,8 @@ Create a Holding Repository
             <div class="form-group">
                 {{-- TODO: Decide whether to include address placeholders --}}
                 <label for="description">Street Address</label>
-                <input type="text" value="{{ $repository->street_address_1 or '' }}" class="form-control" id="street_address_1"  name="street_address_1" placeholder="">
+                <input type="text" value="{{ $repository->street_address_1 or '' }}" class="form-control"
+                    id="street_address_1" name="street_address_1" placeholder="">
             </div>
             <div class="form-group">
                 <label for="description">City</label>
@@ -420,7 +451,8 @@ Create a Holding Repository
                     <option value="Solomon Islands">Solomon Islands</option>
                     <option value="Somalia">Somalia</option>
                     <option value="South Africa">South Africa</option>
-                    <option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
+                    <option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich
+                        Islands</option>
                     <option value="Spain">Spain</option>
                     <option value="Sri Lanka">Sri Lanka</option>
                     <option value="Sudan">Sudan</option>
@@ -467,36 +499,38 @@ Create a Holding Repository
         </div>
 
         <div class="form-group" id="website-question">
-            <label for="description">Does this Repository have a website?</label><br/>
-            <label class="radio"> <input type='radio' name="website-exists" onclick="$('#ZZZwebsite-question').hide();$('#website-fields').slideDown()"> Yes </label>
-            <label class="radio"> <input type='radio' name="website-exists" onclick="$('#ZZZwebsite-question').hide();$('#website-fields').slideUp()"> No </label>
+            <label for="description">Does this Repository have a website?</label><br />
+            <label class="radio"> <input type='radio' name="website-exists"
+                    onclick="$('#ZZZwebsite-question').hide();$('#website-fields').slideDown()"> Yes </label>
+            <label class="radio"> <input type='radio' name="website-exists"
+                    onclick="$('#ZZZwebsite-question').hide();$('#website-fields').slideUp()"> No </label>
         </div>
 
 
         <div id="website-fields" class="collapse">
             <div class="form-group">
                 <label for="description">Website URL</label>
-                <input type="text" value="" class="form-control" id=""  name="" placeholder="e.g. https://womensmemorial.org/">
+                <input type="text" value="" class="form-control" id="" name=""
+                    placeholder="e.g. https://womensmemorial.org/">
             </div>
 
         </div>
 
         {{-- <div class="form-group"> --}}
-            {{-- Tooltip and placeholder for  website, with HTTPS --}}
-            {{-- <label for="description">General Contact Information</label> --}}
-            {{-- <input type="text" value="" class="form-control" id="street_address_1"  placeholder="Phone, email, etc"> --}}
+        {{-- Tooltip and placeholder for  website, with HTTPS --}}
+        {{-- <label for="description">General Contact Information</label> --}}
+        {{-- <input type="text" value="" class="form-control" id="street_address_1"  placeholder="Phone, email, etc"> --}}
         {{-- </div> --}}
         <div class="form-group">
             {{-- Tooltip and placeholder for  website, with HTTPS --}}
             <label for="description">Phone</label>
-            <input type="tel" value="" class="form-control" id="phone_number"
-                placeholder="(555) 555-5555"
+            <input type="tel" value="" class="form-control" id="phone_number" placeholder="(555) 555-5555"
                 pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
         </div>
         <div class="form-group">
             {{-- Tooltip and placeholder for  website, with HTTPS --}}
             <label for="description">Email</label>
-            <input type="email" value="" class="form-control" id=""  placeholder="">
+            <input type="email" value="" class="form-control" id="" placeholder="">
         </div>
 
 
@@ -507,8 +541,8 @@ Create a Holding Repository
         {{-- TODO: reference vs archival info --}}
         <div class="form-group" id="language-question">
             <label for="description">What languages are reference services offered in?
-                    <i v-b-toggle.collapse-4 class="fa fa-question-circle-o" aria-hidden="false"></i>
-                </label><br/>
+                <i v-b-toggle.collapse-4 class="fa fa-question-circle-o" aria-hidden="false"></i>
+            </label><br />
 
 
             <b-collapse id="collapse-4">

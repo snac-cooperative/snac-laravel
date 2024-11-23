@@ -1,34 +1,34 @@
 @extends ('layouts.snac_layout')
 
-@section ('content')
-  @if (session('status'))
-    <div class="alert alert-success">
-        {{ session('status') }}
-    </div>
-  @endif
+@section('content')
+    @if (session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
+        </div>
+    @endif
     <h1>Vocabulary</h1>
 
     <ol class="breadcrumb">
-        <li><a href="{{env('APP_URL')}}/concepts">Browse Concepts</a></li>
+        <li><a href="{{ env('APP_URL') }}/concepts">Browse Concepts</a></li>
         <!-- <li>{\{data.response.concepts[0].term}}</li> -->
     </ol>
 
-        {{-- @if (false) #(permissions.EditResources)
+    {{-- @if (false) #(permissions.EditResources)
         @endif
         @if ($isVocabularyEditor)
         @endif --}}
     <div class="row">
-        <div class="text-left"  style="margin-left:40px">
+        <div class="text-left" style="margin-left:40px">
             <a href="{{ env('APP_URL') }}/concepts/search_page" class="btn btn-primary">
                 Search for Concepts
             </a>
         </div>
         @auth
-        <div class="text-center" style="margin-left:40px">
-            <a href="{{ env('APP_URL') }}/concepts/create" class="btn btn-success">
-                <i class="fa fa-fw fa-plus"></i> Add New Concept
-            </a>
-        </div>
+            <div class="text-center" style="margin-left:40px">
+                <a href="{{ env('APP_URL') }}/concepts/create" class="btn btn-success">
+                    <i class="fa fa-fw fa-plus"></i> Add New Concept
+                </a>
+            </div>
         @endauth
     </div>
 

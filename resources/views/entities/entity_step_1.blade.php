@@ -2,12 +2,10 @@
 
 
 <script>
+    window.addEventListener('load', function() {
+        $('[data-toggle="tooltip"]').tooltip()
 
-
-window.addEventListener('load', function() {
-            $('[data-toggle="tooltip"]').tooltip()
-
-})
+    })
 
     // $(document).ready(function() {
     //     $('[data-toggle="tooltip"]').tooltip()
@@ -16,15 +14,14 @@ window.addEventListener('load', function() {
     // $(function () {
     //     $('[data-toggle="tooltip"]').tooltip()
     // })
-
 </script>
 
-@section ('title')
-Create an Entity
+@section('title')
+    Create an Entity
 @endsection
-@section ('content')
+@section('content')
 
-{{-- <ol class="breadcrumb">
+    {{-- <ol class="breadcrumb">
     <li><a href="{{env('SNAC_URL')}}/vocab_administrator/dashboard">Vocabulary</a></li>
     <li>New</li>
 </ol>
@@ -39,7 +36,7 @@ Create an Entity
 </div> --}}
 
 
-		{{-- <form class="form-horizontal" id="search_form" method="GET" action="?">
+    {{-- <form class="form-horizontal" id="search_form" method="GET" action="?">
 			<div class="well well-lg text-center search-box">
                     <input type="hidden" id="count" name="count" value="10">
                     <input type="hidden" id="start" name="start" value="0">
@@ -66,9 +63,9 @@ Create an Entity
 
 
 
-<h1>New Person, Family, or Corporate Body</h1>
+    <h1>New Person, Family, or Corporate Body</h1>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active"><a href="{{env('MIX_APP_URL')}}/cpf">Entities</a></li>
+        <li class="breadcrumb-item active"><a href="{{ env('MIX_APP_URL') }}/cpf">Entities</a></li>
         {{-- <li class="breadcrumb-item">Relations</li> --}}
     </ol>
 
@@ -85,16 +82,16 @@ Create an Entity
                 <option>Person</option>
                 <option>Family</option>
                 <option>CorporateBody</option> --}}
-                {{-- <option {{ (isset($repository->company) && $repository->company == 'Apple') ? "selected=\"selected\"" : "" }}></option> --}}
-                {{-- <option >OralHistoryResource</option> --}}
-            {{-- </select>
+        {{-- <option {{ (isset($repository->company) && $repository->company == 'Apple') ? "selected=\"selected\"" : "" }}></option> --}}
+        {{-- <option >OralHistoryResource</option> --}}
+        {{-- </select>
         </div> --}}
 
 
 
 
 
-{{-- Person Names  --}}
+        {{-- Person Names  --}}
         {{-- <div v-show="entityType = 'Person'">
             <div class="form-group">
                 <label for="title" >Last Name</label>
@@ -120,18 +117,12 @@ Create an Entity
             </div>
         </div> --}}
 
-{{--  --}}
+        {{--  --}}
 
 
         {{-- <button type="submit" class="btn btn-primary">Create Relationship</button> --}}
 
-        <cpf-form
-            id="cpfShow"
-            :cpfprops="true"
-
-            :sources-props="true"
-            can-edit-vocabulary="{{ true }}"
-        >
+        <cpf-form id="cpfShow" :cpfprops="true" :sources-props="true" can-edit-vocabulary="{{ true }}">
         </cpf-form>
 
 
@@ -249,9 +240,9 @@ Create an Entity
 
 
         {{-- <div class="form-group"> --}}
-            {{-- Tooltip and placeholder for  website, with HTTPS --}}
-            {{-- <label for="description">General Contact Information</label> --}}
-            {{-- <input type="text" value="{{ $repository->street_address_1 or '' }}" class="form-control" id="street_address_1"  placeholder="Phone, email, etc"> --}}
+        {{-- Tooltip and placeholder for  website, with HTTPS --}}
+        {{-- <label for="description">General Contact Information</label> --}}
+        {{-- <input type="text" value="{{ $repository->street_address_1 or '' }}" class="form-control" id="street_address_1"  placeholder="Phone, email, etc"> --}}
         {{-- </div> --}}
         {{-- <div class="form-group">
             <label for="description">Phone</label>
@@ -273,7 +264,7 @@ Create an Entity
         <language-select :multiple="true"></language-select> --}}
 
 
-{{--
+        {{--
         <div class="form-group language-input">
             <label class="control-label col-xs-2" data-content="hello" data-toggle="popover"
                 data-placement="top"> Language of Resources</label>
@@ -284,18 +275,18 @@ Create an Entity
             </select>
         </div> --}}
 
-<div>
-    {{-- <br>
+        <div>
+            {{-- <br>
     <button type='button' class="btn btn-success" onclick="$('#website-question').hide();$('#website-fields').show()">Add Language</button> --}}
 
-</div>
-<br>
-<br>
+        </div>
+        <br>
+        <br>
 
-</div>
+        </div>
 
 
-{{-- TODO: Access policy  --}}
+        {{-- TODO: Access policy  --}}
 
         @if ($errors->any())
             <div class="alert alert-danger">

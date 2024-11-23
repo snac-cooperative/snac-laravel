@@ -1,6 +1,6 @@
 @extends ("layouts.snac_layout")
 
-@section ('content')
+@section('content')
     @if (session('status'))
         <div class="alert alert-success">
             {{ session('status') }}
@@ -22,14 +22,9 @@
     <div id="concept" data-concept="$concept"></div>
 
     <div id="app">
-        <concept
-            id="concept"
-            :concept-props="{{ $concept }}"
-            :term-props="{{ $concept->terms }}"
-            :categories-props="{{ $concept->conceptCategories }}"
-            :sources-props="{{ $concept->sources }}"
-            can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}"
-        >
+        <concept id="concept" :concept-props="{{ $concept }}" :term-props="{{ $concept->terms }}"
+            :categories-props="{{ $concept->conceptCategories }}" :sources-props="{{ $concept->sources }}"
+            can-edit-vocabulary="{{ json_encode($isVocabularyEditor) }}">
         </concept>
     </div>
 @endsection
