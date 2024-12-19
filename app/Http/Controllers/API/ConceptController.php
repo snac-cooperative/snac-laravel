@@ -21,7 +21,7 @@ class ConceptController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile', 'search']);
+        $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile', 'search', 'categories']);
         $this->authorizeResource(Concept::class);
     }
 
@@ -347,5 +347,19 @@ class ConceptController extends Controller
             ->orderBy('preferred', 'desc');
 
         return response()->json($terms->get());
+    }
+
+    /**
+     * Return array of categories.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function categories()
+    {
+        $categories = Vocabulary::where('type', 'concept_category')->get()
+            ->map(function ($cat) {
+                return ['value' => $cat['id'], 'text' => $cat['value']];
+            });
+        return response()->json($categories, 200);
     }
 }
