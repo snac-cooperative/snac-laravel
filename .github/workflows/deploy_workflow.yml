@@ -34,10 +34,11 @@ jobs:
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
       - name: Generate Key
         run: php artisan key:generate
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
-        env:
-          DB_PORT: 5432
-        run: vendor/bin/phpunit
+      # Awaiting PSQL container or service setup
+      # - name: Execute tests (Unit and Feature tests) via PHPUnit
+      #   env:
+      #     DB_PORT: 5432
+      #   run: vendor/bin/phpunit
   deploy-production:
     name: Deploy Project to PRODUCTION Server
     runs-on: self-hosted
