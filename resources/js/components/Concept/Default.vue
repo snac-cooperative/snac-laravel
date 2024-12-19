@@ -14,12 +14,61 @@
           <i class="fa fa-edit"></i> Edit
         </BButton>
         <BButton
+          variant="danger"
+          v-show="getEditMode() && !this.conceptProps.deprecated"
+          v-b-modal.concept-deprecation-to-search
+        >
+          Deprecate
+          <i class="fa fa-trash"></i>
+        </BButton>
+        <BButton
           variant="secondary"
           @click="leaveEditMode()"
           v-show="getEditMode()"
         >
           Done Editing
         </BButton>
+
+        <BModal
+          id="concept-deprecation-to-search"
+          title="Deprecate Concept"
+          size="xl"
+          @ok="deprecateConcept()"
+          ref="deprecate-modal"
+          :ok-disabled="!selectedConcept"
+        >
+          <div class="form-group">
+            <label for="relation-search"
+              >Search and select the concept that replaces
+              "{{ preferredTerm.text }}"</label
+            >
+            <b-form-input
+              v-model="searchTerm"
+              @input="searchConcepts"
+              placeholder="Type to search..."
+            ></b-form-input>
+
+
+            <div v-if="isSearching" class="text-center my-2">
+              <b-spinner small></b-spinner> Searching...
+            </div>
+
+            <div class="search-results mt-2">
+              <div
+                v-for="concept in searchResults"
+                :key="concept.id"
+                class="search-result p-2"
+                :class="{
+                  selected:
+                    selectedConcept && selectedConcept.id === concept.id,
+                }"
+                @click="selectConcept(concept)"
+              >
+                {{ concept.preferred_term.text }}
+              </div>
+            </div>
+          </div>
+        </BModal>
 
         <BModal
           id="exit-confirmation-modal"
