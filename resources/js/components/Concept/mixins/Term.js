@@ -3,35 +3,26 @@ import termApi from '../../../api/TermService';
 export default {
   data() {
     return {
-      terms: this.termProps.map(
-        (term, index) => {
-          term.index = index;
-          if('undefined' === typeof term.inEdit){
-            term.inEdit = false;
-          }
-          return term;
-        },
-      ),
+      terms: this.termProps.map((term, index) => {
+        term.index = index;
+        if ('undefined' === typeof term.inEdit) {
+          term.inEdit = false;
+        }
+        return term;
+      }),
       termSearch: [],
       allTermsSearch: false,
     };
   },
   computed: {
     alternateTerms() {
-      return this.terms
-        .filter((term) => !term.preferred)
-        .sort();
+      return this.terms.filter((term) => !term.preferred).sort();
     },
     preferredTerm() {
       return this.terms.find((term) => term.preferred);
     },
     hasEmptyTerm() {
-      return !!(
-        this.terms.length &&
-        !this.terms[
-          this.terms.length - 1
-        ].text
-      );
+      return !!(this.terms.length && !this.terms[this.terms.length - 1].text);
     },
   },
   methods: {
@@ -54,7 +45,7 @@ export default {
     },
     async saveTerm(term, termIndex) {
       const finalize = (term, termIndex) => {
-        if(term.inEdit) {
+        if (term.inEdit) {
           this.cancelInlineEdit(term, termIndex);
         }
 
@@ -136,7 +127,7 @@ export default {
       });
     },
     enableInlineEdit(term, termIndex) {
-      if(!this.isVocabularyEditor){
+      if (!this.isVocabularyEditor) {
         return;
       }
 
@@ -146,6 +137,6 @@ export default {
     cancelInlineEdit(term, termIndex) {
       term.inEdit = false;
       this.$set(this.terms, termIndex, term);
-    }
+    },
   },
 };
