@@ -44,3 +44,8 @@ Run the following command to stop your project.
 ```sh
 ddev stop
 ```
+
+### Running Laravel PHPUnit Tests
+```sh
+ddev artisan test
+```
