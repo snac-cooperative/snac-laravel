@@ -19,6 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('concepts/categories', 'API\ConceptController@categories');
 Route::get('concepts/search', 'API\ConceptController@search');
 Route::get('concepts/reconcile/{id}', 'API\ConceptController@reconcile');
 Route::get('concepts/reconcile', 'API\ConceptController@reconcile');

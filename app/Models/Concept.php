@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Concept extends Model
 {
@@ -33,10 +34,12 @@ class Concept extends Model
         return $this->belongsTo("\App\Models\Concept", "deprecated_to");
     }
 
-    public function setDeprecatedTo($concept)
+    public function setDeprecatedTo($replacementConcept)
     {
         $this->deprecated = true;
-        return $this->deprecatedTo()->associate($concept)
+
+        DB::table('identity_concepts')->where('concept_id', $this->id)->update(['concept_id' => $replacementConcept->id]);
+        return $this->deprecatedTo()->associate($replacementConcept)
             ->save();
     }
 

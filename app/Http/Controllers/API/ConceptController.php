@@ -7,6 +7,7 @@ use App\Http\Requests\API\Concept\StoreRequest as ConceptStoreRequest;
 use App\Http\Resources\ConceptResource;
 use App\Models\Concept;
 use App\Models\Term;
+use App\Models\Vocabulary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,7 @@ class ConceptController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile', 'search']);
+        $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile', 'search', 'categories']);
         $this->authorizeResource(Concept::class);
     }
 
@@ -62,9 +63,7 @@ class ConceptController extends Controller
                 $join->on('concepts.id', '=', 'preferred_terms.concept_id')
                     ->where('preferred_terms.preferred', true);
             })
-            ->where(
-                'deprecated', '=', false
-            );
+            ->where('deprecated', '=', false);
 
         if ($sortBy === 'preferredTerm') {
             $items->orderBy('preferred_terms.text', $sortOrder); // Order by the preferred term
@@ -255,9 +254,9 @@ class ConceptController extends Controller
         if ($to) {
             $replaceConcept = Concept::findOrFail($to);
             $concept->setDeprecatedTo($replaceConcept);
-        } else {
-            $concept->deprecated = !$concept->deprecated;
-            $concept->save();
+
+            // NOTE: Not under version history, deprecation cannot be undone
+            DB::table('identity_concepts')->where('concept_id', $concept->id)->update(['concept_id' => $replaceConcept->id]);
         }
 
         return response()->json($concept, 200);
@@ -348,5 +347,19 @@ class ConceptController extends Controller
             ->orderBy('preferred', 'desc');
 
         return response()->json($terms->get());
+    }
+
+    /**
+     * Return array of categories.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function categories()
+    {
+        $categories = Vocabulary::where('type', 'concept_category')->get()
+            ->map(function ($cat) {
+                return ['value' => $cat['id'], 'text' => $cat['value']];
+            });
+        return response()->json($categories, 200);
     }
 }
