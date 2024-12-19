@@ -57,6 +57,17 @@ export default {
     }
   },
 
+  async deprecateConcept(conceptId, deprecatedToId) {
+    try {
+      const { data } = await apiClient.put(`/${conceptId}/deprecate`, {
+        to: deprecatedToId,
+      });
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
+
   async searchConcepts(searchTerm, perPage = 10) {
     try {
       const { data } = await apiClient.get('/search', {
