@@ -86,8 +86,8 @@ import {
   BInputGroupAppend,
   BFormInvalidFeedback,
 } from 'bootstrap-vue';
-import { categories } from '../../config/categories';
 import ConceptService from '../../api/ConceptService';
+import { loadCategoryIds, getCategoryIds } from '../../api/ConstantsService';
 
 export default {
   data() {
@@ -97,12 +97,17 @@ export default {
       conceptId: null,
       saved: false,
       saving: false,
-      categories,
+      categories: [],
       categoryId: null,
       baseURL: '',
       preferredTermInvalid: 'Preferred Term is required.',
       alternateTermInvalid: 'Alternate Term cannot be empty.',
     };
+  },
+  beforeCreate() {
+    loadCategoryIds().then(() => {
+      this.categories = getCategoryIds();
+    });
   },
   methods: {
     async createConcept() {

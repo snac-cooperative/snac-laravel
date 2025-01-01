@@ -13,11 +13,17 @@ class Term extends Model
         "text",
         "preferred",
         "concept_id",
+        "language",
     ];
     protected $hidden = ["created_at", "updated_at"];
 
     public function concept()
     {
-        return $this->belongsTo("App\Models\Concept");
+        return $this->belongsTo(\App\Models\Concept::class);
+    }
+
+    public function language()
+    {
+        return $this->belongsTo(\App\Models\Vocabulary::class, 'language_id');
     }
 }

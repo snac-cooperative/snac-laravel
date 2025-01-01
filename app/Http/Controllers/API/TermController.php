@@ -82,6 +82,14 @@ class TermController extends Controller
      */
     public function update(Request $request, Term $term)
     {
+        if ($request['preferred'] === true) {
+            $preferred_lang_ids = $term->concept->terms->where('preferred', true)->pluck('language_id')->toArray();
+            if (in_array($request['language_id'], $preferred_lang_ids))
+            {
+                throw new \Exception('Only one preferred term per language');
+            }
+        }
+
         $term->update($request->all());
         return $term;
     }
@@ -95,7 +103,7 @@ class TermController extends Controller
     public function destroy(Term $term)
     {
         $term->delete();
-        
+
         return response('Deleted ' . $term->id, 204);
     }
 }

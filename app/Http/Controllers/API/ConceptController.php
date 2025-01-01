@@ -21,7 +21,7 @@ class ConceptController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile', 'search', 'categories']);
+        $this->middleware('auth:sanctum')->except(['index', 'show', 'reconcile', 'search','categories', 'languages']);
         $this->authorizeResource(Concept::class);
     }
 
@@ -350,16 +350,34 @@ class ConceptController extends Controller
     }
 
     /**
-     * Return array of categories.
+     * Return array of categories, mapped to value and text.
      *
      * @return \Illuminate\Http\Response
      */
     public function categories()
     {
-        $categories = Vocabulary::where('type', 'concept_category')->get()
+        $categories = Vocabulary::conceptCategories()->get()
             ->map(function ($cat) {
                 return ['value' => $cat['id'], 'text' => $cat['value']];
             });
         return response()->json($categories, 200);
+    }
+
+    /**
+     * Return array of language id, code and text.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function languages()
+    {
+        $languages = Vocabulary::where('type', 'language_code')->get()
+            ->map(function ($lang) {
+                return [
+                    'id' => $lang['id'],
+                    'code' => $lang['value'],
+                    'text' => $lang['description']
+                ];
+            });
+        return response()->json($languages, 200);
     }
 }

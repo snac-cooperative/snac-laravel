@@ -57,7 +57,7 @@ class TermsTest extends TestCase
 
         $term = Term::factory()->create();
         $response = $this->patchJson("/api/terms/{$term->id}", [
-            'text' => $this->faker->word
+            'text' => $this->faker->word,
         ]);
 
         $this->assertNotEquals(Term::find($term->id)->text, $term->text);

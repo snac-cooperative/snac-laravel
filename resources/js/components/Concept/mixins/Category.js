@@ -1,12 +1,17 @@
-import { categories } from '../../../config/categories';
 import conceptApi from '../../../api/ConceptService';
+import { loadCategoryIds, getCategoryIds } from '../../../api/ConstantsService';
 
 export default {
   data() {
     return {
       cats: this.categoriesProps,
-      categories,
+      categories: [],
     };
+  },
+  beforeCreate() {
+    loadCategoryIds().then(() => {
+      this.categories = getCategoryIds();
+    })
   },
   computed: {
     selectedCategories() {

@@ -416,4 +416,22 @@ class ConceptsTest extends TestCase
 
         $response->assertStatus(422);
     }
+
+    public function test_concept_limited_to_one_preferred_term_per_language(): void
+    {
+        $reviewerRole = Role::whereHas('permissions', function ($query) {
+            $query->where('label', 'Edit Vocabulary');
+        })->first();
+        $user = User::factory()->hasAttached($reviewerRole)->create();
+        Sanctum::actingAs($user);
+
+        $term = Term::factory()->create(['preferred' => true]);
+        $response = $this->patchJson("/api/terms/{$term->id}", [
+            'text' => 'second_preferred_term',
+            'preferred' => true,
+            'language_id' => 130
+        ]);
+        $this->assertEquals($response['message'], 'Only one preferred term per language');
+        $response->assertStatus(500);
+    }
 }
