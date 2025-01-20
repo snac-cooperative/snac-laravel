@@ -239,7 +239,7 @@
 
 <script>
 // import TermItem from './TermItem.vue';
-import { loadCategoryIds, getCategoryIds } from '../api/ConstantsService';
+import { loadCategoryIds, getCategoryIds } from '../../api/ConstantsService';
 
 export default {
   props: {

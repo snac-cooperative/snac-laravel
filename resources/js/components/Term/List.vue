@@ -13,6 +13,7 @@
           :term-id="term.id"
           :term-text="term.text"
           :term-index="term.index"
+          :term-language-id="term.language_id"
           :concept-id="term.concept_id"
           :in-edit="term.inEdit"
           @save-term="emitSaveTerm"

@@ -69,6 +69,9 @@ export default {
       this.updateCategories().then();
     },
     deleteCategory(categoryId, index) {
+      if (this.cats.length == 1) {
+        return;
+      }
       this.cats.splice(index, 1);
 
       this.updateCategories().then();

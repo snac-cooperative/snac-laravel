@@ -49,3 +49,8 @@ ddev stop
 ```sh
 ddev artisan test
 ```
+
+### Insert Psysh debugger line in unit test
+```sh
+\Psy\debug();
+```

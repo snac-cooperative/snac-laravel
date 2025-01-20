@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="alert alert-success hidden" role="alert">
-      Your changes have been saved.
+      <p>Your changes have been saved.</p>
+    </div>
+    <div class="alert alert-danger hidden" role="alert">
+      <p></p>
     </div>
 
     <header class="sticky-top bg-white">
@@ -110,6 +113,7 @@
             :term-id="preferredTerm.id"
             :term-text="preferredTerm.text"
             :term-index="preferredTerm.index"
+            :term-language-id="preferredTerm.language_id"
             :concept-id="preferredTerm.concept_id"
             :in-edit="preferredTerm.inEdit"
             is-preferred="is-preferred"
@@ -277,9 +281,9 @@
             <div v-for="relation in relationships.broader" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
                 <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
-                <BButton 
+                <BButton
                   v-if="getEditMode()"
-                  variant="danger" 
+                  variant="danger"
                   size="sm"
                   @click="removeRelationship('broader', relation.id)"
                 >
@@ -294,9 +298,9 @@
             <div v-for="relation in relationships.narrower" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
                 <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
-                <BButton 
+                <BButton
                   v-if="getEditMode()"
-                  variant="danger" 
+                  variant="danger"
                   size="sm"
                   @click="removeRelationship('narrower', relation.id)"
                 >
@@ -311,9 +315,9 @@
             <div v-for="relation in relationships.related" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
                 <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
-                <BButton 
+                <BButton
                   v-if="getEditMode()"
-                  variant="danger" 
+                  variant="danger"
                   size="sm"
                   @click="removeRelationship('related', relation.id)"
                 >

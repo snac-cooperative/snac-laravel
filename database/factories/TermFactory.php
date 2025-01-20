@@ -23,6 +23,9 @@ class TermFactory extends Factory
             'preferred' => false,
             'concept_id' => Concept::factory(),
             'language_id' => Vocabulary::english()
+            
+            // 'language_id' => Vocabulary::factory()->language(),
+            // 'language_id' => Vocabulary::factory()->create(['type' => 'language_code'])
         ];
     }
 }

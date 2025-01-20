@@ -13,9 +13,18 @@ class Term extends Model
         "text",
         "preferred",
         "concept_id",
-        "language",
+        "language_id",
     ];
+
     protected $hidden = ["created_at", "updated_at"];
+
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ["language"];
+
 
     public function concept()
     {
