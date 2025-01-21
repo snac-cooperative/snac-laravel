@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TermResource;
+use App\Models\Concept;
 use App\Models\Term;
 use App\Models\Vocabulary;
 use Illuminate\Http\Request;
@@ -60,6 +61,16 @@ class TermController extends Controller
      */
     public function store(Request $request)
     {
+        $concept = Concept::find($request['concept_id']);
+        if ($request['preferred'] === true) {
+            $preferred_lang_ids = $concept->terms->where('preferred', true)->pluck('language_id');
+            if (in_array($request['language_id'], $preferred_lang_ids->toArray())) {
+                throw new \Exception(
+                    "Only one preferred term per language: " . Vocabulary::find($request['language_id'])['description']
+                );
+            }
+        }
+
         return Term::create($request->all());
     }
 
@@ -83,6 +94,7 @@ class TermController extends Controller
      */
     public function update(Request $request, Term $term)
     {
+
         if ($request['preferred'] === true) {
             $preferred_lang_ids = $term->concept->terms->where('preferred', true)->where('id', '!=', $term->id)->pluck('language_id');
             if (in_array($request['language_id'], $preferred_lang_ids->toArray())) {

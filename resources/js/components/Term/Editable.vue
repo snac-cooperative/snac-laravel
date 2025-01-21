@@ -26,17 +26,17 @@
         <BButton @click="cancelInlineEdit" v-if="inlineEdit"
           ><i class="fa fa-ban"></i
         ></BButton>
-        <BButton
+        <!-- <BButton
           variant="primary"
           @click="showPreferredModal"
           v-if="!isPreferred && termId"
           class="btn"
           title="Make Preferred"
           ><i class="fa fa-check-square-o"></i
-        ></BButton>
+        ></BButton> -->
         <BButton
           @click="showDeleteModal"
-          v-if="!isPreferred"
+          v-if="!isPreferred || preferredCount > 1"
           class="btn btn-danger"
           title="Delete"
           ><i class="fa fa-trash"></i
@@ -179,6 +179,11 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  computed: {
+    preferredCount() {
+      return this.$parent.preferredTerms.length
+    }
   },
   mounted() {
     this.getConceptTerm();
