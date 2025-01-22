@@ -13,6 +13,8 @@
           :term-id="term.id"
           :term-text="term.text"
           :term-index="term.index"
+          :is-preferred="term.preferred"
+          :term-language-id="term.language_id || 130"
           :concept-id="term.concept_id"
           :in-edit="term.inEdit"
           @save-term="emitSaveTerm"
@@ -68,6 +70,11 @@ export default {
     hasEmptyTerm: {
       type: Boolean,
       default: false,
+    }
+  },
+  computed: {
+    preferredTerms() {
+      return this.terms.filter((term) => term.preferred);
     }
   },
   methods: {

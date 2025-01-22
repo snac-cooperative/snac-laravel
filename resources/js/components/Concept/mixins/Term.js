@@ -18,15 +18,21 @@ export default {
     alternateTerms() {
       return this.terms.filter((term) => !term.preferred).sort();
     },
-    preferredTerm() {
-      return this.terms.find((term) => term.preferred);
+    preferredTerms() {
+      return this.terms.filter((term) => term.preferred);
+    },
+    titleTerm() {
+      var engPreferred = this.terms.find(
+        (term) => term.preferred && term.language_id == 130,
+      );
+      return engPreferred || this.terms.find((term) => term.preferred);
     },
     hasEmptyTerm() {
       return !!(this.terms.length && !this.terms[this.terms.length - 1].text);
     },
   },
   methods: {
-    addTerm() {
+    addTerm(preferred = false) {
       if (this.hasEmptyTerm) {
         return;
       }
@@ -35,7 +41,7 @@ export default {
       const newTerm = {
         concept_id: conceptID,
         id: null,
-        preferred: false,
+        preferred: preferred,
         text: null,
         inEdit: false,
         index: this.terms.length,
@@ -64,20 +70,27 @@ export default {
         return;
       }
 
-      const [error, response] = await termApi.updateTerm(term.id, term);
-      if (!error) {
-        finalize(term, termIndex);
-      }
+      termApi.updateTerm(term.id, term).then(([error, response]) => {
+        if (!error) {
+          finalize(term, termIndex);
+        } else {
+          this.flashFailureAlert(error.response.data.message);
+        }
+      });
     },
+
     async createTerm(term) {
       const [error, response] = await termApi.createTerm(term);
       if (!error) {
         return response;
+      } else {
+        this.flashFailureAlert(error.response.data.message);
       }
+
       return term;
     },
     makeTermPreferred(term, termIndex) {
-      const currentPreferred = this.preferredTerm;
+      const currentPreferred = this.preferredTerms;
 
       if (currentPreferred && currentPreferred.id !== term.id) {
         currentPreferred.preferred = false;

@@ -19,10 +19,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('concepts/categories', 'API\ConceptController@categories');
 Route::get('concepts/search', 'API\ConceptController@search');
 Route::get('concepts/reconcile/{id}', 'API\ConceptController@reconcile');
 Route::get('concepts/reconcile', 'API\ConceptController@reconcile');
+
+Route::get('concepts/categories', 'API\ConceptController@categories');
+Route::get('concepts/languages', 'API\ConceptController@languages');
 
 Route::put('concepts/{concept}/relate_concept', 'API\ConceptController@relateConcepts');
 Route::delete('concepts/{concept}/relate_concept', 'API\ConceptController@removeRelationship');

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Concept;
+use App\Models\Vocabulary;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,6 +22,10 @@ class TermFactory extends Factory
             'text' => $this->faker->word,
             'preferred' => false,
             'concept_id' => Concept::factory(),
+            'language_id' => Vocabulary::english()
+            
+            // 'language_id' => Vocabulary::factory()->language(),
+            // 'language_id' => Vocabulary::factory()->create(['type' => 'language_code'])
         ];
     }
 }

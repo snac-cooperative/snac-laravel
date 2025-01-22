@@ -626,7 +626,7 @@
 </template>
 
 <script>
-import { categories } from '../config/categories';
+import { loadCategoryIds, getCategoryIds } from '../api/ConstantsService';
 
 export default {
   props: {
@@ -653,10 +653,15 @@ export default {
       selected_entity: '',
       relationType: '',
       propertyEditMode: true,
-      categories,
+      categories: [],
       isVocabularyEditor: this.canEditVocabulary === 'true',
       baseURL: '',
     };
+  },
+  beforeCreate() {
+    loadCategoryIds().then(() => {
+      this.categories = getCategoryIds();
+    });
   },
   computed: {
     displayName() {

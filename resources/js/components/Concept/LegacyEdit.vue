@@ -239,7 +239,7 @@
 
 <script>
 // import TermItem from './TermItem.vue';
-import { categories } from '../../config/categories';
+import { loadCategoryIds, getCategoryIds } from '../../api/ConstantsService';
 
 export default {
   props: {
@@ -281,7 +281,7 @@ export default {
       editMode: false,
       // populating terms with our custom temporary variables
       // concept: this.termProps.slice()
-      categories,
+      categories: [],
       cats: this.conceptProps.concept_categories,
       selectedCategory: this.conceptProps.concept_categories[0].id,
       isVocabularyEditor: this.canEditVocabulary === 'true',
@@ -302,6 +302,11 @@ export default {
     preferredTerm() {
       return this.terms.find((term) => term.preferred);
     },
+  },
+  beforeCreate() {
+    loadCategoryIds().then(() => {
+      this.categories = getCategoryIds();
+    });
   },
   created() {
     console.log('Concept component loaded');

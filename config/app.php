@@ -228,6 +228,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Concept' => App\Models\Concept::class,
+        'Term' => App\Models\Term::class,
+        'Vocabulary' => App\Models\Vocabulary::class
     ],
 
 ];

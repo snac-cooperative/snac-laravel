@@ -1,4 +1,5 @@
 export default {
+  // Note: Not currently used due to multi-preferred terms
   methods: {
     showPreferredModal() {
       this.$refs.preferredModal.show();

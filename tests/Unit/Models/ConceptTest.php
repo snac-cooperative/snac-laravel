@@ -6,9 +6,16 @@ use Tests\TestCase;
 use App\Models\Concept;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\Term;
+use App\Models\Role;
+use App\Models\User;
+use Laravel\Sanctum\Sanctum;
+
 class ConceptTest extends TestCase
 {
     use DatabaseTransactions;
+    use WithFaker;
 
     public function test_concept_can_have_broader_relationships()
     {

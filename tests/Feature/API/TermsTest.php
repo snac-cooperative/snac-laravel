@@ -57,7 +57,7 @@ class TermsTest extends TestCase
 
         $term = Term::factory()->create();
         $response = $this->patchJson("/api/terms/{$term->id}", [
-            'text' => $this->faker->word
+            'text' => $this->faker->word,
         ]);
 
         $this->assertNotEquals(Term::find($term->id)->text, $term->text);
@@ -124,5 +124,25 @@ class TermsTest extends TestCase
         $response = $this->deleteJson("/api/terms/{$term->id}");
 
         $response->assertStatus(403);
+    }
+
+    public function test_term_limited_to_one_preferred_term_per_language(): void
+    {
+        $reviewerRole = Role::whereHas('permissions', function ($query) {
+            $query->where('label', 'Edit Vocabulary');
+        })->first();
+        $user = User::factory()->hasAttached($reviewerRole)->create();
+        Sanctum::actingAs($user);
+
+        $first_term = Term::factory()->create(['preferred' => true, 'language_id' => 130]);
+        $second_term = Term::factory()->create(['concept_id' => $first_term->concept_id, 'preferred' => true, 'language_id' => null]);
+
+        $response = $this->patchJson("/api/terms/{$second_term->id}", [
+            'text' => 'second_preferred_term',
+            'preferred' => true,
+            'language_id' => 130
+        ]);
+        $this->assertEquals($response['message'], 'Only one preferred term per language: English');
+        $response->assertStatus(500);
     }
 }

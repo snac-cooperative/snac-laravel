@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="alert alert-success hidden" role="alert">
-      Your changes have been saved.
+      <p>Your changes have been saved.</p>
+    </div>
+    <div class="alert alert-danger hidden" role="alert">
+      <p></p>
     </div>
 
     <header class="sticky-top bg-white">
@@ -39,15 +42,15 @@
         >
           <div class="form-group">
             <label for="relation-search"
-              >Search and select the concept that replaces
-              "{{ preferredTerm.text }}"</label
+              >Search and select the concept that replaces "{{
+                titleTerm.text
+              }}"</label
             >
             <b-form-input
               v-model="searchTerm"
               @input="searchConcepts"
               placeholder="Type to search..."
             ></b-form-input>
-
 
             <div v-if="isSearching" class="text-center my-2">
               <b-spinner small></b-spinner> Searching...
@@ -93,7 +96,7 @@
       </div>
 
       <h2>
-        {{ preferredTerm.text }}
+        {{ titleTerm.text }}
         <span v-if="deprecated">(deprecated)</span>
       </h2>
 
@@ -103,26 +106,20 @@
     <div id="concept-table">
       <div class="form-group">
         <div class="col-xs-8">
-          <h4>Preferred Term</h4>
-          <EditableTerm
-            v-if="getEditMode() || preferredTerm.inEdit"
-            :key="preferredTerm.id"
-            :term-id="preferredTerm.id"
-            :term-text="preferredTerm.text"
-            :term-index="preferredTerm.index"
-            :concept-id="preferredTerm.concept_id"
-            :in-edit="preferredTerm.inEdit"
-            is-preferred="is-preferred"
+          <h4>Preferred Terms</h4>
+          <term-list
+            :terms="preferredTerms"
+            :canEditVocabulary="isVocabularyEditor"
+            :has-empty-term="hasEmptyTerm"
+            :is-preferred="true"
             @save-term="saveTerm"
+            @delete-term="deleteTerm"
+            @add-term="addTerm(true)"
+            @make-term-preferred="makeTermPreferred"
+            @enable-inline-edit="enableInlineEdit"
             @cancel-inline-edit="cancelInlineEdit"
-            @input="flagDirty"
-          ></EditableTerm>
-          <p
-            v-else
-            @dblclick="enableInlineEdit(preferredTerm, preferredTerm.index)"
-          >
-            {{ preferredTerm.text }}
-          </p>
+            @flat-dirty="flagDirty"
+          ></term-list>
 
           <h4 class="mt-3" v-show="alternateTerms.length || getEditMode()">
             Alternate Terms
@@ -271,15 +268,26 @@
         </BModal>
 
         <!-- Display existing relationships -->
-        <div v-if="hasAnyRelationships" class="relations mx-0" style="display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); column-gap: 2rem;">
+        <div
+          v-if="hasAnyRelationships"
+          class="relations mx-0"
+          style="
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(0, 1fr);
+            column-gap: 2rem;
+          "
+        >
           <div v-if="relationships.broader && relationships.broader.length">
             <h3>Broader</h3>
             <div v-for="relation in relationships.broader" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
-                <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
-                <BButton 
+                <a :href="`/concepts/${relation.id}`">{{
+                  relation.preferred_term.text
+                }}</a>
+                <BButton
                   v-if="getEditMode()"
-                  variant="danger" 
+                  variant="danger"
                   size="sm"
                   @click="removeRelationship('broader', relation.id)"
                 >
@@ -293,10 +301,12 @@
             <h3>Narrower</h3>
             <div v-for="relation in relationships.narrower" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
-                <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
-                <BButton 
+                <a :href="`/concepts/${relation.id}`">{{
+                  relation.preferred_term.text
+                }}</a>
+                <BButton
                   v-if="getEditMode()"
-                  variant="danger" 
+                  variant="danger"
                   size="sm"
                   @click="removeRelationship('narrower', relation.id)"
                 >
@@ -310,10 +320,12 @@
             <h3>Related</h3>
             <div v-for="relation in relationships.related" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
-                <a :href="`/concepts/${relation.id}`">{{ relation.preferred_term.text }}</a>
-                <BButton 
+                <a :href="`/concepts/${relation.id}`">{{
+                  relation.preferred_term.text
+                }}</a>
+                <BButton
                   v-if="getEditMode()"
-                  variant="danger" 
+                  variant="danger"
                   size="sm"
                   @click="removeRelationship('related', relation.id)"
                 >
@@ -327,7 +339,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import Component from './Default.js';
 

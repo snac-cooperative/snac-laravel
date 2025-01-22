@@ -14,7 +14,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'preferred_term' => 'required:string',
+            'preferred_term' => 'required:array',
             'category_id' => 'required',
             'alternate_terms' => 'array',
             'alternate_terms.*' => 'string',
@@ -41,7 +41,8 @@ class StoreRequest extends FormRequest
 
         // Add the preferred term to the terms array
         $terms[] = [
-            'text' => $validated['preferred_term'],
+            'text' => $validated['preferred_term']['text'],
+            'language_id' => $validated['preferred_term']['language_id'],
             'preferred' => true,
         ];
 

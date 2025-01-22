@@ -59,5 +59,13 @@ export default {
         alert.classList.add('hidden');
       }, 3000);
     },
+    flashFailureAlert(message) {
+      const alert = document.querySelector('.alert-danger');
+      alert.classList.remove('hidden');
+      alert.textContent = message;
+      setTimeout(function () {
+        alert.classList.add('hidden');
+      }, 3000);
+    },
   },
 };

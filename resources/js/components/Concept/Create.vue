@@ -9,13 +9,19 @@
       :invalid-feedback="preferredTermInvalid"
       :state="preferredTermState"
     >
-      <BFormInput
-        type="text"
-        id="preferred-term"
-        v-model="preferredTerm"
-        placeholder="Enter Preferred Term"
-        :state="preferredTermState"
-      ></BFormInput>
+      <BInputGroup>
+        <BFormInput
+          type="text"
+          id="preferred-term"
+          v-model="preferredTerm"
+          placeholder="Enter Preferred Term"
+          :state="preferredTermState"
+        ></BFormInput>
+        <language-select
+          :value="130"
+          @language-selected="setPreferredLangCode"
+        ></language-select>
+      </BInputGroup>
     </BFormGroup>
 
     <BFormGroup
@@ -86,8 +92,8 @@ import {
   BInputGroupAppend,
   BFormInvalidFeedback,
 } from 'bootstrap-vue';
-import { categories } from '../../config/categories';
 import ConceptService from '../../api/ConceptService';
+import { loadCategoryIds, getCategoryIds } from '../../api/ConstantsService';
 
 export default {
   data() {
@@ -97,12 +103,18 @@ export default {
       conceptId: null,
       saved: false,
       saving: false,
-      categories,
+      categories: [],
       categoryId: null,
+      preferredTermLanguageId: null,
       baseURL: '',
       preferredTermInvalid: 'Preferred Term is required.',
       alternateTermInvalid: 'Alternate Term cannot be empty.',
     };
+  },
+  beforeCreate() {
+    loadCategoryIds().then(() => {
+      this.categories = getCategoryIds();
+    });
   },
   methods: {
     async createConcept() {
@@ -113,9 +125,12 @@ export default {
       this.saving = true;
 
       const [error, concept] = await ConceptService.createConcept({
-        preferred_term: this.preferredTerm,
+        preferred_term: {
+          text: this.preferredTerm,
+          language_id: this.preferredTermLanguageId,
+        },
         category_id: this.categoryId,
-        alternate_terms: this.alternateTerms,
+        alternate_terms: this.alternateTerms, // TODO: language ids for alternates.
       });
 
       if (error) console.error(error);
@@ -140,6 +155,9 @@ export default {
       }
 
       return term.length > 0;
+    },
+    setPreferredLangCode(id) {
+      this.preferredTermLanguageId = id;
     },
   },
   computed: {

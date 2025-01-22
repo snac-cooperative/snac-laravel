@@ -134,7 +134,7 @@ export default {
           return {
             id: concept.id,
             link: `${this.baseURL}/concepts/${concept.id}`,
-            preferredTerm: concept.preferred_term.text,
+            preferredTerm: concept.preferred_term?.text,
             category: concept.concept_categories[0]?.value,
           };
         });

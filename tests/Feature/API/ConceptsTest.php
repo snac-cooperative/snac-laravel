@@ -89,7 +89,7 @@ class ConceptsTest extends TestCase
         $categoryIds = Vocabulary::where('type', 'concept_category')->pluck('id')->toArray();
 
         $response = $this->postJson('/api/concepts', [
-            'preferred_term' => 'preferred',
+            'preferred_term' => ['text' => 'preferred', 'language_id' => 130],
             'category_id' => Arr::random($categoryIds),
             'alternate_terms' => [
                 'term1',

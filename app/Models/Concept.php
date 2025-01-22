@@ -112,4 +112,20 @@ class Concept extends Model
     {
         return $this->hasOne("App\Models\Term")->where("preferred", true);
     }
+
+    public function hasOverOnePreferredTermsPerLanguage(): bool
+    {
+        $preferreds = array_filter($this->terms->toArray(), function ($term) {
+            return $term['preferred'] === true;
+        });
+
+        $counts = array_count_values(array_column($preferreds, 'language_id'));
+
+        foreach ($counts as $count) {
+            if ($count > 1) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

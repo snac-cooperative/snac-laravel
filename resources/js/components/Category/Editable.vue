@@ -26,6 +26,7 @@
           ><i class="fa fa-floppy-o"></i
         ></BButton>
         <BButton @click="showDeleteModal" class="btn btn-danger" title="Delete"
+        v-show="this.selectedCategories.length != 1"
           ><i class="fa fa-trash"></i
         ></BButton>
       </BInputGroupAppend>
@@ -57,7 +58,7 @@ import {
   BInputGroupAppend,
   BModal,
 } from 'bootstrap-vue';
-import { categories } from '../../config/categories';
+import { loadCategoryIds, getCategoryIds } from  '../../api/ConstantsService';
 
 export default {
   data() {
@@ -66,8 +67,13 @@ export default {
       originalId: this.categoryId,
       selectedValue: this.categoryValue,
       previous: null,
-      categories,
+      categories: [],
     };
+  },
+  beforeCreate() {
+    loadCategoryIds().then(() => {
+      this.categories = getCategoryIds();
+    });
   },
   model: {
     event: 'input',

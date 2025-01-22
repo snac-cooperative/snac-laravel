@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { categories } from '../config/categories';
+import { loadCategoryIds, getCategoryIds } from '../api/ConstantsService';
 
 export default {
   props: {
@@ -25,8 +25,13 @@ export default {
   },
   data() {
     return {
-      categories,
+      categories: [],
     };
+  },
+  beforeCreate() {
+    loadCategoryIds().then(() => {
+      this.categories = getCategoryIds();
+    });
   },
 };
 </script>
