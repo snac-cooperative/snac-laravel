@@ -66,16 +66,16 @@ export default {
       if (!term.id) {
         term = await this.createTerm(term);
         finalize(term, termIndex);
-        this.flashSuccessAlert();
+        this.alertSuccess();
         return;
       }
 
       termApi.updateTerm(term.id, term).then(([error, response]) => {
         if (!error) {
           finalize(term, termIndex);
-          this.flashSuccessAlert();
+          this.alertSuccess();
         } else {
-          this.flashFailureAlert(error.response.data.message);
+          this.alertFailure(error.response.data.message);
         }
       });
     },
@@ -85,7 +85,7 @@ export default {
       if (!error) {
         return response;
       } else {
-        this.flashFailureAlert(error.response.data.message);
+        this.alertFailure(error.response.data.message);
       }
 
       return term;
@@ -133,9 +133,9 @@ export default {
       const [error, response] = await termApi.deleteTerm(termId);
       if (!error) {
         finalize(term, index);
-        this.flashSuccessAlert();
+        this.alertSuccess();
       } else {
-        this.flashFailureAlert(error.response.data.message);
+        this.alertFailure(error.response.data.message);
       }
     },
     updateTermIndexes() {

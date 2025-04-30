@@ -52,14 +52,14 @@ export default {
     };
   },
   methods: {
-    flashSuccessAlert() {
+    alertSuccess() {
       const alert = document.querySelector('.alert-success');
       alert.classList.remove('hidden');
       setTimeout(function () {
         alert.classList.add('hidden');
       }, 3000);
     },
-    flashFailureAlert(message) {
+    alertFailure(message) {
       const alert = document.querySelector('.alert-danger');
       alert.classList.remove('hidden');
       alert.textContent = message;

@@ -11,19 +11,14 @@ export default {
   beforeCreate() {
     loadCategoryIds().then(() => {
       this.categories = getCategoryIds();
-    })
+    });
   },
   computed: {
     selectedCategories() {
       return this.cats.map((cat) => cat.id);
     },
     hasEmptyCategory() {
-      return !!(
-        this.cats.length &&
-        !this.cats[
-          this.cats.length - 1
-        ].id
-      );
+      return !!(this.cats.length && !this.cats[this.cats.length - 1].id);
     },
   },
   methods: {
@@ -42,7 +37,7 @@ export default {
         conceptCategories: this.cats,
       });
       if (!error) {
-        this.flashSuccessAlert();
+        this.alertSuccess();
       }
     },
     addCategory() {

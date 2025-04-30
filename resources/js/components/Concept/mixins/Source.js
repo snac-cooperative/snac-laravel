@@ -3,12 +3,10 @@ import sourceApi from '../../../api/ConceptSourceService';
 export default {
   data() {
     return {
-      sources: this.sourcesProps.map(
-        (source) => {
-          source.inEdit = false;
-          return source;
-        },
-      ),
+      sources: this.sourcesProps.map((source) => {
+        source.inEdit = false;
+        return source;
+      }),
     };
   },
   computed: {
@@ -31,14 +29,14 @@ export default {
         if(!error){
           this.cleanDirty(response);
           this.updateSources(response, index);
-          this.flashSuccessAlert();
+          this.alertSuccess();
         }
       } else {
-        const [error,response] = await sourceApi.createConceptSource(source);
-        if(!error){
+        const [error, response] = await sourceApi.createConceptSource(source);
+        if (!error) {
           this.cleanDirty(source);
           this.updateSources(response, index);
-          this.flashSuccessAlert();
+          this.alertSuccess();
         }
       }
     },
@@ -49,11 +47,11 @@ export default {
         return;
       }
 
-      const [error,response] = await sourceApi.deleteConceptSource(sourceId);
-      if(!error){
+      const [error, response] = await sourceApi.deleteConceptSource(sourceId);
+      if (!error) {
         this.cleanDirty(this.sources[index]);
         this.sources.splice(index, 1);
-        this.flashSuccessAlert();
+        this.alertSuccess();
       }
     },
   },

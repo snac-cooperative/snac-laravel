@@ -93,7 +93,7 @@ export default {
       this.relationships.related = data.related;
 
       this.showRelationshipModal = false;
-      this.flashSuccessAlert();
+      this.alertSuccess();
     },
 
     async removeRelationship(type, relatedId) {
@@ -120,7 +120,7 @@ export default {
       this.relationships.narrower = data.narrower;
       this.relationships.related = data.related;
 
-      this.flashSuccessAlert();
+      this.alertSuccess();
     },
   },
 };
