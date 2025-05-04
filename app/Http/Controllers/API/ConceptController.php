@@ -297,7 +297,7 @@ class ConceptController extends Controller
             ->join('terms', 'concepts.id', '=', 'terms.concept_id')
             ->leftJoin('concept_categories', 'concepts.id', '=', 'concept_categories.concept_id')
             ->leftJoin('vocabulary', 'concept_categories.category_id', '=', 'vocabulary.id')
-            ->where('terms.text', 'ILIKE', '%' . $request->term . '%')
+            ->where('terms.text', 'ILIKE', $request->term . '%')
             ->where('concepts.deprecated', false);
 
         if (!$request->boolean('all_terms', false)) {
