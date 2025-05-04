@@ -23,8 +23,13 @@
 </template>
 
 <script>
+import axios from 'axios';
 import Multiselect from 'vue-multiselect';
 import { languages } from '../config/languages';
+
+const apiClient = axios.create({
+  baseURL: `/api/concepts`,
+});
 
 export default {
   components: { Multiselect },
@@ -37,14 +42,30 @@ export default {
   },
   data() {
     return {
-      languages,
+      languages: [],
       selectedValue: languages.find((lang) => lang['id'] == this?.value),
     };
+  },
+  mounted() {
+    this.fetchLanguages();
   },
   methods: {
     handleSelect(selectedOption) {
       this.$emit('language-selected', selectedOption.id);
     },
+    async fetchLanguages() {
+      try {
+        const response = await apiClient.get('/languages');
+        const languageArray = response.data.map(lang => ({
+          id: lang.id,
+          code: lang.code,
+          name: lang.text
+        }));
+        this.languages = languageArray;
+      } catch (error) {
+        console.error("Could not fetch langauge options: ", error);
+      }
+    }
   },
 };
 </script>
