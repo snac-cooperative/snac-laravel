@@ -1,0 +1,110 @@
+import axios from 'axios';
+
+const apiClient = axios.create({
+  baseURL: `/api/concepts`,
+});
+
+export default {
+  async listConcepts(perPage, sortBy, sortOrder, page) {
+    try {
+      const { data } = await apiClient.get('', {
+        params: {
+          per_page: perPage,
+          sort_by: sortBy,
+          sort_order: sortOrder,
+          page,
+        },
+      });
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
+
+  async getConcept(conceptId) {
+    try {
+      const { data } = await apiClient.get(`/${conceptId}`);
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
+
+  async createConcept(conceptData) {
+    try {
+      const { data } = await apiClient.post('', conceptData);
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
+
+  async updateConcept(conceptId, conceptData) {
+    try {
+      const { data } = await apiClient.patch(`/${conceptId}`, conceptData);
+      return [null, data];
+    } catch (error) {
+      return [error];
+    }
+  },
+
+  async deleteConcept(conceptId) {
+    try {
+      const { data } = await apiClient.delete(`/${conceptId}`);
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
+
+  async deprecateConcept(conceptId, deprecatedToId) {
+    try {
+      const { data } = await apiClient.put(`/${conceptId}/deprecate`, {
+        to: deprecatedToId,
+      });
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
+
+  async searchConcepts(searchTerm, perPage = 10) {
+    try {
+      const { data } = await apiClient.get('/search', {
+        params: {
+          term: searchTerm,
+          per_page: perPage,
+        },
+      });
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
+
+  async relateConcept(conceptId, relationshipData) {
+    try {
+      const { data } = await apiClient.put(`/${conceptId}/relate_concept`, {
+        relation_type: relationshipData.type,
+        related_id: relationshipData.relatedId,
+      });
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
+
+  async removeRelationship(conceptId, relationshipData) {
+    try {
+      const { data } = await apiClient.delete(`/${conceptId}/relate_concept`, {
+        data: {  // Using data property for DELETE request body
+          relation_type: relationshipData.type,
+          related_id: relationshipData.relatedId,
+        }
+      });
+      return [null, data];
+    } catch (error) {
+      return [error, null];
+    }
+  },
+};

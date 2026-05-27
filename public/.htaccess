@@ -21,6 +21,6 @@
 </IfModule>
 
 <IfModule mod_headers.c>
-  Header set Access-Control-Allow-Origin "snac-dev.iath.virginia.edu"
-  Header set Access-Control-Allow-Origin "snaccooperative.org"
+  # Header set Access-Control-Allow-Origin "snac-dev.iath.virginia.edu"
+  # Header set Access-Control-Allow-Origin "snaccooperative.org"
 </IfModule>

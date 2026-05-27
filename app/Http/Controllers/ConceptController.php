@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Concept;
 use App\Models\Term;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ConceptController extends Controller
 {
@@ -17,27 +17,6 @@ class ConceptController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->ajax()) {
-            $perPage = intval($request['per_page']);
-            if ($perPage <= 0) {
-                $perPage = 10;
-            }
-            $sortBy = $request['sort_by'];
-            $sortDesc = $request['sort_desc'] == 'true' ? 'desc' : 'asc';
-            $concepts = Concept::leftJoin('concept_categories', function($join) {
-                $join->on('concepts.id', '=', 'concept_categories.concept_id');
-            })->leftJoin('vocabulary', function($join) {
-                $join->on('category_id', '=', 'vocabulary.id');
-            })->leftJoin('terms', function($join) {
-                $join->on('concepts.id', '=', 'terms.concept_id');
-                $join->on('preferred', '=', DB::raw("True"));
-            })->where(
-                'deprecated', '=', false
-            )->select('concepts.id as id', 'vocabulary.value as category', 'terms.text as preferred_term')
-                ->orderBy($sortBy, $sortDesc)->paginate($perPage);
-            return $concepts->toJson();
-        }
-
         $user = Auth::user();
         $isVocabularyEditor = false;
         if (!Auth::guest()) {
@@ -79,10 +58,10 @@ class ConceptController extends Controller
         //$term->save();
         $concept->terms()->save($term);
         //Savemany... Ref.
-        if($request->ajax()) {
+        if ($request->ajax()) {
             return [
                 "id" => $concept->id,
-                "termId" => $term->id
+                "termId" => $term->id,
             ];
         }
         return redirect('concepts')->with('status', 'Concept Created');
@@ -94,9 +73,9 @@ class ConceptController extends Controller
         $term = Term::create($request->all());
         $concept->terms()->save($term);
         //Savemany... Ref.
-        if($request->ajax()) {
+        if ($request->ajax()) {
             return [
-                "termId" => $term->id
+                "termId" => $term->id,
             ];
         }
         return redirect('concepts', $concept->id)->with('status', 'Term Created');
@@ -113,9 +92,9 @@ class ConceptController extends Controller
         $term->preferred = true;
         $term->save();
 
-        if($request->ajax()) {
+        if ($request->ajax()) {
             return [
-                "termId" => $term->id
+                "termId" => $term->id,
             ];
         }
         return redirect('concepts', $concept->id)->with('status', 'Term Marked Preferred');
@@ -130,11 +109,11 @@ class ConceptController extends Controller
     public function show($concept_id)
     {
         $concept = Concept::with('terms')
-                        ->with('broader')
-                        ->with('narrower')
-                        ->with('related')
-                        ->with('sources')
-                        ->findOrFail($concept_id);
+            ->with('broader')
+            ->with('narrower')
+            ->with('related')
+            ->with('sources')
+            ->findOrFail($concept_id);
 
         $isVocabularyEditor = false;
         $user = Auth::user();
@@ -142,7 +121,33 @@ class ConceptController extends Controller
             $isVocabularyEditor = $user->isVocabularyEditor();
         }
 
-        return view('concepts.show', ['concept' => $concept, 'isVocabularyEditor' => $isVocabularyEditor]);
+        $relations = [];
+
+        if (count($concept->broader)) {
+            $relations['Broader'] = [];
+            foreach ($concept->broader as $broader) {
+                $relations['Broader'][] = $broader->terms[0];
+            }
+        }
+
+        if (count($concept->narrower)) {
+            $relations['Narrower'] = [];
+            foreach ($concept->narrower as $narrower) {
+                $relations['Narrower'][] = $narrower->terms[0];
+            }
+        }
+
+        if (count($concept->related)) {
+            $relations['Related'] = [];
+            foreach ($concept->related as $related) {
+                $relations['Related'][] = $related->terms[0];
+            }
+        }
+
+        return view(
+            'concepts.show',
+            compact('concept', 'isVocabularyEditor', 'relations')
+        );
     }
 
     /**
@@ -206,7 +211,8 @@ class ConceptController extends Controller
             ->leftJoin("terms", "concepts.id", "=", "terms.concept_id")
             ->leftJoin("concept_categories", "concepts.id", "=", "concept_categories.concept_id")
             ->leftJoin("vocabulary", "concept_categories.category_id", "vocabulary.id")
-            ->where([["text", "ILIKE", "%" . $term . "%"]]);
+            ->where([["text", "ILIKE", "%" . $term . "%"]])
+            ->where("deprecated", "false");
 
         if (!$all_terms) {
             $terms = $terms->where("preferred", "true");
@@ -218,35 +224,4 @@ class ConceptController extends Controller
 
         return $terms->get();
     }
-
-
-    /**
-     * Relate Concepts
-     *
-     * @param  \App\Concept  $concept
-     * @return \Illuminate\Http\Response
-     */
-    public function relateConcepts($concept_id)
-    {
-        $relation_type = $_GET["relation_type"];
-        $related_id = $_GET["related_id"];
-
-        $concept = Concept::findOrFail($concept_id);
-
-        switch ($relation_type) {
-            case "broader":
-                $concept->addBroader($related_id);
-                break;
-            case "narrower":
-                $concept->addNarrower($related_id);
-                break;
-            case "related":
-                $concept->addRelated($related_id);
-                break;
-        }
-
-        return $concept;
-    }
-
-
 }

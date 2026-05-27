@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
-                    <a href="/login/github">Login via Github</a>
+                    <a href="/login/google">Login via Google</a>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">

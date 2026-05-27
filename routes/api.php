@@ -1,9 +1,8 @@
 <?php
 
+use App\Models\Term;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\Concept;
-use App\Models\Term;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,17 +13,22 @@ use App\Models\Term;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('concepts/search', 'API\ConceptController@search');
 Route::get('concepts/reconcile/{id}', 'API\ConceptController@reconcile');
 Route::get('concepts/reconcile', 'API\ConceptController@reconcile');
 
-Route::put('concepts/{id}/relate_concept', 'ConceptController@relateConcepts');
-Route::put('concepts/{id}/deprecate', 'API\ConceptController@deprecate');
+Route::get('concepts/categories', 'API\ConceptController@categories');
+Route::get('concepts/languages', 'API\ConceptController@languages');
+
+Route::put('concepts/{concept}/relate_concept', 'API\ConceptController@relateConcepts');
+Route::delete('concepts/{concept}/relate_concept', 'API\ConceptController@removeRelationship');
+Route::put('concepts/{concept}/deprecate', 'API\ConceptController@deprecate');
 Route::apiResource('concepts', 'API\ConceptController');
 
 Route::get('concepts_summary', function () {
