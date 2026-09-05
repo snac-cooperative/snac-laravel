@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: `/api/terms`,
+  baseURL: `/laravel/api/terms`,
 });
 
 export default {

@@ -24,7 +24,7 @@ Create a Resource
 @section ('content')
 
 {{-- <ol class="breadcrumb">
-    <li><a href="{{env('SNAC_URL')}}/vocab_administrator/dashboard">Vocabulary</a></li>
+    <li><a href="{{config('app.snac_url')}}/vocab_administrator/dashboard">Vocabulary</a></li>
     <li>New</li>
 </ol>
 <div class="row">
@@ -41,7 +41,7 @@ Create a Resource
 
 <h1>New Resource</h1>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active"><a href="{{env('MIX_APP_URL')}}/resources_guided">Resources</a></li>
+        <li class="breadcrumb-item active"><a href="{{config('app.mix_url')}}/resources_guided">Resources</a></li>
         <li class="breadcrumb-item">Relations</li>
     </ol>
 
@@ -303,7 +303,7 @@ Create a Resource
                 </div>
                 <div class="col-md-4">
                     <a type="button" class="btn btn-success" href="/cpfs">Add Creator to SNAC</a>
-                    {{-- <a type="button" class="btn btn-success" href="{{env('SNAC_URL')}}/cpfs">Add Creator to SNAC</a> --}}
+                    {{-- <a type="button" class="btn btn-success" href="{{config('app.snac_url')}}/cpfs">Add Creator to SNAC</a> --}}
                 </div>
             </div>
 

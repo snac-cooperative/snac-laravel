@@ -52,7 +52,7 @@ class LoginController extends Controller
     public function handleProviderCallback()
     {
         $user = Socialite::driver('google')->user();
-        $localUser = User::select('id')->where('email', $user->email)->first();
+        $localUser = User::select('id')->where('email', $user->email)->first();	
         if (!$localUser) {
             return redirect('register');
         }

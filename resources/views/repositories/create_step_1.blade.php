@@ -13,7 +13,7 @@ Create a Holding Repository
 @section ('content')
 
 {{-- <ol class="breadcrumb">
-    <li><a href="{{env('SNAC_URL')}}/vocab_administrator/dashboard">Vocabulary</a></li>
+    <li><a href="{{config('app.snac_url')}}/vocab_administrator/dashboard">Vocabulary</a></li>
     <li>New</li>
 </ol>
 <div class="row">
@@ -29,7 +29,7 @@ Create a Holding Repository
 
 <h1>New Holding Repository</h1>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active"><a href="{{env('MIX_APP_URL')}}/repositories">Repository</a></li>
+        <li class="breadcrumb-item active"><a href="{{config('app.mix_url')}}/repositories">Repository</a></li>
         <li class="breadcrumb-item">Address</li>
         <li class="breadcrumb-item">Contact</li>
     </ol>

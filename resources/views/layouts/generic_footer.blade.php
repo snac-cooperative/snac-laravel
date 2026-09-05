@@ -1,6 +1,6 @@
-    @if (env('SNAC_INTERFACE_VERSION') == "development")
+    @if (config('app.env') == "development")
     <div class="footer footer-development-version">
-    @elseif (env('SNAC_INTERFACE_VERSION') == "demo")
+    @elseif (config('app.env') == "demo")
     <div class="footer footer-demo-version">
     @else
     <footer>
@@ -9,13 +9,13 @@
             <div class="row">
                 <div class="col-md-4 footer-content">
                     <p class="text-center">
-                        <img src="{{env('SNAC_URL')}}/images/paper_dolls_art2.png"/><br/>
+                        <img src="{{config('app.snac_url')}}/images/paper_dolls_art2.png"/><br/>
                     </p>
                     <h4 class="text-center">Social Networks and Archival Context</h4>
                     <p class="text-center" style="margin-top: 5px;">
                         <a href="https://twitter.com/snaccooperative" title="Visit us on Twitter">
                             <i class="fa fa-2x fa-twitter-square" style="vertical-align: middle" aria-hidden="true"></i></a>
-                        <a href="{{env('SNAC_URL')}}/contact" title="Contact us"><span class="fa-stack fa-sm">
+                        <a href="{{config('app.snac_url')}}/contact" title="Contact us"><span class="fa-stack fa-sm">
                                   <i class="fa fa-square fa-stack-2x"></i>
                                     <i class="fa fa-envelope fa-stack-1x" style="color: #000"></i>
                             </span></a>
@@ -46,7 +46,7 @@
             </div>
         </div>
     </footer>
-@if (false && env('APP_DEBUG'))
+@if (false && config('app.debug'))
 {{ print ("debug")}}
 @endif
 @include ('layouts.accept_cookies')

@@ -35,7 +35,7 @@ Route::get('logoff', function () {
     if (isset($_GET['redirect'])) {
         return redirect(urldecode($_GET['redirect']));
     }
-    return redirect('/');
+    return redirect(config('app.url'));
 });
 
 Route::get('login/snac', function () {

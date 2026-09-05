@@ -25,7 +25,7 @@ Create an Entity
 @section ('content')
 
 {{-- <ol class="breadcrumb">
-    <li><a href="{{env('SNAC_URL')}}/vocab_administrator/dashboard">Vocabulary</a></li>
+    <li><a href="{{config('app.snac_url')}}/vocab_administrator/dashboard">Vocabulary</a></li>
     <li>New</li>
 </ol>
 <div class="row">
@@ -68,7 +68,7 @@ Create an Entity
 
 <h1>New Person, Family, or Corporate Body</h1>
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active"><a href="{{env('MIX_APP_URL')}}/cpf">Entities</a></li>
+        <li class="breadcrumb-item active"><a href="{{config('app.mix_url')}}/cpf">Entities</a></li>
         {{-- <li class="breadcrumb-item">Relations</li> --}}
     </ol>
 

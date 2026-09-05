@@ -52,8 +52,9 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
-
+    'url' => env('APP_URL', 'http://localhost/'),
+    'snac_url' => env('SNAC_URL', 'http://localhost/'),
+    'rest_url' => env('SNAC_REST_URL', 'http://localhost/'),
     'asset_url' => env('ASSET_URL', null),
     'mix_url' => env('ASSET_URL', null),
 

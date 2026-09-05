@@ -8,12 +8,12 @@
     @endif
 
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/concepts">Concepts</a></li>
+        <li class="breadcrumb-item"><a href="{{ config('app.url') }}/concepts">Concepts</a></li>
     </ol>
 
     @if (false) #permissions.EditResources
         <div class="text-center">
-            <a href="{{ env('SNAC_URL') }}/vocab_administrator/add_concept" class="btn btn-success">
+            <a href="{{ config('app.snac_url') }}/vocab_administrator/add_concept" class="btn btn-success">
                 <i class="fa fa-fw fa-plus"></i> Add New Concept
             </a>
         </div>

@@ -282,7 +282,7 @@
             <h3>Broader</h3>
             <div v-for="relation in relationships.broader" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
-                <a :href="`/concepts/${relation.id}`">{{
+                <a :href="`/laravel/concepts/${relation.id}`">{{
                   relation.preferred_term.text
                 }}</a>
                 <BButton
@@ -301,7 +301,7 @@
             <h3>Narrower</h3>
             <div v-for="relation in relationships.narrower" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
-                <a :href="`/concepts/${relation.id}`">{{
+                <a :href="`/laravel/concepts/${relation.id}`">{{
                   relation.preferred_term.text
                 }}</a>
                 <BButton
@@ -320,7 +320,7 @@
             <h3>Related</h3>
             <div v-for="relation in relationships.related" :key="relation.id">
               <div class="d-flex justify-content-between align-items-center">
-                <a :href="`/concepts/${relation.id}`">{{
+                <a :href="`/laravel/concepts/${relation.id}`">{{
                   relation.preferred_term.text
                 }}</a>
                 <BButton

@@ -19,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::name('api.')->group(function () {
+
 Route::get('concepts/search', 'API\ConceptController@search');
 Route::get('concepts/reconcile/{id}', 'API\ConceptController@reconcile');
 Route::get('concepts/reconcile', 'API\ConceptController@reconcile');
@@ -41,3 +43,5 @@ Route::get('concepts_summary', function () {
 Route::apiResource('concept_sources', 'API\ConceptSourceController');
 
 Route::apiResource('terms', 'API\TermController');
+
+});

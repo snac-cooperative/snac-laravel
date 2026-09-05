@@ -9,7 +9,7 @@
     <h1>Vocabulary</h1>
 
     <ol class="breadcrumb">
-        <li><a href="{{env('APP_URL')}}/concepts">Browse Concepts</a></li>
+        <li><a href="{{config('app.url')}}/concepts">Browse Concepts</a></li>
         <!-- <li>{\{data.response.concepts[0].term}}</li> -->
     </ol>
 
@@ -19,13 +19,13 @@
         @endif --}}
     <div class="row">
         <div class="text-left"  style="margin-left:40px">
-            <a href="{{ env('APP_URL') }}/concepts/search_page" class="btn btn-primary">
+            <a href="{{ config('app.url') }}/concepts/search_page" class="btn btn-primary">
                 Search for Concepts
             </a>
         </div>
         @auth
         <div class="text-center" style="margin-left:40px">
-            <a href="{{ env('APP_URL') }}/concepts/create" class="btn btn-success">
+            <a href="{{ config('app.url') }}/concepts/create" class="btn btn-success">
                 <i class="fa fa-fw fa-plus"></i> Add New Concept
             </a>
         </div>

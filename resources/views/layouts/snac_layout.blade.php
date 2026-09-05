@@ -22,12 +22,13 @@
 <!-- Select Upgrades -->
 <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2-rc.1/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2-rc.1/js/select2.min.js"></script>
-<link rel="stylesheet" href="{{env('SNAC_URL')}}/css/select2-bootstrap.min.css">-->
+<link rel="stylesheet" href="{{config('app.snac_url')}}/css/select2-bootstrap.min.css">-->
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <!-- SNAC Styles -->
-<!--<link rel="stylesheet" href="{{env('SNAC_URL')}}/css/snac.css">-->
+<!--<link rel="stylesheet" href="{{config('app.snac_url')}}/css/snac.css">-->
+<!--<link rel="stylesheet" href="{{config('app.url')}}/css/snac.css">-->
 <link rel="stylesheet" href="{{ mix('css/app.css')}}">
 
  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
@@ -35,13 +36,13 @@
    crossorigin=""></script>
 
 <!-- SNAC Javascript -->
-<!--<script src="{{env('SNAC_URL')}}/javascript/vocab_admin.js"></script>
-<script src="{{env('SNAC_URL')}}/javascript/save_actions.js"></script>
-<script src="{{env('SNAC_URL')}}/javascript/select_loaders.js"></script>
-<script src="{{env('SNAC_URL')}}/javascript/scripts.js"></script>
-<script src="{{env('SNAC_URL')}}/javascript/relation_search.js"></script>
-<script src="{{env('SNAC_URL')}}/javascript/html2canvas.js"></script>
-<script src="{{env('SNAC_URL')}}/javascript/feedback.js"></script>-->
+<!--<script src="{{config('app.snac_url')}}/javascript/vocab_admin.js"></script>
+<script src="{{config('app.snac_url')}}/javascript/save_actions.js"></script>
+<script src="{{config('app.snac_url')}}/javascript/select_loaders.js"></script>
+<script src="{{config('app.snac_url')}}/javascript/scripts.js"></script>
+<script src="{{config('app.snac_url')}}/javascript/relation_search.js"></script>
+<script src="{{config('app.snac_url')}}/javascript/html2canvas.js"></script>
+<script src="{{config('app.snac_url')}}/javascript/feedback.js"></script>-->
 
 
 <!-- Datatables -->

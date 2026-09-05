@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: `/api/concept_sources`,
+  baseURL: `/laravel/api/concept_sources`,
 });
 
 export default {

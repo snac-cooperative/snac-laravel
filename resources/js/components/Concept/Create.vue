@@ -106,7 +106,7 @@ export default {
       categories: [],
       categoryId: null,
       preferredTermLanguageId: null,
-      baseURL: '',
+      baseURL: '/laravel',
       preferredTermInvalid: 'Preferred Term is required.',
       alternateTermInvalid: 'Alternate Term cannot be empty.',
     };
@@ -141,7 +141,7 @@ export default {
       }
     },
     redirectToConcept: function () {
-      window.location.href = `/concepts/${this.conceptId}`;
+      window.location.href = `${this.baseURL}/concepts/${this.conceptId}`;
     },
     addAlternateTerm() {
       this.alternateTerms.push(null);
